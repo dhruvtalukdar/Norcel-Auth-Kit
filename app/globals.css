@@ -1,0 +1,313 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ * ForgeStack — global stylesheet
+ *
+ * Tailwind v4 uses the CSS-first config. Design tokens (from DESIGN.md) are
+ * declared as CSS custom properties under `@theme` so they are available
+ * to both utility classes (e.g. `bg-canvas`) and arbitrary-value syntax.
+ * ────────────────────────────────────────────────────────────────────── */
+
+@import "tailwindcss";
+
+/* ─── Design tokens — see DESIGN.md for the source-of-truth ────────────── */
+@theme {
+  /* Colors */
+  --color-ink: #171717;
+  --color-on-primary: #ffffff;
+  --color-body: #4d4d4d;
+  --color-mute: #888888;
+  --color-hairline: #ebebeb;
+  --color-hairline-strong: #a1a1a1;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-canvas-soft-2: #f5f5f5;
+  --color-link: #0070f3;
+  --color-link-deep: #0761d1;
+  --color-link-bg-soft: #d3e5ff;
+  --color-success: #0070f3;
+  --color-error: #ee0000;
+  --color-error-soft: #f7d4d6;
+  --color-error-deep: #c50000;
+  --color-warning: #f5a623;
+  --color-warning-soft: #ffefcf;
+  --color-warning-deep: #ab570a;
+  --color-violet: #7928ca;
+  --color-violet-soft: #d8ccf1;
+  --color-violet-deep: #4c2889;
+  --color-cyan: #50e3c2;
+  --color-cyan-soft: #aaffec;
+  --color-cyan-deep: #29bc9b;
+  --color-highlight-pink: #ff0080;
+  --color-highlight-magenta: #eb367f;
+
+  /* Typography */
+  --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+  /*
+   * NOTE — Tailwind v4 reserves the `--{token}--{modifier}` namespace for
+   * utilities like container queries. Naming our line-height / weight
+   * siblings that way ("--text-display-xl--line-height") accidentally
+   * turns the matching `text-*` utilities into container-query utilities
+   * and breaks `mx-auto max-w-*` layout (containers collapse to ~5% width).
+   *
+   * Solution: keep the bare `--text-{name}` font-size tokens, and expose
+   * line-height / weight / letter-spacing as separate utility classes
+   * under our own namespace (`--fs-*` / `--lh-*` / etc.) that don't trip
+   * the container-query heuristic.
+   */
+
+  /* Font sizes — drive Tailwind's `text-display-xl` etc. utilities */
+  --text-display-xl: 3rem;
+  --text-display-lg: 2rem;
+  --text-display-md: 1.5rem;
+  --text-display-sm: 1.25rem;
+  --text-body-lg: 1.125rem;
+  --text-body-md: 1rem;
+  --text-body-md-strong: 1rem;
+  --text-body-sm: 0.875rem;
+  --text-body-sm-strong: 0.875rem;
+  --text-caption: 0.75rem;
+  --text-caption-mono: 0.75rem;
+  --text-code: 0.8125rem;
+  --text-button-md: 0.875rem;
+  --text-button-lg: 1rem;
+
+  /* Line heights, letter spacing, weights — own namespace */
+  --lh-display-xl: 1;
+  --lh-display-lg: 1.25;
+  --lh-display-md: 1.333;
+  --lh-display-sm: 1.4;
+  --lh-body-lg: 1.555;
+  --lh-body-md: 1.5;
+  --lh-body-sm: 1.428;
+  --lh-caption: 1.333;
+  --lh-code: 1.538;
+
+  --tracking-display-xl: -0.05em;
+  --tracking-display-lg: -0.04em;
+  --tracking-display-md: -0.04em;
+  --tracking-display-sm: -0.03em;
+  --tracking-body-sm: -0.02em;
+
+  --weight-display: 600;
+  --weight-body-md-strong: 500;
+  --weight-body-sm-strong: 500;
+  --weight-button-md: 500;
+  --weight-button-lg: 500;
+
+  /* Radius — own namespace, same reason as spacing above. */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-pill-sm: 64px;
+  --r-pill: 100px;
+
+  /* Spacing — exposed under our own `--space-*` namespace so we don't
+   * override Tailwind's default spacing scale (which `mx-auto`, `max-w-*`,
+   * `px-*`, `py-*` all depend on). */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+  --space-5xl: 96px;
+  --space-6xl: 128px;
+  --space-section: 192px;
+}
+
+/* ─── Custom dark-mode variant (driven by `.dark` on <html>) ───────────── */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Base / preflight tweaks ───────────────────────────────────────────── */
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-canvas-soft);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-on-primary);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ─── Reusable utilities ────────────────────────────────────────────────── */
+@layer utilities {
+  /* ── Typography companion utilities.
+   *
+   * Tailwind's `text-display-xl` etc. only set `font-size` from the bare
+   * `--text-display-xl` token. The line-height / weight / tracking come
+   * from these companions, which read from our non-reserved namespace
+   * (`--lh-*` / `--weight-*` / `--tracking-*`) so we don't trip Tailwind
+   * v4's container-query heuristic that breaks `mx-auto max-w-*`. */
+  .text-display-xl {
+    font-size: var(--text-display-xl);
+    line-height: var(--lh-display-xl);
+    letter-spacing: var(--tracking-display-xl);
+    font-weight: var(--weight-display);
+  }
+  .text-display-lg {
+    font-size: var(--text-display-lg);
+    line-height: var(--lh-display-lg);
+    letter-spacing: var(--tracking-display-lg);
+    font-weight: var(--weight-display);
+  }
+  .text-display-md {
+    font-size: var(--text-display-md);
+    line-height: var(--lh-display-md);
+    letter-spacing: var(--tracking-display-md);
+    font-weight: var(--weight-display);
+  }
+  .text-display-sm {
+    font-size: var(--text-display-sm);
+    line-height: var(--lh-display-sm);
+    letter-spacing: var(--tracking-display-sm);
+    font-weight: var(--weight-display);
+  }
+  .text-body-lg {
+    font-size: var(--text-body-lg);
+    line-height: var(--lh-body-lg);
+  }
+  .text-body-md {
+    font-size: var(--text-body-md);
+    line-height: var(--lh-body-md);
+  }
+  .text-body-md-strong {
+    font-size: var(--text-body-md-strong);
+    line-height: var(--lh-body-md);
+    font-weight: var(--weight-body-md-strong);
+  }
+  .text-body-sm {
+    font-size: var(--text-body-sm);
+    line-height: var(--lh-body-sm);
+    letter-spacing: var(--tracking-body-sm);
+  }
+  .text-body-sm-strong {
+    font-size: var(--text-body-sm-strong);
+    line-height: var(--lh-body-sm);
+    letter-spacing: var(--tracking-body-sm);
+    font-weight: var(--weight-body-sm-strong);
+  }
+  .text-caption {
+    font-size: var(--text-caption);
+    line-height: var(--lh-caption);
+  }
+  .text-caption-mono {
+    font-size: var(--text-caption-mono);
+    line-height: var(--lh-caption);
+    font-family: var(--font-mono);
+  }
+  .text-code {
+    font-size: var(--text-code);
+    line-height: var(--lh-code);
+    font-family: var(--font-mono);
+  }
+  .text-button-md {
+    font-size: var(--text-button-md);
+    line-height: var(--lh-body-sm);
+    font-weight: var(--weight-button-md);
+  }
+  .text-button-lg {
+    font-size: var(--text-button-lg);
+    line-height: var(--lh-body-md);
+    font-weight: var(--weight-button-lg);
+  }
+
+  /* ── Brand radius aliases. Tailwind's default `rounded-md` / `rounded-lg`
+   * are still available — these are extra-large marketing-scale radii
+   * pulled from the `--r-*` design tokens. */
+  .rounded-pill-sm { border-radius: var(--r-pill-sm); }
+  .rounded-pill    { border-radius: var(--r-pill); }
+
+  /* Stacked-shadow elevation levels (from DESIGN.md). */
+  .shadow-elev-1 {
+    box-shadow: inset 0 0 0 1px #00000014;
+  }
+  .shadow-elev-2 {
+    box-shadow:
+      inset 0 0 0 1px #00000014,
+      0px 1px 1px #00000005,
+      0px 2px 2px #0000000a;
+  }
+  .shadow-elev-3 {
+    box-shadow:
+      inset 0 0 0 1px #00000014,
+      0px 2px 2px #0000000a,
+      0px 8px 8px -8px #0000000a;
+  }
+  .shadow-elev-4 {
+    box-shadow:
+      inset 0 0 0 1px #00000014,
+      0px 2px 2px #0000000a,
+      0px 8px 16px -4px #0000000a;
+  }
+  .shadow-elev-5 {
+    box-shadow:
+      inset 0 0 0 1px #00000014,
+      0px 1px 1px #00000005,
+      0px 8px 16px -4px #0000000a,
+      0px 24px 32px -8px #0000000f;
+  }
+
+  /* The signature mesh-gradient backdrop — used sparingly, hero-scale only. */
+  .bg-mesh-gradient {
+    background:
+      radial-gradient(60% 60% at 12% 18%, #007cf0 0%, transparent 60%),
+      radial-gradient(50% 50% at 88% 12%, #7928ca 0%, transparent 60%),
+      radial-gradient(60% 60% at 70% 85%, #ff0080 0%, transparent 60%),
+      radial-gradient(50% 50% at 18% 90%, #f9cb28 0%, transparent 60%),
+      radial-gradient(40% 40% at 50% 50%, #50e3c2 0%, transparent 60%);
+  }
+
+  /* The "develop / preview / ship" gradient text used on the dashboard. */
+  .text-gradient-develop {
+    background: linear-gradient(90deg, #007cf0 0%, #00dfd8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .text-gradient-preview {
+    background: linear-gradient(90deg, #7928ca 0%, #ff0080 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .text-gradient-ship {
+    background: linear-gradient(90deg, #ff4d4d 0%, #f9cb28 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
