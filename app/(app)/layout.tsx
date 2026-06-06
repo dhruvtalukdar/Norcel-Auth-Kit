@@ -4,8 +4,14 @@ import { AppSidebar } from "@/components/app-sidebar";
 
 /**
  * Authenticated app layout — shared by /dashboard, /profile, /admin.
- * Middleware blocks unauthenticated traffic; `requireAuth` is a belt-and-
- * braces check for RSC.
+ * Middleware blocks unauthenticated traffic; `requireAuth` is a
+ * belt-and-braces check for RSC.
+ *
+ * `requireAuth()` may throw if the database is briefly unavailable
+ * (Supabase pooler drops idle connections). We let that bubble — the
+ * `app/error.tsx` boundary catches it and renders a real error page
+ * rather than re-rendering the layout, which is what was causing
+ * Chromium's `history.replaceState` quota to trip in dev.
  */
 export default async function AppLayout({
   children,

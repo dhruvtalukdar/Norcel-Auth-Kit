@@ -7,8 +7,13 @@
  * every request and short-circuit unauthorised traffic before it hits
  * the page.
  *
- * The full RBAC decision still happens server-side in
- * `lib/auth-guards.ts`. Middleware is the fast first line of defence.
+ * The full RBAC decision (role-based admin gating, fresh emailVerified
+ * check, etc.) still happens server-side in `lib/auth-guards.ts` via
+ * `requireAuth()` / `requireAdmin()`. We deliberately do NOT check
+ * `role` here because the edge runtime only does a bare JWT decode —
+ * it doesn't run the `jwt` callback that populates `token.role`, so
+ * the value would always be `undefined` in this context and would
+ * bounce valid admins back to /login.
  */
 import NextAuth from "next-auth";
 import { NextResponse, type NextRequest } from "next/server";
@@ -18,7 +23,6 @@ import { authConfig, type EdgeSession } from "@/lib/auth.config";
 const { auth } = NextAuth(authConfig);
 
 const PROTECTED_PREFIXES = ["/dashboard", "/settings", "/admin"];
-const ADMIN_PREFIXES = ["/admin"];
 
 export default auth((req: NextRequest & { auth: unknown }) => {
   const { nextUrl } = req;
@@ -31,27 +35,20 @@ export default auth((req: NextRequest & { auth: unknown }) => {
 
   if (!isProtected) return NextResponse.next();
 
-  // ── Unauthenticated → /login (preserve target via `?next=`)
+  // Unauthenticated → /login (preserve target via `?next=`)
   if (!session?.user?.id) {
     const loginUrl = new URL("/login", nextUrl);
     loginUrl.searchParams.set("next", `${path}${nextUrl.search}`);
     return NextResponse.redirect(loginUrl);
   }
 
-  // ── Role check: /admin/* requires ADMIN
-  const isAdminRoute = ADMIN_PREFIXES.some(
-    (p) => path === p || path.startsWith(`${p}/`)
-  );
-  if (isAdminRoute && session.user.role !== "ADMIN") {
-    const dashUrl = new URL("/dashboard", nextUrl);
-    dashUrl.searchParams.set("denied", "admin");
-    return NextResponse.redirect(dashUrl);
-  }
+  // /admin role gating happens in the page-level `requireAdmin()` guard
+  // (Node runtime), where the JWT callback that populates `role` actually
+  // runs. We intentionally don't enforce it here.
 
   return NextResponse.next();
 });
 
-// Only run middleware on the protected paths to minimise edge compute.
 export const config = {
   matcher: ["/dashboard/:path*", "/settings/:path*", "/admin/:path*"],
 };

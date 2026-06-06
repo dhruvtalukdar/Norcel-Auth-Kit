@@ -6,7 +6,9 @@
       "Bash(pkill -f \"next-server\")",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
-      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/dashboard)"
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/dashboard)",
+      "Bash(curl -s -o /tmp/dash.html -w 'dashboard → HTTP %{http_code}, %{size_download} bytes\\\\n' -H 'Cookie: authjs.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoiaTJnYzhQZURWTkw4ZHNfOVE2U0huOWwzc1VnZGpJT3k5eWE4SXpFcFJTODAtcjdXX2ZvZmF5WkJWS01KQlg5eUMwRGlscm9lWGhOMlVKY19kcWgtamcifQ..YWIa418UK5uoU57U4O4_lQ.mutT_Lvpo8s7SCe6jYK-q9nUQAEctA_N5Y_zGxUclHkKqkswu2dDl0hFHdk3mR8ah0MVBbv4cpURXjmA2kkzUluB97EMg0rYAdqfB3ZK7PauCr16nez0lSocswmsyjn2wZI3Z1iSnB1_0wUMItPGFtpnbz3Ou9Yme9B9OLSX5abxipZyyEYn3z6eoZfvLsjL1XFevubABPJaoAy7Ra0SoFidtuoMuMDFVOOlZzqoqESHDitHDOmpx2AvAkPC0uwkmG-2LyCGH2fQ7dcR9vxURbtV9bt8X4XoTdlqNzQjub0.aUu03jaqu9zYyDGZ-8YEFS0SpupdRq3CKRI1l7Hk1Xs' http://localhost:3000/dashboard)",
+      "Read(//tmp/**)"
     ]
   }
 }
