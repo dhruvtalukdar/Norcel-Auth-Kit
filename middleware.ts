@@ -7,13 +7,17 @@
  * every request and short-circuit unauthorised traffic before it hits
  * the page.
  *
- * The full RBAC decision (role-based admin gating, fresh emailVerified
- * check, etc.) still happens server-side in `lib/auth-guards.ts` via
- * `requireAuth()` / `requireAdmin()`. We deliberately do NOT check
- * `role` here because the edge runtime only does a bare JWT decode —
- * it doesn't run the `jwt` callback that populates `token.role`, so
- * the value would always be `undefined` in this context and would
- * bounce valid admins back to /login.
+ * Three layers of enforcement:
+ *
+ *   1. `authConfig.callbacks.authorized` (in `lib/auth.config.ts`)
+ *      decides whether the path is public or requires a session.
+ *   2. THIS callback below makes the routing decision for matched
+ *      paths — redirecting unauthenticated users to /login and
+ *      non-admins away from /admin/*.
+ *   3. Each protected page also calls `requireAuth()` /
+ *      `requireAdmin()` (in `lib/auth-guards.ts`, Node runtime) which
+ *      re-reads the user record so soft-deletes, lockouts, and
+ *      revoked sessions propagate without a sign-out.
  */
 import NextAuth from "next-auth";
 import { NextResponse, type NextRequest } from "next/server";
@@ -23,6 +27,7 @@ import { authConfig, type EdgeSession } from "@/lib/auth.config";
 const { auth } = NextAuth(authConfig);
 
 const PROTECTED_PREFIXES = ["/dashboard", "/settings", "/admin"];
+const ADMIN_PREFIXES = ["/admin"];
 
 export default auth((req: NextRequest & { auth: unknown }) => {
   const { nextUrl } = req;
@@ -42,9 +47,17 @@ export default auth((req: NextRequest & { auth: unknown }) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // /admin role gating happens in the page-level `requireAdmin()` guard
-  // (Node runtime), where the JWT callback that populates `role` actually
-  // runs. We intentionally don't enforce it here.
+  // /admin role gating — fast-fail at the edge so non-admins don't
+  // even render the admin layout. The page-level `requireAdmin()` is
+  // a belt-and-braces second check.
+  const isAdminRoute = ADMIN_PREFIXES.some(
+    (p) => path === p || path.startsWith(`${p}/`)
+  );
+  if (isAdminRoute && session.user.role !== "ADMIN" && session.user.role !== "SUPER_ADMIN") {
+    const dashUrl = new URL("/dashboard", nextUrl);
+    dashUrl.searchParams.set("denied", "admin");
+    return NextResponse.redirect(dashUrl);
+  }
 
   return NextResponse.next();
 });

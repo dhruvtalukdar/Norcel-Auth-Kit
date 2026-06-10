@@ -23,7 +23,7 @@
 import type { NextAuthConfig } from "next-auth";
 
 export type EdgeSession = {
-  user?: { id?: string; role?: "USER" | "ADMIN" };
+  user?: { id?: string; role?: "USER" | "ADMIN" | "SUPER_ADMIN" };
 };
 
 const PUBLIC_PREFIXES = [
@@ -85,7 +85,11 @@ export const authConfig: NextAuthConfig = {
         if (typeof token.id === "string") {
           session.user.id = token.id;
         }
-        if (token.role === "USER" || token.role === "ADMIN") {
+        if (
+          token.role === "USER" ||
+          token.role === "ADMIN" ||
+          token.role === "SUPER_ADMIN"
+        ) {
           session.user.role = token.role;
         }
       }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
@@ -25,7 +26,7 @@ export default async function RegisterPage({
         <>
           Already have an account?{" "}
           <Link
-            href={`/login${next ? `?next=${encodeURIComponent(next)}` : ""}`}
+            href={`/login${next ? `?next=${encodeURIComponent(next)}` : ""}` as Route}
             className="text-ink underline underline-offset-4"
           >
             Sign in

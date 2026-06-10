@@ -182,5 +182,3 @@ export function Toaster() {
     </ToastProvider>
   );
 }
-
-export type { ToastActionElement };

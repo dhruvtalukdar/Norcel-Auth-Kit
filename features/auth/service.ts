@@ -121,10 +121,39 @@ export type SignInResult =
 export async function signInWithPassword(input: {
   email: string;
   password: string;
+  ip?: string | null;
+  userAgent?: string | null;
 }): Promise<SignInResult> {
+  // 1. Pre-check: rate-limit + lockout. We do this *before* touching
+  //    the user record so an attacker hammering a locked account
+  //    doesn't cause extra DB reads.
+  const { checkLoginAllowed, recordLoginAttempt, recordSecurityEvent } =
+    await import("@/features/auth/security");
+  const guard = await checkLoginAllowed(input.email, input.ip ?? null);
+  if (!guard.allowed) {
+    if (guard.reason === "locked") {
+      const until = guard.until.toISOString();
+      return {
+        ok: false,
+        error: `Account locked. Try again after ${new Date(until).toLocaleString()}.`,
+      };
+    }
+    return {
+      ok: false,
+      error: "Too many failed attempts. Please try again later.",
+    };
+  }
+
   const user = await prisma.user.findUnique({
     where: { email: input.email },
-    select: { id: true, email: true, name: true, passwordHash: true },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      passwordHash: true,
+      deletedAt: true,
+      lockedUntil: true,
+    },
   });
 
   // Run verify() unconditionally so we don't leak account existence via timing.
@@ -134,13 +163,37 @@ export async function signInWithPassword(input: {
     ? await verifyPassword(user.passwordHash, input.password)
     : (await verifyPassword(dummyHash, input.password), false);
 
-  if (!user || !user.passwordHash || !ok) {
+  if (!user || !user.passwordHash || !ok || user.deletedAt) {
+    await recordLoginAttempt({
+      email: input.email,
+      userId: user?.id ?? null,
+      status: "FAILURE",
+      ip: input.ip ?? null,
+      userAgent: input.userAgent ?? null,
+    });
+    await recordSecurityEvent({
+      type: "LOGIN_FAILURE",
+      userId: user?.id ?? null,
+      email: input.email,
+      ip: input.ip ?? null,
+      userAgent: input.userAgent ?? null,
+    });
     return { ok: false, error: "Invalid email or password." };
   }
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: { lastLoginAt: new Date() },
+  await recordLoginAttempt({
+    email: input.email,
+    userId: user.id,
+    status: "SUCCESS",
+    ip: input.ip ?? null,
+    userAgent: input.userAgent ?? null,
+  });
+  await recordSecurityEvent({
+    type: "LOGIN_SUCCESS",
+    userId: user.id,
+    email: input.email,
+    ip: input.ip ?? null,
+    userAgent: input.userAgent ?? null,
   });
 
   return { ok: true, user: { id: user.id, email: user.email, name: user.name } };

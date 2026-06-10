@@ -11,9 +11,9 @@ import * as React from "react";
  * of a React server-component context.
  */
 export function useFormState<TState, TPayload extends unknown[]>(
-  action: (...args: [TState | undefined, ...TPayload]) => Promise<TState>,
+  action: (prev: TState | undefined, ...args: TPayload) => Promise<TState>,
   initial: TState
-): [TState, (payload: ...TPayload) => void, boolean] {
+): [TState, (...args: TPayload) => void, boolean] {
   const [state, setState] = React.useState<TState>(initial);
   const [pending, setPending] = React.useState(false);
 

@@ -1,9 +1,10 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { auth } from "@/lib/auth";
 import { UserMenu } from "@/components/user-menu";
 import { Logo } from "@/components/logo";
 
-const NAV_LINKS: Array<{ href: string; label: string }> = [
+const NAV_LINKS: Array<{ href: Route; label: string }> = [
   { href: "/#features", label: "Features" },
   { href: "/#security", label: "Security" },
   { href: "/#pricing", label: "Pricing" },

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { Logo } from "@/components/logo";
 
-const COLUMNS: Array<{ title: string; links: Array<{ href: string; label: string }> }> = [
+const COLUMNS: Array<{ title: string; links: Array<{ href: Route; label: string }> }> = [
   {
     title: "Product",
     links: [

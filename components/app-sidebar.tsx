@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -8,24 +9,33 @@ import {
   Settings,
   Shield,
   Users,
+  ScrollText,
+  KeyRound,
 } from "lucide-react";
 import { UserRole } from "@prisma/client";
 
 import { cn } from "@/lib/utils";
 
 type Item = {
-  href: string;
+  href: Route;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  admin?: boolean;
+  adminOrHigher?: boolean;
 };
 
 const ITEMS: Item[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/profile", label: "Profile", icon: UserIcon },
-  { href: "/admin", label: "Admin panel", icon: Shield, admin: true },
-  { href: "/admin/users", label: "Users", icon: Users, admin: true },
   { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/settings/sessions", label: "Active sessions", icon: KeyRound },
+  { href: "/admin", label: "Admin panel", icon: Shield, adminOrHigher: true },
+  { href: "/admin/users", label: "Users", icon: Users, adminOrHigher: true },
+  {
+    href: "/admin/security",
+    label: "Security log",
+    icon: ScrollText,
+    adminOrHigher: true,
+  },
 ];
 
 /**
@@ -34,6 +44,8 @@ const ITEMS: Item[] = [
  */
 export function AppSidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
+  const isAdmin =
+    role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN;
 
   return (
     <aside className="sticky top-20 hidden h-fit w-56 shrink-0 md:block">
@@ -41,7 +53,7 @@ export function AppSidebar({ role }: { role: UserRole }) {
         Navigation
       </p>
       <nav className="flex flex-col" aria-label="App">
-        {ITEMS.filter((i) => !i.admin || role === "ADMIN").map((item) => {
+        {ITEMS.filter((i) => !i.adminOrHigher || isAdmin).map((item) => {
           const Icon = item.icon;
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);

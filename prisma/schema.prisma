@@ -4,7 +4,9 @@
 //
 // Models: User, Role, Session, VerificationToken, PasswordResetToken, Account
 // Auth.js (NextAuth v5) requires the Account / Session / VerificationToken shapes.
-// ForgeStack also extends User with passwordHash + roleId for credentials login + RBAC.
+// ForgeStack also extends User with passwordHash + roleId for credentials login + RBAC,
+// plus pre-Phase-2 hardening: SUPER_ADMIN role, LoginAttempt rate-limit, SecurityEvent
+// audit log, UserSession server-side session list, soft-delete on User.
 
 generator client {
   provider = "prisma-client-js"
@@ -16,18 +18,46 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Enums
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Enums ────────────────────────────────────────────────────────────────
 
 enum UserRole {
   USER
   ADMIN
+  SUPER_ADMIN
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Roles (RBAC)
-// ─────────────────────────────────────────────────────────────────────────────
+enum SecurityEventType {
+  LOGIN_SUCCESS
+  LOGIN_FAILURE
+  LOGIN_LOCKED
+  LOGOUT
+  SIGNUP
+  EMAIL_VERIFICATION_SENT
+  EMAIL_VERIFIED
+  EMAIL_CHANGE_REQUESTED
+  EMAIL_CHANGED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  PASSWORD_CHANGED
+  OAUTH_LINKED
+  OAUTH_UNLINKED
+  MAGIC_LINK_REQUESTED
+  MAGIC_LINK_CONSUMED
+  SESSION_REVOKED
+  ACCOUNT_LOCKED
+  ACCOUNT_UNLOCKED
+  ACCOUNT_DELETED
+  ACCOUNT_RESTORED
+  ROLE_CHANGED
+}
+
+enum LoginAttemptStatus {
+  SUCCESS
+  FAILURE
+  LOCKED
+}
+
+// ─── Roles (RBAC) ─────────────────────────────────────────────────────────
 
 model Role {
   id          String   @id @default(cuid())
@@ -38,9 +68,7 @@ model Role {
   updatedAt   DateTime @updatedAt
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Users
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Users ────────────────────────────────────────────────────────────────
 
 model User {
   id            String    @id @default(cuid())
@@ -49,6 +77,15 @@ model User {
   name          String?
   image         String?
   passwordHash  String?
+
+  // Pending email change. The user requests a change, we set
+  // `pendingEmail` + send a verification link to the new address. On
+  // confirmation we promote it to `email`. `pendingEmail` is a separate
+  // unique field so two users can't race to claim the same new address
+  // during the verification window.
+  pendingEmail        String?   @unique
+  pendingEmailTokenId String?   @unique
+  pendingEmailExpires DateTime?
 
   // Role relation (FK)
   roleId String?
@@ -60,17 +97,28 @@ model User {
 
   // ForgeStack relations
   passwordResetTokens PasswordResetToken[]
+  emailChangeTokens   EmailChangeToken[]
+  userSessions        UserSession[]
+  loginAttempts       LoginAttempt[]
+  securityEvents      SecurityEvent[]
+
+  // Lockout
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+
+  // Soft delete
+  deletedAt DateTime?
 
   lastLoginAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([roleId])
+  @@index([deletedAt])
+  @@index([email])
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Auth.js (NextAuth v5) — required adapter models
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Auth.js (NextAuth v5) — required adapter models ───────────────────────
 
 model Account {
   id                String  @id @default(cuid())
@@ -111,21 +159,102 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ForgeStack — Password reset (kept separate from VerificationToken for
-// clarity — VerificationToken is used for email verification + magic links).
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── ForgeStack — Password reset, email change, server-side sessions ──────
 
 model PasswordResetToken {
-  id        String   @id @default(cuid())
-  tokenHash String   @unique
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
   userId    String
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model EmailChangeToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  newEmail  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Server-side session list. Auth.js's `Session` table is populated only by
+// the database session strategy — with our JWT strategy, sessions live in
+// cookies. We mirror each sign-in here so the user can see and revoke
+// active sessions from /settings/sessions. `sessionId` is a random opaque
+// ID that we put in the JWT; when the user revokes a session we delete
+// the row and (next time the JWT is checked) the guard sees the missing
+// row and forces a re-auth.
+model UserSession {
+  id         String    @id @default(cuid())
+  sessionId  String    @unique
+  userId     String
+  userAgent  String?   @db.Text
+  ip         String?
+  city       String?
+  country    String?
+  lastSeenAt DateTime  @default(now())
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ─── Security — login attempts + audit log ───────────────────────────────
+
+// Per-login-attempt record. Used for rate limiting and lockout. Indexed
+// on (email, createdAt) so we can quickly ask "how many failed attempts
+// has this email had in the last 15 minutes?".
+model LoginAttempt {
+  id        String            @id @default(cuid())
+  email     String
+  userId    String?
+  status    LoginAttemptStatus
+  ip        String?
+  userAgent String?           @db.Text
+  createdAt DateTime          @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email, createdAt])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// Append-only audit log of security-relevant events. Surfaces in the
+// admin dashboard so security teams can answer "who logged in last
+// Tuesday at 3am?" and "did anyone change the role on this account?".
+model SecurityEvent {
+  id        String            @id @default(cuid())
+  type      SecurityEventType
+  userId    String?
+  // Email at the time of the event (denormalised so we can render the
+  // event even after the user is deleted).
+  email     String?
+  ip        String?
+  userAgent String?           @db.Text
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+  @@index([createdAt])
 }

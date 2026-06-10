@@ -11,6 +11,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import { signIn, signOut } from "@/lib/auth";
 import { clientEnv } from "@/lib/env";
@@ -92,7 +93,11 @@ export async function signInAction(
     };
   }
 
-  const verified = await signInWithPassword(parsed.data);
+  const verified = await signInWithPassword({
+    ...parsed.data,
+    ip: getRequestIp(),
+    userAgent: getUserAgent(),
+  });
   if (!verified.ok) {
     return { ok: false, message: verified.error };
   }
@@ -109,7 +114,9 @@ export async function signInAction(
 
   // Auth.js's signIn() doesn't redirect when redirect:false — handle it here.
   const next = sanitizeNext(formData.get("next"));
-  redirect(next);
+  // `sanitizeNext` already constrains to same-origin paths starting with `/`
+  // — safe to cast to `Route` for Next.js's `redirect()`.
+  redirect(next as never);
 }
 
 // ─── OAuth sign-in ─────────────────────────────────────────────────────────
@@ -293,6 +300,101 @@ export async function changePasswordAction(
   return { ok: true, message: "Password updated." };
 }
 
+// ─── Email change ─────────────────────────────────────────────────────────
+
+import {
+  cancelEmailChange,
+  consumeEmailChangeToken,
+  requestEmailChange,
+} from "@/features/auth/email-change";
+import { softDeleteAccount } from "@/features/auth/account";
+import {
+  revokeAllUserSessions,
+  revokeUserSession,
+} from "@/features/auth/sessions";
+
+export async function requestEmailChangeAction(
+  _prev: ActionState | undefined,
+  formData: FormData
+): Promise<ActionState> {
+  const session = await requireAuth();
+  const { z } = await import("zod");
+  const schema = z.object({
+    newEmail: z.string().trim().toLowerCase().email(),
+  });
+  const parsed = schema.safeParse({ newEmail: formData.get("newEmail") });
+  if (!parsed.success) {
+    return {
+      ok: false,
+      fieldErrors: zodToFieldErrors(parsed.error),
+      message: "Enter a valid email address.",
+    };
+  }
+
+  const result = await requestEmailChange({
+    userId: session.user.id,
+    newEmail: parsed.data.newEmail,
+  });
+  if (!result.ok) return { ok: false, message: result.error };
+
+  return {
+    ok: true,
+    message: `We sent a verification link to ${result.masked}. Open it to confirm.`,
+  };
+}
+
+export async function cancelEmailChangeAction(): Promise<ActionState> {
+  const session = await requireAuth();
+  await cancelEmailChange(session.user.id);
+  return { ok: true, message: "Pending email change cancelled." };
+}
+
+/** Form-action wrapper — Next.js requires `void`-returning form actions. */
+export async function cancelEmailChangeFormAction(): Promise<void> {
+  await cancelEmailChangeAction();
+}
+
+// ─── Account deletion (soft delete) ────────────────────────────────────────
+
+export async function deleteAccountAction(
+  _prev: ActionState | undefined,
+  formData: FormData
+): Promise<ActionState> {
+  const session = await requireAuth();
+  const confirmation = String(formData.get("confirmationEmail") ?? "");
+  const result = await softDeleteAccount({
+    userId: session.user.id,
+    confirmationEmail: confirmation,
+    ip: getRequestIp(),
+    userAgent: getUserAgent(),
+  });
+  if (!result.ok) return { ok: false, message: result.error };
+  // Sign out and redirect home. signOut() throws a redirect, so the
+  // function never actually returns on the success path.
+  await signOut({ redirectTo: "/" });
+  return { ok: true, message: "Account deleted." };
+}
+
+// ─── Sessions management ───────────────────────────────────────────────────
+
+export async function revokeSessionAction(formData: FormData): Promise<void> {
+  const session = await requireAuth();
+  const sessionId = String(formData.get("sessionId") ?? "");
+  if (!sessionId) return;
+  await revokeUserSession(sessionId, session.user.id);
+  revalidatePath("/settings/sessions");
+}
+
+export async function revokeAllOtherSessionsAction(): Promise<void> {
+  const session = await requireAuth();
+  const count = await revokeAllUserSessions(session.user.id);
+  // Re-create the current session (so the user isn't signed out).
+  const { startUserSession } = await import("@/features/auth/sessions");
+  await startUserSession({ userId: session.user.id, rememberMe: false });
+  revalidatePath("/settings/sessions");
+  return void count;
+}
+
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 function zodToFieldErrors(
@@ -321,5 +423,28 @@ function sanitizeNext(input: FormDataEntryValue | null): string {
     return u.pathname + u.search;
   } catch {
     return fallback;
+  }
+}
+
+function getRequestIp(): string | null {
+  try {
+    // `headers()` returns a Promise in Next 15.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const h: any = headers();
+    const xff = typeof h?.get === "function" ? h.get("x-forwarded-for") : null;
+    if (xff) return xff.split(",")[0]?.trim() ?? null;
+    return typeof h?.get === "function" ? h.get("x-real-ip") : null;
+  } catch {
+    return null;
+  }
+}
+
+function getUserAgent(): string | null {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const h: any = headers();
+    return typeof h?.get === "function" ? h.get("user-agent") : null;
+  } catch {
+    return null;
   }
 }

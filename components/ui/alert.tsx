@@ -14,7 +14,8 @@ const styles: Record<AlertIntent, string> = {
   warning: "bg-warning-soft text-warning-deep border-warning-deep/30",
 };
 
-export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AlertProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   intent?: AlertIntent;
   title?: React.ReactNode;
 }

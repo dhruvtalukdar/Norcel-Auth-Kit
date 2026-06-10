@@ -8,7 +8,39 @@
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/dashboard)",
       "Bash(curl -s -o /tmp/dash.html -w 'dashboard → HTTP %{http_code}, %{size_download} bytes\\\\n' -H 'Cookie: authjs.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwia2lkIjoiaTJnYzhQZURWTkw4ZHNfOVE2U0huOWwzc1VnZGpJT3k5eWE4SXpFcFJTODAtcjdXX2ZvZmF5WkJWS01KQlg5eUMwRGlscm9lWGhOMlVKY19kcWgtamcifQ..YWIa418UK5uoU57U4O4_lQ.mutT_Lvpo8s7SCe6jYK-q9nUQAEctA_N5Y_zGxUclHkKqkswu2dDl0hFHdk3mR8ah0MVBbv4cpURXjmA2kkzUluB97EMg0rYAdqfB3ZK7PauCr16nez0lSocswmsyjn2wZI3Z1iSnB1_0wUMItPGFtpnbz3Ou9Yme9B9OLSX5abxipZyyEYn3z6eoZfvLsjL1XFevubABPJaoAy7Ra0SoFidtuoMuMDFVOOlZzqoqESHDitHDOmpx2AvAkPC0uwkmG-2LyCGH2fQ7dcR9vxURbtV9bt8X4XoTdlqNzQjub0.aUu03jaqu9zYyDGZ-8YEFS0SpupdRq3CKRI1l7Hk1Xs' http://localhost:3000/dashboard)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(npx prisma *)",
+      "Bash(npx tsc *)",
+      "Bash(grep -n \"ToastActionElement\" /Users/apple/VS Code Projects/NextJS Template/components/ui/toaster.tsx)",
+      "Read(//Users/apple/**)",
+      "Bash(npx eslint *)",
+      "Bash(cat > *)",
+      "Bash(node /tmp/check_tables.mjs)",
+      "Bash(cp /tmp/check_tables.mjs \"/Users/apple/VS Code Projects/NextJS Template/_check_tables.mjs\")",
+      "Bash(node _check_tables.mjs)",
+      "Bash(rm -rf .next)",
+      "Bash(PORT=3000 npm run dev)",
+      "Bash(curl -s -o /dev/null -w \"GET / => %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"GET /login => %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(curl -s -o /dev/null -w \"GET /register => %{http_code}\\\\n\" http://localhost:3000/register)",
+      "Bash(curl -s -o /dev/null -w \"GET /forgot-password => %{http_code}\\\\n\" http://localhost:3000/forgot-password)",
+      "Bash(curl -s -o /dev/null -w \"GET /magic-link => %{http_code}\\\\n\" http://localhost:3000/magic-link)",
+      "Bash(curl -s http://localhost:3000/api/auth/providers)",
+      "Bash(curl -s -o /dev/null -D - -L --max-redirs 0 http://localhost:3000/dashboard)",
+      "Bash(curl -s -o /dev/null -D - -L --max-redirs 0 http://localhost:3000/admin)",
+      "Bash(curl -s -o /dev/null -D - -L --max-redirs 0 http://localhost:3000/profile)",
+      "Bash(curl -s -X POST http://localhost:3000/magic-link -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html' -d email=nonexistent@example.com -o /tmp/magic-resp.html -w 'Status: %{http_code}\\\\n')",
+      "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/magic/callback?token=bogus_token_xyz\")",
+      "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/magic/callback\")",
+      "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/email-change/callback?token=bogus\")",
+      "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/magic/callback?token=Ms62QkyDvA8sDXNXzwRW7VAlwK6I1D75\")",
+      "Bash(kill bvju7tx0x *)",
+      "Bash(kill -9 7348)",
+      "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/callback/email?token=test-claim-token-1781105176816&email=magic-claim:cmq21rvq10005txnuzhloft6k\")",
+      "Bash(curl -s \"http://localhost:3000/api/auth/csrf\")"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   }
 }

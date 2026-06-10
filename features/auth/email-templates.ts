@@ -199,9 +199,51 @@ function renderMagicLink({ name, url }: RenderInput) {
   return { subject, html, text };
 }
 
+// ─── Email change ─────────────────────────────────────────────────────────
+
+function renderEmailChange({ name, url }: RenderInput) {
+  const subject = `Confirm your new ${BRAND} email address`;
+  const html = shell(
+    subject,
+    `
+    ${greeting(name)}
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:600;line-height:32px;letter-spacing:-0.96px;color:${PRIMARY};">
+      Confirm your new email.
+    </h1>
+    <p style="margin:0 0 8px;font-size:16px;line-height:24px;color:${BODY};">
+      Someone (hopefully you) requested that this address become the new
+      sign-in email for their ${escapeHtml(BRAND)} account. Tap the
+      button below to confirm. The link expires in 1 hour.
+    </p>
+    <p style="margin:16px 0 8px;font-size:14px;line-height:20px;color:${MUTE};">
+      If you didn't request this change, you can safely ignore this
+      email — your current address will stay active.
+    </p>
+    ${cta("Confirm new email", url)}
+    ${fallbackLink(url)}
+    ${signature()}
+  `
+  );
+  const text = [
+    `Hi ${name ?? "there"},`,
+    ``,
+    `Someone (hopefully you) requested that this address become the new sign-in email for their ${BRAND} account. Open this link to confirm:`,
+    url,
+    ``,
+    `The link expires in 1 hour. If you didn't request this, you can ignore this email.`,
+    ``,
+    `— The ${BRAND} team`,
+  ].join("\n");
+  return { subject, html, text };
+}
+
 // ─── Public entry point ────────────────────────────────────────────────────
 
-export type EmailTemplate = "verification" | "password-reset" | "magic-link";
+export type EmailTemplate =
+  | "verification"
+  | "password-reset"
+  | "magic-link"
+  | "email-change";
 
 export function renderEmail(
   template: EmailTemplate,
@@ -214,5 +256,7 @@ export function renderEmail(
       return renderPasswordReset(input);
     case "magic-link":
       return renderMagicLink(input);
+    case "email-change":
+      return renderEmailChange(input);
   }
 }

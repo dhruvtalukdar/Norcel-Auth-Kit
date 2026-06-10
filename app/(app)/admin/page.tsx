@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
+import { getOAuthCount, getWorkspaceStats } from "@/lib/dashboard-stats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,23 +11,23 @@ export const metadata = { title: "Admin" };
 export default async function AdminDashboardPage() {
   await requireAdmin();
 
-  const [users, admins, oauthCount] = await Promise.all([
-    prisma.user.count(),
-    prisma.user.count({ where: { role: { name: "ADMIN" } } }),
-    prisma.account.count(),
+  // Two parallel queries: workspace stats (groupBy + 1 count, in
+  // `getWorkspaceStats`) and the OAuth-account count.
+  const [stats, oauthCount, recent] = await Promise.all([
+    getWorkspaceStats(),
+    getOAuthCount(),
+    prisma.user.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        role: { select: { name: true } },
+      },
+    }),
   ]);
-
-  const recent = await prisma.user.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      createdAt: true,
-      role: { select: { name: true } },
-    },
-  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -41,10 +42,16 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat label="Total users" value={users} />
-        <Stat label="Admins" value={admins} />
-        <Stat label="OAuth links" value={oauthCount} />
+        <Stat label="Total users" value={stats.total} />
+        <Stat
+          label="Admins"
+          value={(stats.byRole.ADMIN ?? 0) + (stats.byRole.SUPER_ADMIN ?? 0)}
+        />
+        <Stat label="7-day active" value={stats.sevenDayActive} />
       </div>
+      <p className="text-caption text-mute">
+        {oauthCount} OAuth account link{oauthCount === 1 ? "" : "s"} across all users.
+      </p>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">

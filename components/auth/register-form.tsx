@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { signUpAction, type ActionState } from "@/features/auth/actions";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -99,13 +100,16 @@ export function RegisterForm() {
         <Checkbox name="terms" required className="mt-0.5" />
         <span>
           I agree to the{" "}
-          <a href="/#terms" className="text-ink underline underline-offset-4">
+          <Link href="/#terms" className="text-ink underline underline-offset-4">
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a href="/#privacy" className="text-ink underline underline-offset-4">
+          <Link
+            href="/#privacy"
+            className="text-ink underline underline-offset-4"
+          >
             Privacy Policy
-          </a>
+          </Link>
           .
         </span>
       </label>

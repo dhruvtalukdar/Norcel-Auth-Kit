@@ -7,11 +7,10 @@ import { AppSidebar } from "@/components/app-sidebar";
  * Middleware blocks unauthenticated traffic; `requireAuth` is a
  * belt-and-braces check for RSC.
  *
- * `requireAuth()` may throw if the database is briefly unavailable
- * (Supabase pooler drops idle connections). We let that bubble — the
- * `app/error.tsx` boundary catches it and renders a real error page
- * rather than re-rendering the layout, which is what was causing
- * Chromium's `history.replaceState` quota to trip in dev.
+ * `getSession()` is JWT-only and doesn't touch Prisma — see
+ * `lib/auth-guards.ts` for the perf rationale. Pages that need the
+ * freshest role (admin pages) or `emailVerified` call `requireAdmin`
+ * or `requireVerified`, which do the DB read themselves.
  */
 export default async function AppLayout({
   children,
