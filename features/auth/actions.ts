@@ -48,6 +48,18 @@ export async function signUpAction(
   _prev: ActionState | undefined,
   formData: FormData
 ): Promise<ActionState> {
+  // Per-IP rate limit: stops a single IP from burning the email
+  // quota or filling the DB with garbage users.
+  const { checkActionRateAllowed } = await import("@/features/auth/security");
+  const ip = await getRequestIp();
+  const guard = await checkActionRateAllowed(ip);
+  if (!guard.allowed) {
+    return {
+      ok: false,
+      message: "Too many requests from this network. Please try again later.",
+    };
+  }
+
   const parsed = signUpSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -63,7 +75,11 @@ export async function signUpAction(
     };
   }
 
-  const result = await signUpWithPassword(parsed.data);
+  const result = await signUpWithPassword({
+    ...parsed.data,
+    ip,
+    userAgent: await getUserAgent(),
+  });
   if (!result.ok) {
     return { ok: false, message: result.error };
   }
@@ -95,8 +111,8 @@ export async function signInAction(
 
   const verified = await signInWithPassword({
     ...parsed.data,
-    ip: getRequestIp(),
-    userAgent: getUserAgent(),
+    ip: await getRequestIp(),
+    userAgent: await getUserAgent(),
   });
   if (!verified.ok) {
     return { ok: false, message: verified.error };
@@ -139,6 +155,16 @@ export async function forgotPasswordAction(
   _prev: ActionState | undefined,
   formData: FormData
 ): Promise<ActionState> {
+  const { checkActionRateAllowed } = await import("@/features/auth/security");
+  const ip = await getRequestIp();
+  const guard = await checkActionRateAllowed(ip);
+  if (!guard.allowed) {
+    return {
+      ok: false,
+      message: "Too many requests from this network. Please try again later.",
+    };
+  }
+
   const parsed = forgotPasswordSchema.safeParse({
     email: formData.get("email"),
   });
@@ -193,6 +219,16 @@ export async function magicLinkAction(
   _prev: ActionState | undefined,
   formData: FormData
 ): Promise<ActionState> {
+  const { checkActionRateAllowed } = await import("@/features/auth/security");
+  const ip = await getRequestIp();
+  const guard = await checkActionRateAllowed(ip);
+  if (!guard.allowed) {
+    return {
+      ok: false,
+      message: "Too many requests from this network. Please try again later.",
+    };
+  }
+
   const parsed = magicLinkSchema.safeParse({
     email: formData.get("email"),
   });
@@ -312,6 +348,9 @@ import {
   revokeAllUserSessions,
   revokeUserSession,
 } from "@/features/auth/sessions";
+// `revokeAllUserSessions` is used by the `deleteAccountAction` and
+// `changePasswordAction` paths — keep the import. The "revoke all
+// others" path uses the more specific `revokeAllOtherUserSessions`.
 
 export async function requestEmailChangeAction(
   _prev: ActionState | undefined,
@@ -365,8 +404,8 @@ export async function deleteAccountAction(
   const result = await softDeleteAccount({
     userId: session.user.id,
     confirmationEmail: confirmation,
-    ip: getRequestIp(),
-    userAgent: getUserAgent(),
+    ip: await getRequestIp(),
+    userAgent: await getUserAgent(),
   });
   if (!result.ok) return { ok: false, message: result.error };
   // Sign out and redirect home. signOut() throws a redirect, so the
@@ -387,12 +426,16 @@ export async function revokeSessionAction(formData: FormData): Promise<void> {
 
 export async function revokeAllOtherSessionsAction(): Promise<void> {
   const session = await requireAuth();
-  const count = await revokeAllUserSessions(session.user.id);
-  // Re-create the current session (so the user isn't signed out).
-  const { startUserSession } = await import("@/features/auth/sessions");
-  await startUserSession({ userId: session.user.id, rememberMe: false });
+  // Identify the current session so we can keep it alive. Without
+  // excluding it, the previous implementation revoked the active
+  // session along with the rest and the user was silently signed out.
+  const currentSessionId = session.user.sessionId ?? "";
+  if (!currentSessionId) return;
+  const { revokeAllOtherUserSessions } = await import(
+    "@/features/auth/sessions"
+  );
+  await revokeAllOtherUserSessions(session.user.id, currentSessionId);
   revalidatePath("/settings/sessions");
-  return void count;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -426,25 +469,14 @@ function sanitizeNext(input: FormDataEntryValue | null): string {
   }
 }
 
-function getRequestIp(): string | null {
-  try {
-    // `headers()` returns a Promise in Next 15.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const h: any = headers();
-    const xff = typeof h?.get === "function" ? h.get("x-forwarded-for") : null;
-    if (xff) return xff.split(",")[0]?.trim() ?? null;
-    return typeof h?.get === "function" ? h.get("x-real-ip") : null;
-  } catch {
-    return null;
-  }
+async function getRequestIp(): Promise<string | null> {
+  const h = await headers();
+  const xff = h.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]?.trim() ?? null;
+  return h.get("x-real-ip");
 }
 
-function getUserAgent(): string | null {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const h: any = headers();
-    return typeof h?.get === "function" ? h.get("user-agent") : null;
-  } catch {
-    return null;
-  }
+async function getUserAgent(): Promise<string | null> {
+  const h = await headers();
+  return h.get("user-agent");
 }

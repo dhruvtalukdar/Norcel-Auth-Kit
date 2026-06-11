@@ -37,7 +37,18 @@
       "Bash(kill bvju7tx0x *)",
       "Bash(kill -9 7348)",
       "Bash(curl -s -o /dev/null -D - \"http://localhost:3000/api/auth/callback/email?token=test-claim-token-1781105176816&email=magic-claim:cmq21rvq10005txnuzhloft6k\")",
-      "Bash(curl -s \"http://localhost:3000/api/auth/csrf\")"
+      "Bash(curl -s \"http://localhost:3000/api/auth/csrf\")",
+      "Bash(mkdir -p prisma/migrations/20260610000000_init)",
+      "Bash(head -255 prisma/migrations/20260610000000_init/migration.sql)",
+      "Bash(mv /tmp/m.sql prisma/migrations/20260610000000_init/migration.sql)",
+      "Bash(echo \"---END---\")",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(awk 'BEGIN{found=0} /┌/{found=1; exit} {print NR\": \"$0}' prisma/migrations/20260610000000_init/migration.sql)",
+      "Bash(head -254 prisma/migrations/20260610000000_init/migration.sql)",
+      "Bash(sed -i '' 's/import { requireAuth } from \"@\\\\/lib\\\\/auth-guards\";/import { requireVerified } from \"@\\\\/lib\\\\/auth-guards\";/g' \"app/\\(app\\)/profile/page.tsx\" \"app/\\(app\\)/settings/page.tsx\" \"app/\\(app\\)/settings/sessions/page.tsx\")",
+      "Bash(sed -i '' 's/await requireAuth\\(\\)/await requireVerified\\(\\)/g' \"app/\\(app\\)/profile/page.tsx\" \"app/\\(app\\)/settings/page.tsx\" \"app/\\(app\\)/settings/sessions/page.tsx\")",
+      "Bash(npx vitest *)",
+      "Bash(echo \"TYPECHECK_EXIT=$?\")"
     ],
     "additionalDirectories": [
       "/tmp"

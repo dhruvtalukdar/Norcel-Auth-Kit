@@ -30,10 +30,11 @@ export async function getWorkspaceStats(): Promise<WorkspaceStats> {
   const [breakdown, sevenDayActive, roles] = await Promise.all([
     prisma.user.groupBy({
       by: ["roleId", "emailVerified"],
+      where: { deletedAt: null },
       _count: { _all: true },
     }),
     prisma.user.count({
-      where: { lastLoginAt: { gte: sevenDaysAgo } },
+      where: { deletedAt: null, lastLoginAt: { gte: sevenDaysAgo } },
     }),
     // Role IDs are cuids — map them back to USER/ADMIN/SUPER_ADMIN so
     // callers can render `stats.byRole.ADMIN` without an extra round-trip.
@@ -56,9 +57,11 @@ export async function getWorkspaceStats(): Promise<WorkspaceStats> {
   return { total, verified, sevenDayActive, byRole };
 }
 
-/** OAuth-account count (separate table — kept as a single count). */
+/** OAuth-account count (excluding soft-deleted users). */
 export async function getOAuthCount(): Promise<number> {
-  return prisma.account.count();
+  return prisma.account.count({
+    where: { user: { deletedAt: null } },
+  });
 }
 
 /** Personal stats for a single user — used on non-admin dashboard. */

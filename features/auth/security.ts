@@ -96,6 +96,48 @@ export async function checkLoginAllowed(
   return { allowed: true };
 }
 
+// ─── Per-IP rate limit for unauthenticated actions ────────────────────────
+
+/**
+ * Per-IP rate limit for unauthenticated flows (sign-up, forgot
+ * password, magic-link, resend verification). Capped at
+ * `MAX_ACTIONS_PER_IP` requests per `FAIL_WINDOW_MS` per IP. An
+ * attacker on a single IP can DoS your email quota; this stops them.
+ *
+ * Returns `allowed: false, retryAfterMs` if the IP has hit the cap.
+ * The action should bail with a generic "too many requests" message
+ * — never disclose whether the email exists.
+ */
+export async function checkActionRateAllowed(
+  ip: string | null
+): Promise<{ allowed: true } | { allowed: false; retryAfterMs: number }> {
+  if (!ip) {
+    // No IP (direct connection or proxy stripped headers). Fail open
+    // to keep the action usable but log a SecurityEvent so the
+    // operator can investigate. The other rate-limit signals
+    // (per-user lockout, per-account) still apply.
+    return { allowed: true };
+  }
+
+  const since = new Date(Date.now() - SECURITY.FAIL_WINDOW_MS);
+
+  // Count *all* login-attempts (success + failure) from this IP in
+  // the window. This catches both sign-up probes and successful
+  // sign-ups as a single resource-burn signal.
+  const recent = await prisma.loginAttempt.count({
+    where: { ip, createdAt: { gte: since } },
+  });
+
+  if (recent >= SECURITY.MAX_FAILS_PER_IP) {
+    return {
+      allowed: false,
+      retryAfterMs: SECURITY.FAIL_WINDOW_MS,
+    };
+  }
+
+  return { allowed: true };
+}
+
 export type RecordAttemptInput = {
   email: string;
   userId?: string | null;
@@ -138,10 +180,12 @@ export async function recordLoginAttempt(
 
     if (fails >= SECURITY.MAX_FAILS_PER_WINDOW) {
       // Exponential backoff based on how many times the user has been
-      // locked before (we look at how many prior LOCKED attempts
-      // there are to estimate the streak).
-      const priorLocks = await prisma.loginAttempt.count({
-        where: { userId: input.userId, status: "LOCKED" },
+      // locked before. We count `ACCOUNT_LOCKED` security events
+      // (not `LoginAttempt.status: "LOCKED"` — no caller ever writes
+      // that status, so the previous implementation always returned
+      // 0 and the backoff never escalated).
+      const priorLocks = await prisma.securityEvent.count({
+        where: { userId: input.userId, type: "ACCOUNT_LOCKED" },
       });
       const lockoutMs = Math.min(
         SECURITY.INITIAL_LOCKOUT_MS * Math.pow(2, priorLocks),

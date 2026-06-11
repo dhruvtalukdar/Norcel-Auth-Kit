@@ -1,10 +1,11 @@
 /**
  * ForgeStack — Email service.
  *
- * Three providers, chosen at runtime via EMAIL_PROVIDER:
+ * Four providers, chosen at runtime via EMAIL_PROVIDER:
  *   - "console" — log the rendered email to stdout (default in dev)
  *   - "resend"  — Resend transactional API
  *   - "smtp"    — Nodemailer SMTP transport
+ *   - "memory"  — record to an in-process array (for tests; never use in prod)
  *
  * Templates live in `features/auth/email-templates.ts` and are pure strings
  * so they can be unit-tested without booting the network stack.
@@ -19,10 +20,47 @@ export type EmailPayload = {
   text: string;
 };
 
+/**
+ * Captured emails when EMAIL_PROVIDER=memory. Read by the test
+ * suite; reset between tests with `clearInbox()`.
+ */
+const inbox: EmailPayload[] = [];
+
+export function getInbox(): readonly EmailPayload[] {
+  return inbox;
+}
+
+export function clearInbox(): void {
+  inbox.length = 0;
+}
+
+export function getLastEmail(to?: string): EmailPayload | undefined {
+  if (to) {
+    return [...inbox].reverse().find((e) => e.to === to);
+  }
+  return inbox[inbox.length - 1];
+}
+
 export async function sendEmail(payload: EmailPayload): Promise<void> {
   const provider = serverEnv.EMAIL_PROVIDER;
 
   if (provider === "console") {
+    // Defang: refuse to run with the "console" provider in production
+    // unless explicitly opted in. Without this, a misconfigured
+    // production deployment would log every email (including
+    // password-reset links) to stdout, where they end up in log
+    // aggregators and are PII leaks.
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.ALLOW_CONSOLE_EMAIL_IN_PROD !== "true"
+    ) {
+      throw new Error(
+        "EMAIL_PROVIDER=console is not allowed in production. " +
+          "Set EMAIL_PROVIDER=resend (or smtp) and the corresponding " +
+          "API key. To override (NOT recommended), set " +
+          "ALLOW_CONSOLE_EMAIL_IN_PROD=true."
+      );
+    }
     logToConsole(payload);
     return;
   }
@@ -34,6 +72,11 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
 
   if (provider === "smtp") {
     await sendViaSmtp(payload);
+    return;
+  }
+
+  if (provider === "memory") {
+    inbox.push(payload);
     return;
   }
 

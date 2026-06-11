@@ -27,7 +27,6 @@ import "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
-import Nodemailer from "next-auth/providers/nodemailer";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from "@prisma/client";
 
@@ -41,7 +40,6 @@ import {
   startUserSession,
   touchUserSession,
 } from "@/features/auth/sessions";
-import { sendMagicLinkEmail } from "@/lib/email";
 import { serverEnv } from "@/lib/env";
 import { authConfig } from "@/lib/auth.config";
 
@@ -127,7 +125,12 @@ if (serverEnv.GOOGLE_CLIENT_ID && serverEnv.GOOGLE_CLIENT_SECRET) {
     Google({
       clientId: serverEnv.GOOGLE_CLIENT_ID,
       clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
+      // Note: `allowDangerousEmailAccountLinking` is intentionally NOT
+      // set. With it true, an attacker who controls an OAuth
+      // provider's verified email (e.g. via a phishing-driven sign-up
+      // to a third-party OAuth IdP) could merge their identity into a
+      // victim's existing local account. We require the OAuth user to
+      // sign in with the local-account password first to link.
     })
   );
 }
@@ -137,38 +140,19 @@ if (serverEnv.GITHUB_CLIENT_ID && serverEnv.GITHUB_CLIENT_SECRET) {
     GitHub({
       clientId: serverEnv.GITHUB_CLIENT_ID,
       clientSecret: serverEnv.GITHUB_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
+      // See note above re: `allowDangerousEmailAccountLinking`.
     })
   );
 }
 
-// Magic link via Auth.js's Nodemailer provider, but using our email service.
-providers.push(
-  Nodemailer({
-    id: "email",
-    name: "Email",
-    server: {
-      host: serverEnv.SMTP_HOST ?? "smtp.example.com",
-      port: Number(serverEnv.SMTP_PORT ?? 587),
-      auth:
-        serverEnv.SMTP_USER && serverEnv.SMTP_PASSWORD
-          ? { user: serverEnv.SMTP_USER, pass: serverEnv.SMTP_PASSWORD }
-          : undefined,
-    },
-    from: serverEnv.EMAIL_FROM,
-    async sendVerificationRequest({ identifier: email, url }) {
-      const user = await prisma.user.findUnique({
-        where: { email },
-        select: { name: true },
-      });
-      await sendMagicLinkEmail({
-        to: email,
-        name: user?.name ?? null,
-        url,
-      });
-    },
-  })
-);
+// Note: we previously registered Auth.js's Nodemailer provider here for
+// the magic-link flow. That has been replaced by a self-contained flow
+// in `app/api/auth/magic/callback/route.ts` which mints its own JWE
+// session cookie. Reasons: (a) the Nodemailer provider's
+// `getUserByEmail(identifier)` was creating a security/UX problem
+// (account takeover if a non-email identifier was used), and (b) we
+// can now store magic-link tokens as SHA-256 fingerprints in our own
+// table, separate from Auth.js's `VerificationToken` namespace.
 
 // ─── Compose the full config from the edge-safe base ─────────────────────
 

@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs for the same branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint / Typecheck / Test / Build
+    runs-on: ubuntu-latest
+
+    # Spin up a Postgres service for the integration tests. We use
+    # the public schema (no separate `forgestack_test`) because the
+    # GitHub Actions runner doesn't have access to a Supabase
+    # project. For production CI, switch to a dedicated test schema
+    # on your CI's Postgres or a hosted Supabase.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: forgestack_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/forgestack_test
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/forgestack_test
+      AUTH_SECRET: test-secret-do-not-use-in-prod-32bytes-zzzzzzzzzzzz
+      AUTH_TRUST_HOST: "true"
+      EMAIL_PROVIDER: memory
+      NEXT_PUBLIC_APP_NAME: ForgeStack
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      HSTS_ENABLED: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed database
+        run: npm run prisma:seed
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload .next artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next
+          retention-days: 7

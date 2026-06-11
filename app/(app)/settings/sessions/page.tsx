@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/auth-guards";
+import { requireVerified } from "@/lib/auth-guards";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -13,7 +13,7 @@ import { SessionsList } from "@/components/account/sessions-list";
 export const metadata = { title: "Active sessions" };
 
 export default async function SessionsPage() {
-  const { user } = await requireAuth();
+  const { user } = await requireVerified();
   const authSession = await auth();
   const currentSessionId = authSession?.user?.sessionId ?? "";
 

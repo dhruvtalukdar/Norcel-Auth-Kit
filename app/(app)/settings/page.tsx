@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { KeyRound, ScrollText, User, type LucideIcon } from "lucide-react";
 
-import { requireAuth } from "@/lib/auth-guards";
+import { requireVerified } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import {
   Card,
@@ -31,7 +31,7 @@ type SettingsLink = {
 };
 
 export default async function SettingsPage() {
-  const { user } = await requireAuth();
+  const { user } = await requireVerified();
   const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
 
   // Pull the live count of active sessions, the email-verified status

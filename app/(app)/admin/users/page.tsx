@@ -22,12 +22,13 @@ export default async function AdminUsersPage({
 
   const where = q
     ? {
+        deletedAt: null,
         OR: [
           { email: { contains: q, mode: "insensitive" as const } },
           { name: { contains: q, mode: "insensitive" as const } },
         ],
       }
-    : {};
+    : { deletedAt: null };
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({

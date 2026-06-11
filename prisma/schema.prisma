@@ -93,14 +93,15 @@ model User {
 
   // Auth.js relations
   accounts Account[]
-  sessions Session[]
 
   // ForgeStack relations
-  passwordResetTokens PasswordResetToken[]
-  emailChangeTokens   EmailChangeToken[]
-  userSessions        UserSession[]
-  loginAttempts       LoginAttempt[]
-  securityEvents      SecurityEvent[]
+  passwordResetTokens      PasswordResetToken[]
+  emailVerificationTokens  EmailVerificationToken[]
+  magicLinkTokens          MagicLinkToken[]
+  emailChangeTokens        EmailChangeToken[]
+  userSessions             UserSession[]
+  loginAttempts            LoginAttempt[]
+  securityEvents           SecurityEvent[]
 
   // Lockout
   failedLoginCount Int       @default(0)
@@ -115,7 +116,6 @@ model User {
 
   @@index([roleId])
   @@index([deletedAt])
-  @@index([email])
 }
 
 // ─── Auth.js (NextAuth v5) — required adapter models ───────────────────────
@@ -140,16 +140,9 @@ model Account {
   @@index([userId])
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
+// Note: Auth.js's `Session` model is omitted. We use the JWT session
+// strategy, which doesn't write to this table. Our own `UserSession`
+// model (below) is what the user can see and revoke.
 
 model VerificationToken {
   identifier String
@@ -162,6 +155,40 @@ model VerificationToken {
 // ─── ForgeStack — Password reset, email change, server-side sessions ──────
 
 model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Email verification tokens (separate from Auth.js's VerificationToken
+// table, which is reserved for the adapter). Stored as SHA-256
+// fingerprints so a DB compromise yields only hashed values that
+// can't be replayed.
+model EmailVerificationToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Magic-link tokens (passwordless sign-in). Hashed at rest, like
+// PasswordResetToken and EmailVerificationToken.
+model MagicLinkToken {
   id        String    @id @default(cuid())
   tokenHash String    @unique
   userId    String

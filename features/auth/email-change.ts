@@ -43,6 +43,7 @@ export async function requestEmailChange(input: {
     where: {
       OR: [{ email: input.newEmail }, { pendingEmail: input.newEmail }],
       NOT: { id: input.userId },
+      deletedAt: null,
     },
     select: { id: true },
   });
@@ -120,6 +121,7 @@ export async function consumeEmailChangeToken(
     where: {
       OR: [{ email: record.newEmail }, { pendingEmail: record.newEmail }],
       NOT: { id: record.userId },
+      deletedAt: null,
     },
     select: { id: true },
   });
@@ -148,6 +150,14 @@ export async function consumeEmailChangeToken(
         pendingEmailExpires: null,
         pendingEmailTokenId: null,
       },
+    }),
+    // Revoke every other active session. After an email change, an
+    // attacker with a stolen cookie is signed in to an account that
+    // has a new email; the legitimate user expects their other
+    // devices to be signed out.
+    prisma.userSession.updateMany({
+      where: { userId: record.userId, revokedAt: null },
+      data: { revokedAt: new Date() },
     }),
   ]);
 

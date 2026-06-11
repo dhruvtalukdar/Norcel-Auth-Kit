@@ -75,6 +75,8 @@ export async function signUpWithPassword(input: {
   name: string;
   email: string;
   password: string;
+  ip?: string | null;
+  userAgent?: string | null;
 }): Promise<SignUpResult> {
   const existing = await prisma.user.findUnique({
     where: { email: input.email },
@@ -100,8 +102,24 @@ export async function signUpWithPassword(input: {
     select: { id: true, email: true, name: true },
   });
 
+  // Record a LoginAttempt with status=SUCCESS so the per-IP rate
+  // limiter (which counts every attempt, not just failures) sees
+  // the signup. This caps an attacker's effective sign-up rate at
+  // MAX_FAILS_PER_IP / FAIL_WINDOW_MS.
+  if (input.ip) {
+    await prisma.loginAttempt.create({
+      data: {
+        email: user.email,
+        userId: user.id,
+        status: "SUCCESS",
+        ip: input.ip,
+        userAgent: input.userAgent ?? null,
+      },
+    });
+  }
+
   // Issue verification token + email.
-  const token = await issueVerificationToken(user.email);
+  const token = await issueVerificationToken(user.id);
   const url = await buildVerificationUrl(token);
   await sendVerificationEmail({
     to: user.email,
@@ -212,7 +230,7 @@ export async function verifyEmailToken(rawToken: string): Promise<VerifyResult> 
   }
 
   await prisma.user.update({
-    where: { email: result.email },
+    where: { id: result.userId },
     data: { emailVerified: new Date() },
   });
 
@@ -222,11 +240,11 @@ export async function verifyEmailToken(rawToken: string): Promise<VerifyResult> 
 export async function resendVerificationEmail(email: string): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { email: true, name: true, emailVerified: true },
+    select: { id: true, email: true, name: true, emailVerified: true },
   });
   if (!user || user.emailVerified) return;
 
-  const token = await issueVerificationToken(user.email);
+  const token = await issueVerificationToken(user.id);
   const url = await buildVerificationUrl(token);
   await sendVerificationEmail({
     to: user.email,
@@ -271,15 +289,23 @@ export async function resetPassword(input: {
   }
 
   const passwordHash = await hashPassword(input.password);
-  await prisma.user.update({
-    where: { id: consumed.userId },
-    data: { passwordHash, lastLoginAt: new Date() },
-  });
 
-  // Belt + braces: nuke any other outstanding tokens.
-  await prisma.passwordResetToken.deleteMany({
-    where: { userId: consumed.userId, usedAt: null },
-  });
+  // Atomic: update the password, revoke every other active session,
+  // and clear any other outstanding reset tokens. Failure mid-way
+  // rolls back the whole reset.
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: consumed.userId },
+      data: { passwordHash, lastLoginAt: new Date() },
+    }),
+    prisma.userSession.updateMany({
+      where: { userId: consumed.userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    }),
+    prisma.passwordResetToken.deleteMany({
+      where: { userId: consumed.userId, usedAt: null },
+    }),
+  ]);
 
   return { ok: true };
 }
@@ -289,11 +315,11 @@ export async function resetPassword(input: {
 export async function requestMagicLink(email: string): Promise<void> {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { email: true, name: true },
+    select: { id: true, email: true, name: true, deletedAt: true },
   });
-  if (!user) return; // silent — anti-enumeration
+  if (!user || user.deletedAt) return; // silent — anti-enumeration
 
-  const token = await issueMagicLinkToken(user.email);
+  const token = await issueMagicLinkToken(user.id);
   const url = await buildMagicLinkUrl(token);
   await sendMagicLinkEmail({
     to: user.email,
@@ -332,6 +358,19 @@ export async function changePassword(input: {
   await prisma.user.update({
     where: { id: input.userId },
     data: { passwordHash },
+  });
+
+  // Revoke every other active session for this user. The current
+  // session will be re-validated against the new password hash on
+  // its next request (Auth.js re-decodes the JWT and the new hash
+  // is what's stored; existing sessions remain valid until the
+  // sessionId in the JWT is checked against UserSession — which we
+  // do in `touchUserSession` on every request). For belt-and-braces,
+  // also revoke the current session: the user has to re-authenticate
+  // with the new password.
+  await prisma.userSession.updateMany({
+    where: { userId: input.userId, revokedAt: null },
+    data: { revokedAt: new Date() },
   });
 
   return { ok: true };

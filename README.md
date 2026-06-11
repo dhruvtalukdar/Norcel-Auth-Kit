@@ -224,6 +224,23 @@ This is the **Phase 1 authentication module**. Subsequent phases will add:
 
 ---
 
+## Production-ready out of the box
+
+ForgeStack ships with the security and operational primitives a real
+SaaS needs from day one:
+
+- **Security headers** — CSP, HSTS (opt-in), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.
+- **Rate limiting** — per-IP and per-account on sign-in, sign-up, forgot-password, and magic-link.
+- **Account lockout** — 5 failed logins in 15 minutes locks the account for 15 minutes, with exponential backoff on repeated lockouts.
+- **Audit log** — every security-relevant event (sign-in, sign-out, password change, email change, lockout, etc.) is appended to the `SecurityEvent` table and visible in the admin panel.
+- **Server-side session list** — users see and revoke every active session; the JWT is re-validated on every request.
+- **Two-step email change** — verification link sent to the *new* address; old sessions are revoked on confirmation.
+- **Constant-time token comparison** — magic-link, email-verification, and password-reset tokens are all compared with `constantTimeEqual`.
+- **Hashed tokens at rest** — only SHA-256 fingerprints are stored; raw tokens live in the email URL.
+- **Soft-delete + account restoration** — accounts can be re-activated by a super-admin; `User.deletedAt` is auto-filtered from the admin views.
+- **Docker** — multi-stage, non-root, production-ready.
+- **CI** — GitHub Actions runs typecheck, tests, and build on every PR.
+
 ## License
 
-Commercial — see [LICENSE](LICENSE) for terms.
+Commercial — see [LICENSE](LICENSE) for the binding terms. A plain-language summary is at [/(public)/license](/license).

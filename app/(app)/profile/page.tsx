@@ -1,5 +1,5 @@
 import { Alert } from "@/components/ui/alert";
-import { requireAuth } from "@/lib/auth-guards";
+import { requireVerified } from "@/lib/auth-guards";
 import { prisma } from "@/lib/prisma";
 import {
   Card,
@@ -33,7 +33,7 @@ export default async function ProfilePage({
 }: {
   searchParams: Promise<{ email_change?: string; reason?: string }>;
 }) {
-  const { user } = await requireAuth();
+  const { user } = await requireVerified();
   const sp = await searchParams;
 
   const record = await prisma.user.findUnique({

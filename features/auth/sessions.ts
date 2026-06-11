@@ -54,12 +54,18 @@ export async function startUserSession(input: {
       (input.rememberMe ? REMEMBER_ME_SESSION_MS : DEFAULT_SESSION_MS)
   );
 
+  // Defang unbounded header values. The User-Agent and IP headers
+  // are attacker-controlled; without a length cap, a single request
+  // could blow up the DB.
+  const safeUA = (input.userAgent ?? "").slice(0, 512) || null;
+  const safeIP = (input.ip ?? "").slice(0, 64) || null;
+
   await prisma.userSession.create({
     data: {
       sessionId,
       userId: input.userId,
-      userAgent: input.userAgent ?? null,
-      ip: input.ip ?? null,
+      userAgent: safeUA,
+      ip: safeIP,
       expiresAt,
     },
   });
@@ -111,6 +117,27 @@ export async function revokeUserSession(
 export async function revokeAllUserSessions(userId: string): Promise<number> {
   const result = await prisma.userSession.updateMany({
     where: { userId, revokedAt: null, expiresAt: { gt: new Date() } },
+    data: { revokedAt: new Date() },
+  });
+  return result.count;
+}
+
+/**
+ * Revoke every active session for a user *except* the one identified
+ * by `keepSessionId`. Used by "Sign out everywhere else" so the
+ * current device stays signed in.
+ */
+export async function revokeAllOtherUserSessions(
+  userId: string,
+  keepSessionId: string
+): Promise<number> {
+  const result = await prisma.userSession.updateMany({
+    where: {
+      userId,
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+      sessionId: { not: keepSessionId },
+    },
     data: { revokedAt: new Date() },
   });
   return result.count;

@@ -67,7 +67,12 @@ export const authConfig: NextAuthConfig = {
     verifyRequest: "/magic-link?sent=1",
     newUser: "/dashboard",
   },
-  trustHost: true,
+  // Drive `trustHost` from env. Default to `true` in dev (so
+  // `localhost:3000` works without a hostname override) and `false`
+  // in production. Production deployments that run behind a reverse
+  // proxy should set AUTH_TRUST_HOST=true and verify the proxy strips
+  // client-supplied `X-Forwarded-Host` headers.
+  trustHost: process.env.AUTH_TRUST_HOST === "true",
 
   callbacks: {
     /**

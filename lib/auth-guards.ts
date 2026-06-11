@@ -45,6 +45,7 @@ export type SessionUser = {
   image?: string | null;
   role: UserRole;
   emailVerified: Date | null;
+  sessionId?: string;
 };
 
 type AuthSession = {
@@ -67,6 +68,7 @@ export const getSession = cache(async (): Promise<AuthSession> => {
       image: session.user.image ?? null,
       emailVerified: null,
       role: session.user.role ?? UserRole.USER,
+      sessionId: session.user.sessionId,
     },
   };
 });
