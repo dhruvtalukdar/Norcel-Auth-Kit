@@ -168,6 +168,53 @@ const config: NextAuthConfig = {
     ...authConfig.callbacks,
 
     /**
+     * `signIn` is called by Auth.js after a successful provider
+     * authentication but BEFORE the session cookie is set. We use
+     * it as a gate to refuse sign-in for soft-deleted accounts.
+     *
+     * Without this guard, a user who soft-deleted their account
+     * could sign in again with the same OAuth provider (e.g. Google
+     * or GitHub) and Auth.js would re-link the same `Account` row
+     * to the soft-deleted user — putting them in a confusing state
+     * where the JWT says "signed in" but every protected page
+     * redirects to `/login?error=account_deleted` because the
+     * page-level `getDbSession()` finds `deletedAt` is set.
+     *
+     * For credentials sign-in, the `authorize` callback already
+     * refuses soft-deleted users (it returns null), so this
+     * callback is only the safety net for OAuth.
+     *
+     * IMPORTANT: this callback runs in **either** of two orderings:
+     *   (a) The user is *new* — the adapter will create them AFTER
+     *       we return true. In this case `user.id` is empty / a
+     *       placeholder, and `user.email` is the only stable key.
+     *   (b) The user is *existing* — `user.id` is the real id.
+     *
+     * We therefore look up by email (always present) instead of by
+     * id. A missing row means the user hasn't been created yet
+     * (we're in case a), which is fine — we let it through and
+     * the adapter will create them. A row with `deletedAt` set
+     * means case (b) with a soft-deleted account, which we refuse.
+     */
+    async signIn({ user, account }) {
+      if (!user?.email) return true; // no email = can't gate; allow
+      if (account?.provider === "credentials") return true; // already gated in authorize
+
+      const dbUser = await prisma.user.findUnique({
+        where: { email: user.email },
+        select: { id: true, deletedAt: true, lockedUntil: true },
+      });
+      // Case (a): user doesn't exist yet — adapter will create them.
+      if (!dbUser) return true;
+      // Case (b): user exists. Apply the soft-delete / lockout gate.
+      if (dbUser.deletedAt) return false;
+      if (dbUser.lockedUntil && dbUser.lockedUntil > new Date()) {
+        return false;
+      }
+      return true;
+    },
+
+    /**
      * `jwt` runs on every request that touches a session. We:
      *   - On first sign-in, copy `id`, `role`, `sessionId` from the User.
      *   - On every subsequent call, validate the sessionId against the

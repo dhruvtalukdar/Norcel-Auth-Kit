@@ -21,7 +21,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 min-w-[12rem] overflow-hidden rounded-md border border-hairline bg-canvas p-1 text-ink shadow-elev-5",
+        "z-50 min-w-[12rem] overflow-hidden rounded-md border border-white/[0.08] bg-canvas-2 p-1 text-ink shadow-elev-5",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className
       )}
@@ -40,8 +40,8 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-body-sm text-ink outline-none",
-      "focus:bg-canvas-soft data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-body-sm text-zinc-200 outline-none",
+      "focus:bg-white/[0.06] focus:text-white data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       inset && "pl-8",
       className
     )}
@@ -74,7 +74,7 @@ const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={cn("my-1 h-px bg-hairline", className)}
+    className={cn("my-1 h-px bg-white/[0.08]", className)}
     {...props}
   />
 ));
@@ -94,5 +94,4 @@ export {
   DropdownMenuRadioGroup,
 };
 
-// Re-export icons used by callers
 export { Check, ChevronRight, Circle };

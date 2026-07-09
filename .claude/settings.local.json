@@ -48,10 +48,16 @@
       "Bash(sed -i '' 's/import { requireAuth } from \"@\\\\/lib\\\\/auth-guards\";/import { requireVerified } from \"@\\\\/lib\\\\/auth-guards\";/g' \"app/\\(app\\)/profile/page.tsx\" \"app/\\(app\\)/settings/page.tsx\" \"app/\\(app\\)/settings/sessions/page.tsx\")",
       "Bash(sed -i '' 's/await requireAuth\\(\\)/await requireVerified\\(\\)/g' \"app/\\(app\\)/profile/page.tsx\" \"app/\\(app\\)/settings/page.tsx\" \"app/\\(app\\)/settings/sessions/page.tsx\")",
       "Bash(npx vitest *)",
-      "Bash(echo \"TYPECHECK_EXIT=$?\")"
+      "Bash(echo \"TYPECHECK_EXIT=$?\")",
+      "Bash(echo \"TYPECHECK=$?\")",
+      "Bash(kill -9 21718)",
+      "Bash(python3 \"/Users/apple/VS Code Projects/NextJS Template/.agents/skills/tailwind-4-docs/scripts/sync_tailwind_docs.py\" --accept-docs-license)",
+      "Bash(mkdir -p \"/Users/apple/VS Code Projects/forgestack-ui/src/components/ui\" \"/Users/apple/VS Code Projects/forgestack-ui/src/components/marketing\" \"/Users/apple/VS Code Projects/forgestack-ui/src/components/auth\" \"/Users/apple/VS Code Projects/forgestack-ui/src/lib\" \"/Users/apple/VS Code Projects/forgestack-ui/src/styles\" \"/Users/apple/VS Code Projects/forgestack-ui/registry\" \"/Users/apple/VS Code Projects/forgestack-ui/app/api/inventory\" \"/Users/apple/VS Code Projects/forgestack-ui/app/components\" \"/Users/apple/VS Code Projects/forgestack-ui/app/docs\" \"/Users/apple/VS Code Projects/forgestack-ui/public\" \"/Users/apple/VS Code Projects/forgestack-ui/scripts\" && find \"/Users/apple/VS Code Projects/forgestack-ui\" -type d | sort)",
+      "Bash(node scripts/build-registry.mjs)"
     ],
     "additionalDirectories": [
-      "/tmp"
+      "/tmp",
+      "/Users/apple/VS Code Projects/forgestack-ui/src/components"
     ]
   }
 }

@@ -1,62 +1,64 @@
 /* ─────────────────────────────────────────────────────────────────────────
- * ForgeStack — global stylesheet
+ * ForgeStack — global stylesheet (dark-only, Vercel/Geist-inspired)
  *
- * Tailwind v4 uses the CSS-first config. Design tokens (from DESIGN.md) are
- * declared as CSS custom properties under `@theme` so they are available
- * to both utility classes (e.g. `bg-canvas`) and arbitrary-value syntax.
+ * Tailwind v4 uses the CSS-first config. Design tokens (from
+ * readme/DESIGN_SYSTEM.md) are declared as CSS custom properties under
+ * `@theme` so they are available to both utility classes and arbitrary-
+ * value syntax. The site is dark-only — see the `dark` class on <html>.
  * ────────────────────────────────────────────────────────────────────── */
 
 @import "tailwindcss";
 
-/* ─── Design tokens — see DESIGN.md for the source-of-truth ────────────── */
+/* ─── Design tokens (dark canvas) ────────────────────────────────────── */
 @theme {
-  /* Colors */
-  --color-ink: #171717;
-  --color-on-primary: #ffffff;
-  --color-body: #4d4d4d;
-  --color-mute: #888888;
-  --color-hairline: #ebebeb;
-  --color-hairline-strong: #a1a1a1;
-  --color-canvas: #ffffff;
-  --color-canvas-soft: #fafafa;
-  --color-canvas-soft-2: #f5f5f5;
-  --color-link: #0070f3;
-  --color-link-deep: #0761d1;
-  --color-link-bg-soft: #d3e5ff;
-  --color-success: #0070f3;
-  --color-error: #ee0000;
-  --color-error-soft: #f7d4d6;
-  --color-error-deep: #c50000;
-  --color-warning: #f5a623;
-  --color-warning-soft: #ffefcf;
-  --color-warning-deep: #ab570a;
-  --color-violet: #7928ca;
-  --color-violet-soft: #d8ccf1;
-  --color-violet-deep: #4c2889;
-  --color-cyan: #50e3c2;
-  --color-cyan-soft: #aaffec;
-  --color-cyan-deep: #29bc9b;
-  --color-highlight-pink: #ff0080;
-  --color-highlight-magenta: #eb367f;
+  /* Text on dark canvas */
+  --color-ink: #fafafa;
+  --color-ink-soft: #e5e5e5;
+  --color-body: #a1a1a1;
+  --color-body-2: #d4d4d8;        /* zinc-300 */
+  --color-mute: #71717a;          /* zinc-500 */
+  --color-faint: #52525b;         /* zinc-600 */
+  --color-disabled: #3f3f46;      /* zinc-700 */
 
-  /* Typography */
+  /* Canvas (dark surfaces) */
+  --color-canvas: #0a0a0a;
+  --color-canvas-soft: #050505;
+  --color-canvas-2: #111111;      /* code window inner */
+  --color-canvas-3: #161616;      /* inset surface */
+
+  /* Primary CTA on dark = near-white pill (polarity flip) */
+  --color-primary: #fafafa;
+  --color-on-primary: #0a0a0a;
+
+  /* Hairlines (white-on-black tints) */
+  --color-hairline: rgba(255, 255, 255, 0.08);
+  --color-hairline-strong: rgba(255, 255, 255, 0.16);
+
+  /* Brand gradient stops */
+  --color-gradient-develop-start: #007cf0;
+  --color-gradient-develop-end: #00dfd8;
+  --color-gradient-preview-start: #7928ca;
+  --color-gradient-preview-end: #ff0080;
+  --color-gradient-ship-start: #ff4d4d;
+  --color-gradient-ship-end: #f9cb28;
+
+  /* Accents */
+  --color-link: #50a3ff;
+  --color-link-deep: #0070f3;
+  --color-cyan: #50e3c2;
+  --color-violet: #7928ca;
+  --color-pink: #ff0080;
+  --color-emerald: #34d399;
+  --color-amber: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Typography — Geist + Geist Mono loaded via next/font in layout.tsx */
   --font-sans: "Geist", "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
-  /*
-   * NOTE — Tailwind v4 reserves the `--{token}--{modifier}` namespace for
-   * utilities like container queries. Naming our line-height / weight
-   * siblings that way ("--text-display-xl--line-height") accidentally
-   * turns the matching `text-*` utilities into container-query utilities
-   * and breaks `mx-auto max-w-*` layout (containers collapse to ~5% width).
-   *
-   * Solution: keep the bare `--text-{name}` font-size tokens, and expose
-   * line-height / weight / letter-spacing as separate utility classes
-   * under our own namespace (`--fs-*` / `--lh-*` / etc.) that don't trip
-   * the container-query heuristic.
-   */
-
-  /* Font sizes — drive Tailwind's `text-display-xl` etc. utilities */
+  /* Font sizes — drive Tailwind's `text-display-xl` etc. utilities.
+   * (See globals.css comment in original file for the Tailwind v4
+   *  --{token}--{modifier} namespace reservation note.) */
   --text-display-xl: 3rem;
   --text-display-lg: 2rem;
   --text-display-md: 1.5rem;
@@ -72,9 +74,8 @@
   --text-button-md: 0.875rem;
   --text-button-lg: 1rem;
 
-  /* Line heights, letter spacing, weights — own namespace */
-  --lh-display-xl: 1;
-  --lh-display-lg: 1.25;
+  --lh-display-xl: 1.05;
+  --lh-display-lg: 1.2;
   --lh-display-md: 1.333;
   --lh-display-sm: 1.4;
   --lh-body-lg: 1.555;
@@ -83,7 +84,7 @@
   --lh-caption: 1.333;
   --lh-code: 1.538;
 
-  --tracking-display-xl: -0.05em;
+  --tracking-display-xl: -0.04em;
   --tracking-display-lg: -0.04em;
   --tracking-display-md: -0.04em;
   --tracking-display-sm: -0.03em;
@@ -95,7 +96,7 @@
   --weight-button-md: 500;
   --weight-button-lg: 500;
 
-  /* Radius — own namespace, same reason as spacing above. */
+  /* Radii */
   --r-xs: 4px;
   --r-sm: 6px;
   --r-md: 8px;
@@ -104,9 +105,7 @@
   --r-pill-sm: 64px;
   --r-pill: 100px;
 
-  /* Spacing — exposed under our own `--space-*` namespace so we don't
-   * override Tailwind's default spacing scale (which `mx-auto`, `max-w-*`,
-   * `px-*`, `py-*` all depend on). */
+  /* Spacing (own namespace) */
   --space-xxs: 4px;
   --space-xs: 8px;
   --space-sm: 12px;
@@ -121,13 +120,10 @@
   --space-section: 192px;
 }
 
-/* ─── Custom dark-mode variant (driven by `.dark` on <html>) ───────────── */
-@custom-variant dark (&:where(.dark, .dark *));
-
 /* ─── Base / preflight tweaks ───────────────────────────────────────────── */
 @layer base {
   :root {
-    color-scheme: light dark;
+    color-scheme: dark;
   }
 
   html {
@@ -137,7 +133,7 @@
   }
 
   body {
-    background-color: var(--color-canvas-soft);
+    background-color: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
@@ -154,21 +150,14 @@
   textarea:focus-visible,
   select:focus-visible,
   [tabindex]:focus-visible {
-    outline: 2px solid var(--color-link);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
     border-radius: 4px;
   }
 }
 
-/* ─── Reusable utilities ────────────────────────────────────────────────── */
+/* ─── Typography companion utilities ─────────────────────────────────── */
 @layer utilities {
-  /* ── Typography companion utilities.
-   *
-   * Tailwind's `text-display-xl` etc. only set `font-size` from the bare
-   * `--text-display-xl` token. The line-height / weight / tracking come
-   * from these companions, which read from our non-reserved namespace
-   * (`--lh-*` / `--weight-*` / `--tracking-*`) so we don't trip Tailwind
-   * v4's container-query heuristic that breaks `mx-auto max-w-*`. */
   .text-display-xl {
     font-size: var(--text-display-xl);
     line-height: var(--lh-display-xl);
@@ -242,53 +231,75 @@
     font-weight: var(--weight-button-lg);
   }
 
-  /* ── Brand radius aliases. Tailwind's default `rounded-md` / `rounded-lg`
-   * are still available — these are extra-large marketing-scale radii
-   * pulled from the `--r-*` design tokens. */
+  /* Brand radius aliases. */
   .rounded-pill-sm { border-radius: var(--r-pill-sm); }
   .rounded-pill    { border-radius: var(--r-pill); }
 
-  /* Stacked-shadow elevation levels (from DESIGN.md). */
+  /* ── Stacked-shadow elevation (dark) ──────────────────────────────── */
   .shadow-elev-1 {
-    box-shadow: inset 0 0 0 1px #00000014;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   }
   .shadow-elev-2 {
     box-shadow:
-      inset 0 0 0 1px #00000014,
-      0px 1px 1px #00000005,
-      0px 2px 2px #0000000a;
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 1px 1px rgba(0, 0, 0, 0.2),
+      0 8px 24px -8px rgba(0, 0, 0, 0.4);
   }
   .shadow-elev-3 {
     box-shadow:
-      inset 0 0 0 1px #00000014,
-      0px 2px 2px #0000000a,
-      0px 8px 8px -8px #0000000a;
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      0 16px 32px -8px rgba(0, 0, 0, 0.4);
   }
   .shadow-elev-4 {
     box-shadow:
-      inset 0 0 0 1px #00000014,
-      0px 2px 2px #0000000a,
-      0px 8px 16px -4px #0000000a;
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 30px 60px -20px rgba(0, 0, 0, 0.6),
+      0 8px 24px -8px rgba(0, 0, 0, 0.5);
   }
   .shadow-elev-5 {
     box-shadow:
-      inset 0 0 0 1px #00000014,
-      0px 1px 1px #00000005,
-      0px 8px 16px -4px #0000000a,
-      0px 24px 32px -8px #0000000f;
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 30px 80px -20px rgba(0, 0, 0, 0.7),
+      0 8px 24px -8px rgba(0, 0, 0, 0.5);
   }
 
-  /* The signature mesh-gradient backdrop — used sparingly, hero-scale only. */
+  /* ── Mesh gradient backdrop (signature decoration, hero-scale only) ── */
   .bg-mesh-gradient {
     background:
-      radial-gradient(60% 60% at 12% 18%, #007cf0 0%, transparent 60%),
-      radial-gradient(50% 50% at 88% 12%, #7928ca 0%, transparent 60%),
-      radial-gradient(60% 60% at 70% 85%, #ff0080 0%, transparent 60%),
-      radial-gradient(50% 50% at 18% 90%, #f9cb28 0%, transparent 60%),
-      radial-gradient(40% 40% at 50% 50%, #50e3c2 0%, transparent 60%);
+      radial-gradient(50% 50% at 20% 25%, rgba(0, 124, 240, 0.35) 0%, transparent 70%),
+      radial-gradient(45% 45% at 80% 20%, rgba(121, 40, 202, 0.32) 0%, transparent 70%),
+      radial-gradient(50% 50% at 70% 80%, rgba(255, 0, 128, 0.28) 0%, transparent 70%),
+      radial-gradient(40% 40% at 30% 85%, rgba(0, 223, 216, 0.22) 0%, transparent 70%);
+    filter: blur(60px) saturate(140%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, black 40%, transparent 90%);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 0%, black 40%, transparent 90%);
   }
 
-  /* The "develop / preview / ship" gradient text used on the dashboard. */
+  /* Grid noise overlay (56px, white 2.5%) */
+  .grid-noise {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: -1px -1px;
+  }
+
+  /* Text gradients */
+  .text-gradient {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+  .text-gradient-brand {
+    background: linear-gradient(90deg, #007cf0 0%, #00dfd8 50%, #ff0080 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
   .text-gradient-develop {
     background: linear-gradient(90deg, #007cf0 0%, #00dfd8 100%);
     -webkit-background-clip: text;
@@ -310,4 +321,88 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
+
+  /* Reveal-on-scroll animation system */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    will-change: opacity, transform;
+    transition:
+      opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-fade {
+    opacity: 0;
+    transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-fade.is-visible {
+    opacity: 1;
+  }
+  .delay-1 { transition-delay: 80ms; }
+  .delay-2 { transition-delay: 160ms; }
+  .delay-3 { transition-delay: 240ms; }
+  .delay-4 { transition-delay: 320ms; }
+  .delay-5 { transition-delay: 400ms; }
+}
+
+/* ─── Reusable component classes (readme/DESIGN_SYSTEM.md §5) ───────── */
+@layer components {
+  .card-feature {
+    @apply rounded-xl border border-white/[0.08] bg-white/[0.02] p-6
+      transition-colors duration-300
+      hover:bg-white/[0.04] hover:border-white/[0.14];
+  }
+  .badge-eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full
+      bg-white/[0.04] px-3 py-1 text-xs text-zinc-300
+      ring-1 ring-inset ring-white/[0.08];
+  }
+  .badge-mono {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500;
+  }
+
+  /* Code window — dark gradient + heavy drop + inset hairline. */
+  .code-window {
+    position: relative;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, #0a0a0a 0%, #060606 100%);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+      0 30px 80px -20px rgba(0, 0, 0, 0.7),
+      0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+  .code-window .code-dots {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .code-window .code-dots span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+  }
+  .code-window .code-dots span:nth-child(1) { background: #ff5f57; opacity: 0.55; }
+  .code-window .code-dots span:nth-child(2) { background: #febc2e; opacity: 0.55; }
+  .code-window .code-dots span:nth-child(3) { background: #28c840; opacity: 0.55; }
+
+  /* Syntax tokens (readme/DESIGN_SYSTEM.md §7.1). */
+  .tk-comment { color: #6b7280; }
+  .tk-keyword { color: #ff79c6; }
+  .tk-fn      { color: #50e3c2; }
+  .tk-str     { color: #f9cb28; }
+  .tk-num     { color: #ff8a65; }
+  .tk-var     { color: #fafafa; }
+  .tk-type    { color: #007cf0; }
+  .tk-punct   { color: #a1a1a1; }
+  .tk-tag     { color: #ff79c6; }
+  .tk-attr    { color: #50e3c2; }
+  .tk-prop    { color: #fafafa; }
+  .tk-meta    { color: #6b7280; }
 }

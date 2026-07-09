@@ -2,16 +2,16 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Alert — a single-purpose, semantic surface for form-action feedback.
- * Three intents: info, success, error.
+ * Alert — dark-mode feedback surface. Uses color-tinted hairline + faint
+ * fill so it reads as a card on the dark canvas.
  */
 type AlertIntent = "info" | "success" | "error" | "warning";
 
 const styles: Record<AlertIntent, string> = {
-  info: "bg-link-bg-soft text-link-deep border-link/30",
-  success: "bg-cyan-soft text-cyan-deep border-cyan-deep/30",
-  error: "bg-error-soft text-error-deep border-error-deep/30",
-  warning: "bg-warning-soft text-warning-deep border-warning-deep/30",
+  info: "bg-blue-500/[0.06] text-blue-200 border-blue-500/30",
+  success: "bg-emerald-500/[0.06] text-emerald-200 border-emerald-500/30",
+  error: "bg-red-500/[0.06] text-red-200 border-red-500/30",
+  warning: "bg-amber-500/[0.06] text-amber-200 border-amber-500/30",
 };
 
 export interface AlertProps

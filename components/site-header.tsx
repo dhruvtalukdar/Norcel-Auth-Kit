@@ -12,15 +12,18 @@ const NAV_LINKS: Array<{ href: Route; label: string }> = [
 ];
 
 /**
- * Top navigation. Server component — reads the session on the server and
- * decides whether to show the user menu or the "Log in / Sign up" cluster.
+ * Sticky top nav. Server component — reads the session on the server
+ * and decides between UserMenu and the Log in / Sign up cluster.
+ *
+ * Dark chrome: `bg-[#0a0a0a]/70 backdrop-blur-xl`, `border-b border-white/[0.06]`,
+ * nav-link hover = `bg-white/[0.04]` + white text.
  */
 export async function SiteHeader() {
   const session = await auth();
   const isAuthed = Boolean(session?.user?.id);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-hairline bg-canvas/80 backdrop-blur">
+    <header className="sticky top-0 z-40 w-full border-b border-white/[0.06] bg-[#0a0a0a]/70 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0a0a0a]/60">
       <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-6 px-4 sm:px-6">
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="ForgeStack home">
@@ -31,7 +34,7 @@ export async function SiteHeader() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3 py-1.5 text-body-sm text-body transition-colors hover:bg-canvas-soft hover:text-ink"
+                className="rounded-full px-3 py-1.5 text-body-sm text-zinc-400 transition-colors duration-200 hover:bg-white/[0.04] hover:text-white"
               >
                 {l.label}
               </Link>
@@ -50,13 +53,13 @@ export async function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden h-7 items-center justify-center rounded-sm px-2 text-body-sm-strong text-ink transition-colors hover:bg-canvas-soft sm:inline-flex"
+                className="hidden h-7 items-center justify-center rounded-full px-3 text-body-sm-strong text-zinc-300 transition-colors hover:bg-white/[0.04] hover:text-white sm:inline-flex"
               >
                 Log in
               </Link>
               <Link
                 href="/register"
-                className="inline-flex h-7 items-center justify-center rounded-sm bg-ink px-3 text-body-sm-strong text-on-primary transition-colors hover:bg-ink/90"
+                className="inline-flex h-7 items-center justify-center rounded-full bg-white px-3 text-body-sm-strong text-black transition-colors hover:bg-white/90"
               >
                 Sign up
               </Link>

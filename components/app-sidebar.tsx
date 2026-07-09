@@ -39,8 +39,8 @@ const ITEMS: Item[] = [
 ];
 
 /**
- * Sidebar nav — active state uses an `activeIndicator` (left-edge bar in
- * brand primary) per `ex-app-shell-row` from DESIGN.md.
+ * App sidebar. Dark chrome: active state = `bg-white/[0.06]` + white text
+ * + left-edge `bg-white` indicator bar (3px). Hover = `bg-white/[0.04]`.
  */
 export function AppSidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
@@ -49,7 +49,7 @@ export function AppSidebar({ role }: { role: UserRole }) {
 
   return (
     <aside className="sticky top-20 hidden h-fit w-56 shrink-0 md:block">
-      <p className="mb-2 px-3 text-caption-mono uppercase text-mute">
+      <p className="mb-2 px-3 font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
         Navigation
       </p>
       <nav className="flex flex-col" aria-label="App">
@@ -62,16 +62,16 @@ export function AppSidebar({ role }: { role: UserRole }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex items-center gap-3 rounded-sm px-3 py-2 text-body-sm",
+                "relative flex items-center gap-3 rounded-md px-3 py-2 text-body-sm transition-colors duration-200",
                 active
-                  ? "bg-canvas-soft text-ink"
-                  : "text-body hover:bg-canvas-soft hover:text-ink"
+                  ? "bg-white/[0.06] text-white"
+                  : "text-zinc-400 hover:bg-white/[0.04] hover:text-white"
               )}
             >
               {active ? (
                 <span
                   aria-hidden
-                  className="absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 rounded-full bg-ink"
+                  className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-white"
                 />
               ) : null}
               <Icon className="h-4 w-4" />

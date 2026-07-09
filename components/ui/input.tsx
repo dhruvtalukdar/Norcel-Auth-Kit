@@ -1,11 +1,13 @@
+"use client";
+
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 /**
- * Input — `form-input` token from DESIGN.md.
- * Height 40px, hairline border, 6px radius, body-sm typography.
+ * Input — dark-mode `form-input` (readme/DESIGN_SYSTEM.md §10).
+ * Height 40, hairline border, white/4 fill, white text, white/20 focus ring.
  */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
@@ -13,9 +15,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-10 w-full rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink",
+          "flex h-10 w-full rounded-md border border-white/[0.08] bg-white/[0.04] px-3 text-body-sm text-white",
           "placeholder:text-mute",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:border-ink",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:border-white/[0.16]",
           "disabled:cursor-not-allowed disabled:opacity-50",
           "aria-[invalid=true]:border-error aria-[invalid=true]:ring-error",
           className

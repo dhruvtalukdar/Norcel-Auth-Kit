@@ -54,11 +54,11 @@ export default async function AdminUsersPage({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          Admin
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          / admin
         </p>
         <h1 className="text-display-lg text-ink">Users.</h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           {total.toLocaleString()} {total === 1 ? "user" : "users"} in your
           workspace.
         </p>
@@ -74,7 +74,7 @@ export default async function AdminUsersPage({
           name="q"
           defaultValue={q}
           placeholder="Search by name or email…"
-          className="h-9 w-full max-w-sm rounded-sm border border-hairline bg-canvas px-3 text-body-sm text-ink placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+          className="h-9 w-full max-w-sm rounded-md border border-white/[0.08] bg-white/[0.04] px-3 text-body-sm text-white placeholder:text-mute focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
         />
         <Button type="submit" variant="secondary">
           Search
@@ -86,9 +86,9 @@ export default async function AdminUsersPage({
         ) : null}
       </form>
 
-      <div className="overflow-hidden rounded-md border border-hairline bg-canvas shadow-elev-2">
+      <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02] shadow-elev-2">
         <table className="w-full text-body-sm">
-          <thead className="bg-canvas-soft">
+          <thead className="bg-white/[0.02]">
             <tr>
               <Th>User</Th>
               <Th>Role</Th>
@@ -100,13 +100,13 @@ export default async function AdminUsersPage({
           <tbody>
             {users.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-body text-body">
+                <td colSpan={5} className="px-4 py-12 text-center text-zinc-400">
                   No users found.
                 </td>
               </tr>
             ) : (
               users.map((u) => (
-                <tr key={u.id} className="border-t border-hairline">
+                <tr key={u.id} className="border-t border-white/[0.06]">
                   <Td>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
@@ -157,7 +157,7 @@ export default async function AdminUsersPage({
 
       {totalPages > 1 ? (
         <div className="flex items-center justify-between">
-          <p className="text-body-sm text-body">
+          <p className="text-body-sm text-zinc-400">
             Page {currentPage} of {totalPages}
           </p>
           <div className="flex gap-2">
@@ -206,7 +206,7 @@ export default async function AdminUsersPage({
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="px-4 py-2.5 text-left font-mono text-caption-mono uppercase tracking-tight text-mute">
+    <th className="px-4 py-2.5 text-left font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
       {children}
     </th>
   );

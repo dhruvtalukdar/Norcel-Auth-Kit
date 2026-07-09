@@ -21,12 +21,12 @@ const ERROR_MESSAGES: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string; sent?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; sent?: string; verified?: string }>;
 }) {
   const session = await auth();
   if (session?.user) redirect("/dashboard");
 
-  const { next, error, sent } = await searchParams;
+  const { next, error, sent, verified } = await searchParams;
   const errorMessage = error ? ERROR_MESSAGES[error] ?? "Something went wrong." : undefined;
 
   return (
@@ -38,13 +38,18 @@ export default async function LoginPage({
           Don't have an account?{" "}
           <Link
             href={`/register${next ? `?next=${encodeURIComponent(next)}` : ""}` as Route}
-            className="text-ink underline underline-offset-4"
+            className="text-ink underline underline-offset-4 hover:text-white"
           >
             Sign up
           </Link>
         </>
       }
     >
+      {verified ? (
+        <Alert intent="success" className="mb-4">
+          Email verified. You can sign in now.
+        </Alert>
+      ) : null}
       {errorMessage ? (
         <Alert intent="error" className="mb-4">
           {errorMessage}
@@ -57,24 +62,24 @@ export default async function LoginPage({
       ) : null}
       <LoginForm next={next} />
       <div className="my-6 flex items-center gap-3">
-        <span className="h-px flex-1 bg-hairline" aria-hidden />
-        <span className="font-mono text-caption-mono uppercase text-mute">
+        <span className="h-px flex-1 bg-white/[0.08]" aria-hidden />
+        <span className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
           or
         </span>
-        <span className="h-px flex-1 bg-hairline" aria-hidden />
+        <span className="h-px flex-1 bg-white/[0.08]" aria-hidden />
       </div>
       <OAuthButtons next={next} />
-      <p className="mt-6 text-center text-body-sm text-body">
+      <p className="mt-6 text-center text-body-sm text-zinc-400">
         <Link
           href="/forgot-password"
-          className="text-ink underline underline-offset-4"
+          className="text-ink underline underline-offset-4 hover:text-white"
         >
           Forgot your password?
         </Link>
         {" · "}
         <Link
           href="/magic-link"
-          className="text-ink underline underline-offset-4"
+          className="text-ink underline underline-offset-4 hover:text-white"
         >
           Email me a link
         </Link>

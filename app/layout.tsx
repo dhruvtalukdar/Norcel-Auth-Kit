@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { RevealOnScroll } from "@/components/reveal-on-scroll";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s — ForgeStack",
   },
   description:
-    "ForgeStack is a production-grade SaaS starter kit with authentication, RBAC, and a Vercel-inspired design system.",
+    "ForgeStack is a production-grade SaaS starter kit with authentication, RBAC, and a Vercel-inspired dark design system.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   ),
@@ -35,10 +36,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  themeColor: "#0a0a0a",
 };
 
 export default function RootLayout({
@@ -50,13 +48,19 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable}`}
+      className={`dark ${geist.variable} ${geistMono.variable}`}
     >
-      <body className="min-h-screen bg-canvas-soft text-ink antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+      <body className="min-h-screen bg-canvas text-ink antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          forcedTheme="dark"
+        >
           {children}
           <Toaster />
         </ThemeProvider>
+        <RevealOnScroll />
       </body>
     </html>
   );

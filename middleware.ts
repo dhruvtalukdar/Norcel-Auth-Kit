@@ -44,7 +44,22 @@ export default auth((req: NextRequest & { auth: unknown }) => {
   if (!session?.user?.id) {
     const loginUrl = new URL("/login", nextUrl);
     loginUrl.searchParams.set("next", `${path}${nextUrl.search}`);
-    return NextResponse.redirect(loginUrl);
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    // Clear the stale `authjs.session-token` cookie. Auth.js's `jwt`
+    // callback returns an empty token when the session is gone, but
+    // it can't clear the cookie itself (the `jwt` callback doesn't
+    // get a response object). We do it here on the redirect so
+    // the browser stops sending a dead cookie on every request.
+    redirectResponse.cookies.set({
+      name: "authjs.session-token",
+      value: "",
+      path: "/",
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+    return redirectResponse;
   }
 
   // /admin role gating — fast-fail at the edge so non-admins don't

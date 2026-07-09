@@ -2,8 +2,8 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Card — feature-card chrome (Vercel card-marketing-large).
- * Rounded 12px, canvas background, Level 4 float-stack shadow.
+ * Card — dark-mode chrome. Matches `card-feature` in the design system
+ * (rounded-xl, white-tint border, white/2 background, hover white/4).
  */
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -12,7 +12,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border border-hairline bg-canvas text-ink shadow-elev-3",
+      "rounded-xl border border-white/[0.08] bg-white/[0.02] text-ink shadow-elev-2 transition-colors duration-300",
       className
     )}
     {...props}

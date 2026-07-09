@@ -80,3 +80,47 @@ export async function cleanupTest(testId: string): Promise<void> {
     where: { id: { startsWith: testId } },
   });
 }
+
+/**
+ * Defensive cleanup: any row whose email contains a test-ID prefix
+ * (`test-`, `tokens-`, `chpw-`, `sec-`) is wiped, even if it's not
+ * the current test's ID. This catches rows that escaped a
+ * half-completed earlier cleanup (e.g. the test runner was killed).
+ *
+ * Called once per test session, from `setup.ts`.
+ */
+export async function globalTestCleanup(): Promise<void> {
+  const p = testPrisma();
+  // Find all test users (emails starting with common test prefixes).
+  const testUsers = await p.user.findMany({
+    where: {
+      email: {
+        startsWith: "test-",
+      },
+    },
+    select: { id: true },
+  });
+  for (const u of testUsers) {
+    await p.userSession.deleteMany({ where: { userId: u.id } });
+    await p.loginAttempt.deleteMany({ where: { userId: u.id } });
+    await p.securityEvent.deleteMany({ where: { userId: u.id } });
+    await p.passwordResetToken.deleteMany({ where: { userId: u.id } });
+    await p.emailVerificationToken.deleteMany({ where: { userId: u.id } });
+    await p.magicLinkToken.deleteMany({ where: { userId: u.id } });
+    await p.emailChangeToken.deleteMany({ where: { userId: u.id } });
+    await p.account.deleteMany({ where: { userId: u.id } });
+  }
+  if (testUsers.length > 0) {
+    await p.user.deleteMany({
+      where: { id: { in: testUsers.map((u) => u.id) } },
+    });
+  }
+  // Also clean up LoginAttempts and SecurityEvents from earlier test
+  // runs (they don't have a user FK in some cases).
+  await p.loginAttempt.deleteMany({
+    where: { email: { startsWith: "test-" } },
+  });
+  await p.securityEvent.deleteMany({
+    where: { email: { startsWith: "test-" } },
+  });
+}

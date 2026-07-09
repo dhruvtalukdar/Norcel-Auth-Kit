@@ -23,11 +23,11 @@ export function DeleteAccountCard({ email }: { email: string }) {
 
   if (!open) {
     return (
-      <div className="rounded-lg border border-error/30 bg-error-soft/30 p-6">
+      <div className="rounded-xl border border-red-500/30 bg-red-500/[0.06] p-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-display-sm text-ink">Delete account.</p>
-            <p className="mt-1 text-body-sm text-body">
+            <p className="mt-1 text-body-sm text-zinc-300">
               Permanently delete your ForgeStack account. This is a soft
               delete — your data is recoverable for a grace period, but
               you'll lose access immediately.
@@ -46,18 +46,16 @@ export function DeleteAccountCard({ email }: { email: string }) {
   }
 
   return (
-    <div className="rounded-lg border border-error/30 bg-error-soft/30 p-6">
+    <div className="rounded-xl border border-red-500/30 bg-red-500/[0.06] p-6">
       <p className="text-display-sm text-ink">Are you absolutely sure?</p>
-      <p className="mt-2 text-body-sm text-body">
-        This will:
-      </p>
-      <ul className="mt-2 list-disc space-y-1 pl-6 text-body-sm text-body">
+      <p className="mt-2 text-body-sm text-zinc-300">This will:</p>
+      <ul className="mt-2 list-disc space-y-1 pl-6 text-body-sm text-zinc-300">
         <li>Revoke all your active sessions</li>
         <li>Invalidate any outstanding password-reset or email-change links</li>
         <li>Anonymise your email address</li>
         <li>Mark your account as deleted (recoverable by a super-admin)</li>
       </ul>
-      <p className="mt-4 text-body-sm text-body">
+      <p className="mt-4 text-body-sm text-zinc-300">
         Type <strong className="font-mono">{email}</strong> below to confirm.
       </p>
       <form action={formAction} className="mt-4 flex flex-col gap-4" noValidate>

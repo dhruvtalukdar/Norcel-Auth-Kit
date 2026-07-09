@@ -63,6 +63,17 @@ export async function softDeleteAccount(input: {
     prisma.emailChangeToken.deleteMany({
       where: { userId: input.userId, usedAt: null },
     }),
+    // Unlink every OAuth Account row. Without this, the next time
+    // the user signs in with the same Google/GitHub account, Auth.js
+    // will find the still-present `Account` row pointing at this
+    // soft-deleted user, sign them in as the deleted user, and
+    // they'll see a confusing UI (the activity card shows the
+    // anonymised email; pages then bounce to /login?error=account_deleted).
+    // Detaching the accounts forces a fresh user to be created on
+    // the next sign-in.
+    prisma.account.deleteMany({
+      where: { userId: input.userId },
+    }),
     // Soft-delete + anonymise.
     prisma.user.update({
       where: { id: input.userId },

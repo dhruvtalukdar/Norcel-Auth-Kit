@@ -4,9 +4,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Field — form field wrapper.
- * Renders a label, optional description, the control slot, and an error
- * message. Use `aria-describedby` from the input to wire it up.
+ * Field — form field wrapper. Label / description / control / error.
  */
 export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
@@ -27,7 +25,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
           className="text-body-sm-strong text-ink"
         >
           {label}
-          {required ? <span className="text-error ml-0.5">*</span> : null}
+          {required ? <span className="text-red-400 ml-0.5">*</span> : null}
         </label>
         {description ? (
           <p id={descriptionId} className="text-caption text-mute -mt-1">
@@ -36,7 +34,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(
         ) : null}
         {children}
         {error ? (
-          <p id={errorId} role="alert" className="text-caption text-error-deep">
+          <p id={errorId} role="alert" className="text-caption text-red-300">
             {error}
           </p>
         ) : null}

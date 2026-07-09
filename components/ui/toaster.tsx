@@ -6,10 +6,6 @@ import { X } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-/* ──────────────────────────────────────────────────────────────────────
- * ToastProvider / Viewport — pass-through to Radix.
- * ──────────────────────────────────────────────────────────────────── */
-
 const ToastProvider = ToastPrimitives.Provider;
 
 const ToastViewport = React.forwardRef<
@@ -27,18 +23,14 @@ const ToastViewport = React.forwardRef<
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
-/* ──────────────────────────────────────────────────────────────────────
- * Toast variants.
- * ──────────────────────────────────────────────────────────────────── */
-
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border bg-canvas p-4 pr-8 shadow-elev-4 data-[state=open]:animate-in data-[state=open]:slide-in-from-right-full data-[state=closed]:animate-out data-[state=closed]:fade-out-80",
+  "group pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-md border bg-canvas-2 p-4 pr-8 shadow-elev-4 data-[state=open]:animate-in data-[state=open]:slide-in-from-right-full data-[state=closed]:animate-out data-[state=closed]:fade-out-80",
   {
     variants: {
       variant: {
-        default: "border-hairline",
-        success: "border-cyan-deep/40",
-        error: "border-error-deep/40",
+        default: "border-white/[0.08]",
+        success: "border-emerald-500/40",
+        error: "border-red-500/40",
       },
     },
     defaultVariants: { variant: "default" },
@@ -65,7 +57,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-mute hover:text-ink",
+      "absolute right-2 top-2 rounded-md p-1 text-mute hover:text-white",
       className
     )}
     toast-close=""
@@ -95,22 +87,11 @@ const ToastDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Description
     ref={ref}
-    className={cn("text-body-sm text-body", className)}
+    className={cn("text-body-sm text-zinc-300", className)}
     {...props}
   />
 ));
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
-
-/* ──────────────────────────────────────────────────────────────────────
- * Imperative `toast()` API.
- *
- * Implemented as a tiny event bus + a single subscriber in <Toaster/>.
- * The subscription is set up *once* per mount (with a stable handler
- * that does NOT capture the component identity) and torn down on
- * unmount. This avoids the re-render → re-subscribe → setTimeout loop
- * that triggered Chromium's "history.replaceState quota exceeded" guard
- * in the previous implementation.
- * ──────────────────────────────────────────────────────────────────── */
 
 type ToasterToast = {
   id: string;

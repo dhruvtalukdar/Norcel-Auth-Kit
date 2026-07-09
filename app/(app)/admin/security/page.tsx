@@ -44,9 +44,6 @@ export default async function SecurityLogPage({
   searchParams: Promise<{ page?: string; type?: string }>;
 }) {
   await requirePermission("SECURITY_LOG_READ" as never);
-  // ^ The permission name above matches lib/permissions.ts. We
-  //   intentionally pass as `never` to satisfy the strict permission
-  //   union; the runtime check is what matters.
   const { page, type } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const skip = (currentPage - 1) * PAGE_SIZE;
@@ -76,11 +73,11 @@ export default async function SecurityLogPage({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          Admin
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          / admin
         </p>
         <h1 className="text-display-lg text-ink">Security log.</h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           {total.toLocaleString()} audit events on record.
         </p>
       </div>
@@ -93,9 +90,9 @@ export default async function SecurityLogPage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-hidden rounded-md border border-hairline">
+          <div className="overflow-hidden rounded-md border border-white/[0.08]">
             <table className="w-full text-body-sm">
-              <thead className="bg-canvas-soft">
+              <thead className="bg-white/[0.02]">
                 <tr>
                   <Th>When</Th>
                   <Th>Event</Th>
@@ -107,7 +104,7 @@ export default async function SecurityLogPage({
               <tbody>
                 {events.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-8 text-center text-body text-body">
+                    <td colSpan={5} className="px-4 py-8 text-center text-zinc-400">
                       No events yet.
                     </td>
                   </tr>
@@ -118,7 +115,7 @@ export default async function SecurityLogPage({
                       intent: "default" as const,
                     };
                     return (
-                      <tr key={e.id} className="border-t border-hairline">
+                      <tr key={e.id} className="border-t border-white/[0.06]">
                         <Td>
                           <span className="font-mono text-caption-mono text-mute">
                             {e.createdAt.toLocaleString()}
@@ -162,7 +159,7 @@ export default async function SecurityLogPage({
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="px-4 py-2.5 text-left font-mono text-caption-mono uppercase tracking-tight text-mute">
+    <th className="px-4 py-2.5 text-left font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
       {children}
     </th>
   );

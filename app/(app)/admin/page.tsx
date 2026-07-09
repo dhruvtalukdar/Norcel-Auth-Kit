@@ -11,8 +11,6 @@ export const metadata = { title: "Admin" };
 export default async function AdminDashboardPage() {
   await requireAdmin();
 
-  // Two parallel queries: workspace stats (groupBy + 1 count, in
-  // `getWorkspaceStats`) and the OAuth-account count.
   const [stats, oauthCount, recent] = await Promise.all([
     getWorkspaceStats(),
     getOAuthCount(),
@@ -32,11 +30,11 @@ export default async function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          Admin
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          / admin
         </p>
         <h1 className="text-display-lg text-ink">Admin overview.</h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           High-level metrics for the ForgeStack workspace.
         </p>
       </div>
@@ -57,19 +55,19 @@ export default async function AdminDashboardPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Recent sign-ups.</CardTitle>
-            <p className="text-body-sm text-body">
+            <p className="text-body-sm text-zinc-400">
               Latest 5 users who joined ForgeStack.
             </p>
           </div>
           <Link
             href="/admin/users"
-            className="text-body-sm text-link underline-offset-4 hover:underline"
+            className="text-body-sm text-blue-300 underline-offset-4 hover:underline"
           >
             View all
           </Link>
         </CardHeader>
         <CardContent>
-          <ul className="divide-y divide-hairline">
+          <ul className="divide-y divide-white/[0.06]">
             {recent.map((u) => (
               <li key={u.id} className="flex items-center gap-3 py-3">
                 <Avatar className="h-9 w-9">
@@ -102,7 +100,7 @@ export default async function AdminDashboardPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border border-hairline bg-canvas p-6 shadow-elev-2">
+    <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 shadow-elev-2">
       <p className="text-caption text-mute">{label}</p>
       <p className="mt-2 text-display-md text-ink">{value.toLocaleString()}</p>
     </div>

@@ -78,7 +78,7 @@ export function SessionsList({
 }) {
   if (sessions.length === 0) {
     return (
-      <p className="text-body-sm text-body">
+      <p className="text-body-sm text-zinc-400">
         No active sessions found. Sign out and back in to create one.
       </p>
     );
@@ -97,7 +97,7 @@ export function SessionsList({
         </form>
       </div>
 
-      <ul className="divide-y divide-hairline">
+      <ul className="divide-y divide-white/[0.06]">
         {sessions.map((s) => {
           const { icon: Icon, label: deviceLabel } = detectDevice(s.userAgent);
           const isCurrent = s.sessionId === currentSessionId;
@@ -107,7 +107,7 @@ export function SessionsList({
               className="flex items-center justify-between gap-4 py-4"
             >
               <div className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-sm bg-canvas-soft text-ink">
+                <span className="grid h-9 w-9 place-items-center rounded-md border border-white/[0.08] bg-white/[0.04] text-zinc-200">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div>

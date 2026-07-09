@@ -340,6 +340,16 @@ export async function changePassword(input: {
   userId: string;
   currentPassword: string;
   newPassword: string;
+  /**
+   * The sessionId of the session that initiated this password
+   * change. We keep this session alive so the user isn't signed
+   * out by their own password change (the JWT callback's
+   * `touchUserSession` would see the row revoked and force a
+   * re-auth). All OTHER active sessions are revoked. If omitted
+   * (e.g. from a server-side admin tool), every session is
+   * revoked.
+   */
+  keepSessionId?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const user = await prisma.user.findUnique({
     where: { id: input.userId },
@@ -355,23 +365,27 @@ export async function changePassword(input: {
   }
 
   const passwordHash = await hashPassword(input.newPassword);
-  await prisma.user.update({
-    where: { id: input.userId },
-    data: { passwordHash },
-  });
 
-  // Revoke every other active session for this user. The current
-  // session will be re-validated against the new password hash on
-  // its next request (Auth.js re-decodes the JWT and the new hash
-  // is what's stored; existing sessions remain valid until the
-  // sessionId in the JWT is checked against UserSession — which we
-  // do in `touchUserSession` on every request). For belt-and-braces,
-  // also revoke the current session: the user has to re-authenticate
-  // with the new password.
-  await prisma.userSession.updateMany({
-    where: { userId: input.userId, revokedAt: null },
-    data: { revokedAt: new Date() },
-  });
+  // Revoke every active session EXCEPT the one that initiated the
+  // change. Belt-and-braces: if no keepSessionId is provided
+  // (e.g. an admin action), we revoke everything. The user is
+  // expected to re-authenticate on their next request.
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: input.userId },
+      data: { passwordHash },
+    }),
+    prisma.userSession.updateMany({
+      where: {
+        userId: input.userId,
+        revokedAt: null,
+        ...(input.keepSessionId
+          ? { sessionId: { not: input.keepSessionId } }
+          : {}),
+      },
+      data: { revokedAt: new Date() },
+    }),
+  ]);
 
   return { ok: true };
 }

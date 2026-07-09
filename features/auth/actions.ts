@@ -329,6 +329,10 @@ export async function changePasswordAction(
     userId: session.user.id,
     currentPassword: parsed.data.currentPassword,
     newPassword: parsed.data.newPassword,
+    // Keep the current session alive so the user isn't signed out
+    // by their own password change. Other devices/sessions are
+    // revoked.
+    keepSessionId: session.user.sessionId,
   });
   if (!result.ok) {
     return { ok: false, message: result.error };

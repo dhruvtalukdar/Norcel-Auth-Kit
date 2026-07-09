@@ -49,10 +49,9 @@ export default async function ProfilePage({
   });
 
   if (!record) {
-    return <p className="text-body-md text-body">Account not found.</p>;
+    return <p className="text-body-md text-zinc-400">Account not found.</p>;
   }
 
-  // Status banner based on email_change query string.
   let banner: { intent: "success" | "error"; text: string } | null = null;
   if (sp.email_change === "success") {
     banner = { intent: "success", text: "Your email was updated successfully." };
@@ -68,18 +67,16 @@ export default async function ProfilePage({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          Account
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          / account
         </p>
         <h1 className="text-display-lg text-ink">Profile.</h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           Update your name, email, and password.
         </p>
       </div>
 
-      {banner ? (
-        <Alert intent={banner.intent}>{banner.text}</Alert>
-      ) : null}
+      {banner ? <Alert intent={banner.intent}>{banner.text}</Alert> : null}
 
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">

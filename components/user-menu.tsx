@@ -36,7 +36,7 @@ export function UserMenu({ name, email, role }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center gap-2 rounded-full p-1 hover:bg-canvas-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+        className="flex items-center gap-2 rounded-full p-1 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
         aria-label="Open user menu"
       >
         <Avatar>

@@ -6,40 +6,48 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button — Vercel-derived variants.
+ * Button — dark-mode variants (readme/DESIGN_SYSTEM.md §5 / §1.1-1.4).
  *
- * - `primary`  : black pill, marketing scale (button-primary)
- * - `secondary`: white pill with hairline border (button-secondary)
- * - `primary-sm`  / `secondary-sm` : nav-scale pills
- * - `ghost`    : subtle text button used inside cards / nav rows
- * - `link`     : inline link styled as text
- * - `destructive` : error-tinted pill for destructive actions
+ * - `primary`       : near-white pill (the canonical CTA on dark)
+ * - `secondary`     : `bg-white/5` pill with `ring-1 ring-inset ring-white/10`
+ * - `polarity`      : near-black pill (used inside a "featured" white card)
+ * - `polarity-secondary` : near-white pill inside a dark featured card
+ * - `primary-sm` / `secondary-sm` : nav-scale variants
+ * - `ghost`         : subtle text button for nav rows / cards
+ * - `link`          : inline link
+ * - `destructive`   : error-tinted pill for destructive actions
+ * - `outline`       : bordered ghost
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ink disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary:
-          "bg-ink text-on-primary hover:bg-ink/90 rounded-pill focus-visible:ring-ink",
+          "bg-white !text-black hover:bg-white/90 rounded-pill",
         secondary:
-          "bg-canvas text-ink border border-hairline hover:bg-canvas-soft rounded-pill focus-visible:ring-ink",
+          "bg-white/[0.06] !text-white ring-1 ring-inset ring-white/[0.12] hover:bg-white/[0.10] hover:ring-white/20 rounded-pill",
+        polarity:
+          "bg-black !text-white rounded-pill hover:bg-black/90 ring-1 ring-inset ring-black/20",
+        "polarity-secondary":
+          "bg-white !text-black hover:bg-white/90 rounded-pill",
         "primary-sm":
-          "bg-ink text-on-primary hover:bg-ink/90 rounded-pill focus-visible:ring-ink",
+          "bg-white !text-black hover:bg-white/90 rounded-pill",
         "secondary-sm":
-          "bg-canvas text-ink border border-hairline hover:bg-canvas-soft rounded-pill focus-visible:ring-ink",
-        ghost: "text-ink hover:bg-canvas-soft rounded-sm",
-        link: "text-link underline-offset-4 hover:underline",
+          "bg-white/[0.06] !text-white ring-1 ring-inset ring-white/[0.12] hover:bg-white/[0.10] hover:ring-white/20 rounded-pill",
+        ghost:
+          "!text-zinc-300 hover:!text-white hover:bg-white/[0.06] rounded-md",
+        link: "!text-zinc-300 underline-offset-4 hover:underline hover:!text-white",
         destructive:
-          "bg-error text-on-primary hover:bg-error-deep rounded-pill focus-visible:ring-error",
+          "bg-red-500 !text-white hover:bg-red-400 rounded-pill focus-visible:ring-red-500",
         outline:
-          "border border-hairline bg-canvas hover:bg-canvas-soft text-ink rounded-sm",
+          "border border-white/[0.16] bg-white/[0.02] !text-white hover:bg-white/[0.06] hover:border-white/20 rounded-md",
       },
       size: {
-        sm: "h-8 px-2 text-button-md",
+        sm: "h-8 px-2.5 text-button-md",
         md: "h-9 px-3 text-button-md",
-        lg: "h-11 px-4 text-button-lg",
-        xl: "h-12 px-5 text-button-lg",
+        lg: "h-11 px-5 text-button-lg",
+        xl: "h-12 px-6 text-button-lg",
         icon: "h-9 w-9",
       },
     },

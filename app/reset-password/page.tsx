@@ -18,7 +18,7 @@ export default async function ResetPasswordPage({
       title="Choose a new password."
       description="Pick something strong. You'll be signed in automatically."
       footer={
-        <Link href="/login" className="text-ink underline underline-offset-4">
+        <Link href="/login" className="text-ink underline underline-offset-4 hover:text-white">
           Back to sign in
         </Link>
       }

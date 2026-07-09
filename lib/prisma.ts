@@ -36,7 +36,7 @@ function makeClient(): PrismaClient {
   return new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
+        ? ["error", "warn"]
         : ["error"],
   });
 }
@@ -46,13 +46,31 @@ function isClosedError(err: unknown): boolean {
   // Prisma's error shape uses `kind` (e.g. "Closed", "SocketClosed",
   // "ConnectionError"). Match on any of those, plus the constructor name
   // for safety across Prisma versions.
-  const anyErr = err as { kind?: string; name?: string; code?: string };
+  const anyErr = err as {
+    kind?: string;
+    name?: string;
+    code?: string;
+    message?: string;
+  };
   if (anyErr.kind === "Closed" || anyErr.kind === "SocketClosed") return true;
   if (
     anyErr.name === "PrismaClientInitializationError" ||
     anyErr.name === "PrismaClientRustPanicError"
   ) {
     return true;
+  }
+  // Supabase transaction-mode pooler transient failures bubble up
+  // through Prisma as `PrismaClientInitializationError` with these
+  // markers in the message. Treat them as transient — the pooler
+  // reconnects within a second or two.
+  if (typeof anyErr.message === "string") {
+    const msg = anyErr.message;
+    if (msg.includes("ENOTFOUND")) return true; // DNS hiccup
+    if (msg.includes("ENETUNREACH")) return true; // network blip
+    if (msg.includes("FATAL: (ENOTFOUND)")) return true; // PG-level ENOTFOUND
+    if (msg.includes("Connection terminated unexpectedly")) return true;
+    if (msg.includes("Connection refused")) return true;
+    if (msg.includes("Connection ended")) return true;
   }
   return false;
 }
@@ -67,9 +85,13 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 /**
- * Try a model call. On a `Closed` error, dispose the client, build a
- * fresh one, and retry the call exactly once. Any other error
- * (including a second `Closed`) is re-thrown.
+ * Try a model call. On a `Closed` / transient-network error, dispose
+ * the client, build a fresh one, wait briefly, and retry once. Any
+ * other error (including a second `Closed`) is re-thrown.
+ *
+ * The brief sleep is important: Supabase's pooler rotates ELB IPs on
+ * the AWS side, and an instant retry can hit the same broken IP. A
+ * 250ms backoff is enough for the pooler's DNS to settle.
  */
 async function tryWithReconnect<T>(fn: (c: PrismaClient) => Promise<T>): Promise<T> {
   try {
@@ -87,6 +109,8 @@ async function tryWithReconnect<T>(fn: (c: PrismaClient) => Promise<T>): Promise
     if (process.env.NODE_ENV !== "production") {
       globalForPrisma.prisma = client;
     }
+    // Small backoff for pooler-side DNS/IP convergence.
+    await new Promise((r) => setTimeout(r, 250));
     // Retry exactly once.
     return await fn(client);
   }

@@ -26,7 +26,9 @@ const serverSchema = z.object({
   GITHUB_CLIENT_SECRET: z.string().optional(),
 
   // Email
-  EMAIL_PROVIDER: z.enum(["console", "resend", "smtp"]).default("console"),
+  EMAIL_PROVIDER: z
+    .enum(["console", "resend", "smtp", "memory"])
+    .default("console"),
   EMAIL_FROM: z.string().default("ForgeStack <no-reply@forgestack.dev>"),
   RESEND_API_KEY: z.string().optional(),
   SMTP_HOST: z.string().optional(),

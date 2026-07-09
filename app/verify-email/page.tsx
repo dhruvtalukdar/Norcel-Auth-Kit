@@ -18,7 +18,7 @@ export default async function VerifyEmailPage({
       title="Verify your email."
       description="Confirm your email address to finish setting up your account."
       footer={
-        <Link href="/login" className="text-ink underline underline-offset-4">
+        <Link href="/login" className="text-ink underline underline-offset-4 hover:text-white">
           Back to sign in
         </Link>
       }
@@ -29,8 +29,8 @@ export default async function VerifyEmailPage({
         </Alert>
       ) : null}
       {token ? <VerifyEmailForm token={token} /> : null}
-      <div className="mt-6 border-t border-hairline pt-6">
-        <p className="mb-3 text-body-sm text-body">
+      <div className="mt-6 border-t border-white/[0.06] pt-6">
+        <p className="mb-3 text-body-sm text-zinc-400">
           Didn't get the email? Send it again.
         </p>
         <ResendVerificationForm />

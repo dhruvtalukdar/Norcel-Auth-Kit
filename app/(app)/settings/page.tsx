@@ -14,13 +14,6 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata = { title: "Settings" };
 
-/**
- * Settings hub. The auth flows (name, email, password) live on
- * /profile; per-device sessions live on /settings/sessions; the
- * security audit log lives on /admin/security. This page is the
- * index that ties them together and gives the user a single place
- * to see what they can configure.
- */
 type SettingsLink = {
   href: string;
   title: string;
@@ -34,9 +27,6 @@ export default async function SettingsPage() {
   const { user } = await requireVerified();
   const isAdmin = user.role === "ADMIN" || user.role === "SUPER_ADMIN";
 
-  // Pull the live count of active sessions, the email-verified status
-  // (the JWT only carries the role, not emailVerified), and the
-  // security-event count (admin-only) in parallel.
   const [activeSessions, account, auditEvents] = await Promise.all([
     prisma.userSession.count({
       where: {
@@ -88,11 +78,11 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          Account
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          / account
         </p>
         <h1 className="text-display-lg text-ink">Settings.</h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           Manage your account, devices, and security.
         </p>
       </div>
@@ -102,9 +92,9 @@ export default async function SettingsPage() {
           <Link
             key={link.href}
             href={link.href as never}
-            className="group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+            className="group rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
           >
-            <Card className="h-full transition-colors group-hover:bg-canvas-soft">
+            <Card className="h-full transition-colors duration-300 group-hover:bg-white/[0.04]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <link.icon className="h-4 w-4 text-mute" />

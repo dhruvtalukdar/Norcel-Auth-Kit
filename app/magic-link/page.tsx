@@ -12,7 +12,7 @@ export default function MagicLinkPage() {
       footer={
         <>
           Prefer a password?{" "}
-          <Link href="/login" className="text-ink underline underline-offset-4">
+          <Link href="/login" className="text-ink underline underline-offset-4 hover:text-white">
             Sign in with password
           </Link>
         </>

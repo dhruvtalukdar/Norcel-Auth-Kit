@@ -8,10 +8,7 @@ import { Button } from "@/components/ui/button";
  * Error boundary for the (app) segment — dashboard, profile, admin.
  *
  * Catches anything thrown inside (app)/layout.tsx (e.g. a transient
- * database connection drop) and renders a single, stable error
- * surface. Crucially, it does NOT call `reset()` automatically — that
- * was the source of the `history.replaceState` quota loop in dev: the
- * page re-renders → throws → boundary recovers → re-renders → throws.
+ * database connection drop) and renders a single, stable error surface.
  */
 export default function AppError({
   error,
@@ -20,19 +17,18 @@ export default function AppError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Surface the error in the console for debugging.
     console.error("App route error:", error);
   }, [error]);
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
-      <p className="font-mono text-caption-mono uppercase text-mute">
-        Something went wrong
+      <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+        / error
       </p>
       <h1 className="mt-3 text-display-md text-ink">
         We couldn't load this page.
       </h1>
-      <p className="mt-3 max-w-md text-body-md text-body">
+      <p className="mt-3 max-w-md text-body-md text-zinc-400">
         {error.message || "An unexpected error occurred."}
       </p>
       <div className="mt-8 flex gap-3">

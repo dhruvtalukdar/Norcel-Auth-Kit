@@ -18,10 +18,6 @@ export default async function DashboardPage({
   const isAdmin =
     user.role === UserRole.ADMIN || user.role === UserRole.SUPER_ADMIN;
 
-  // Admins see workspace stats (groupBy + 1 count).
-  // Regular users see only their own personal stats — workspace
-  // metrics are never queried on their behalf, so there's nothing
-  // for the page to leak.
   const [workspace, personal] = await Promise.all([
     isAdmin ? getWorkspaceStats() : Promise.resolve(null),
     getPersonalStats(user.id),
@@ -36,13 +32,13 @@ export default async function DashboardPage({
       ) : null}
 
       <div className="flex flex-col gap-2">
-        <p className="font-mono text-caption-mono uppercase text-mute">
-          {isAdmin ? "Admin overview" : "Overview"}
+        <p className="font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
+          {isAdmin ? "/ admin overview" : "/ overview"}
         </p>
         <h1 className="text-display-lg text-ink">
           Welcome back, {user.name ?? "friend"}.
         </h1>
-        <p className="text-body-md text-body">
+        <p className="text-body-md text-zinc-400">
           {isAdmin
             ? "Here’s what’s happening in your ForgeStack workspace today."
             : "Here’s a quick look at your account."}
@@ -84,11 +80,11 @@ export default async function DashboardPage({
               <CardTitle>Build with ForgeStack.</CardTitle>
               <Badge variant="violet">Live</Badge>
             </div>
-            <p className="text-body-sm text-body">
+            <p className="text-body-sm text-zinc-400">
               Ship a production-grade SaaS in days.
             </p>
           </CardHeader>
-          <CardContent className="space-y-3 text-body-md text-body">
+          <CardContent className="space-y-3 text-body-md text-zinc-300">
             <p>
               Your environment is healthy, your database is connected, and your
               authentication is ready for traffic.
@@ -103,12 +99,12 @@ export default async function DashboardPage({
         <Card>
           <CardHeader>
             <CardTitle>Activity.</CardTitle>
-            <p className="text-body-sm text-body">
+            <p className="text-body-sm text-zinc-400">
               Recent events from your account.
             </p>
           </CardHeader>
           <CardContent>
-            <ul className="divide-y divide-hairline">
+            <ul className="divide-y divide-white/[0.06]">
               <Activity
                 title="Signed in"
                 detail={`Welcome back, ${user.email}`}
@@ -140,7 +136,7 @@ function Stat({
   value: number | string;
 }) {
   return (
-    <div className="rounded-md border border-hairline bg-canvas p-6 shadow-elev-2">
+    <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 shadow-elev-2">
       <p className="text-caption text-mute">{label}</p>
       <p className="mt-2 text-display-md text-ink">
         {typeof value === "number" ? value.toLocaleString() : value}
@@ -169,7 +165,6 @@ function Activity({
   );
 }
 
-/** "3 days ago" / "Today" / "Jan 12" — coarse relative formatter. */
 function formatRelativeDate(d: Date | string): string {
   const date = typeof d === "string" ? new Date(d) : d;
   const diff = Date.now() - date.getTime();
