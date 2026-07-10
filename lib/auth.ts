@@ -299,6 +299,25 @@ const config: NextAuthConfig = {
      * it in both). Keep this lightweight — no DB calls.
      */
     async session({ session, token }) {
+      // Empty token means the `jwt` callback returned `{}` (e.g. the
+      // underlying `UserSession` row was deleted, the user is
+      // soft-deleted, or the account is locked). Without this guard
+      // Auth.js's default `session.user` would still be a truthy
+      // empty object, and `requireAuth()`'s `session?.user?.id`
+      // check would see `id = undefined` and `redirect("/login")`
+      // — but `if (session?.user)` in `/login` would still be
+      // truthy and redirect the user back, causing a ping-pong.
+      if (!token || Object.keys(token).length === 0) {
+        // Return a session with NO user. We construct it manually
+        // (not via spread) to ensure the `user` field is genuinely
+        // absent — not just `user: null` (which would still be
+        // truthy in some `if` checks). Auth.js then treats the
+        // request as unauthenticated downstream.
+        return {
+          user: undefined,
+          expires: String(session.expires),
+        } as unknown as typeof session;
+      }
       if (token && session.user) {
         if (typeof token.id === "string") session.user.id = token.id;
         if (token.role) session.user.role = token.role;

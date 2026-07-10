@@ -86,6 +86,20 @@ export const authConfig: NextAuthConfig = {
      * check below.
      */
     session({ session, token }) {
+      // Empty token means the `jwt` callback returned `{}` (e.g. the
+      // underlying `UserSession` row was deleted, the user is
+      // soft-deleted, or the account is locked). Auth.js's default
+      // `session.user` object is still populated with empty fields,
+      // so without this guard the `/login` page would see a truthy
+      // `session.user` and redirect the user to /dashboard, while
+      // the middleware (which checks `session.user.id`) would
+      // redirect them back to /login — an infinite ping-pong.
+      if (!token || Object.keys(token).length === 0) {
+        return {
+          user: undefined,
+          expires: String(session.expires),
+        } as unknown as typeof session;
+      }
       if (session.user) {
         if (typeof token.id === "string") {
           session.user.id = token.id;
