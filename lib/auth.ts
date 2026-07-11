@@ -42,6 +42,7 @@ import {
 } from "@/features/auth/sessions";
 import { serverEnv } from "@/lib/env";
 import { authConfig } from "@/lib/auth.config";
+import { headers } from "next/headers";
 
 // ─── Module augmentation: extend Session / JWT / User ─────────────────────
 
@@ -80,9 +81,21 @@ const providers: NextAuthConfig["providers"] = [
       email: { label: "Email", type: "email" },
       password: { label: "Password", type: "password" },
     },
-    async authorize(rawCredentials) {
+    async authorize(rawCredentials, request) {
       const parsed = signInSchema.safeParse(rawCredentials);
       if (!parsed.success) return null;
+
+      // Extract the user agent and IP from the request so the
+      // /settings/sessions page can show "Chrome on macOS · this IP"
+      // instead of "Unknown browser on Unknown OS". The request
+      // parameter is documented as the second arg in
+      // @auth/core/providers/credentials.d.ts.
+      const ua =
+        (request as Request | undefined)?.headers?.get("user-agent") ?? null;
+      const ipHeader = (request as Request | undefined)?.headers?.get(
+        "x-forwarded-for"
+      );
+      const ip = ipHeader?.split(",")[0]?.trim() ?? null;
 
       const user = await prisma.user.findUnique({
         where: { email: parsed.data.email },
@@ -106,7 +119,12 @@ const providers: NextAuthConfig["providers"] = [
       if (!ok) return null;
 
       // Mint a new server-side session row.
-      const { sessionId } = await startUserSession({ userId: user.id, rememberMe: false });
+      const { sessionId } = await startUserSession({
+        userId: user.id,
+        rememberMe: false,
+        userAgent: ua,
+        ip,
+      });
 
       return {
         id: user.id,
@@ -114,6 +132,7 @@ const providers: NextAuthConfig["providers"] = [
         name: user.name ?? undefined,
         image: user.image ?? undefined,
         role: user.role?.name ?? UserRole.USER,
+        emailVerified: user.emailVerified,
         sessionId,
       };
     },
@@ -228,25 +247,63 @@ const config: NextAuthConfig = {
      * session" and redirects the user to /login.
      */
     async jwt({ token, user, trigger }) {
-      // First sign-in: copy id, role, sessionId from the User record.
-      // Credentials sets all three in `authorize`. OAuth/email goes
-      // through the adapter, which only returns the base User fields —
-      // so for those providers we re-read the DB row to pick up the
-      // role (and any sessionId the `events.signIn` handler just minted).
+      // First sign-in: copy id, role, sessionId, emailVerified from
+      // the User record. Credentials sets all four in `authorize`.
+      // OAuth/email goes through the adapter, which only returns the
+      // base User fields — so for those providers we re-read the DB
+      // row to pick up the role (and any sessionId / emailVerified
+      // the `events.signIn` handler just minted).
       if (user) {
         token.id = user.id as string;
         const passedRole = (user as { role?: UserRole }).role;
         const passedSessionId = (user as { sessionId?: string }).sessionId;
+        const passedEmailVerified = (
+          user as { emailVerified?: Date | null }
+        ).emailVerified;
         if (passedRole) {
           token.role = passedRole;
           token.sessionId = passedSessionId ?? "";
+          // Mark email as verified in JWT claims. This lets
+          // `requireVerified` short-circuit on a JWT-only path
+          // instead of doing a DB read on every page load.
+          token.emailVerified = passedEmailVerified ?? null;
         } else {
           const fresh = await prisma.user.findUnique({
             where: { id: user.id },
-            select: { role: { select: { name: true } } },
+            select: {
+              role: { select: { name: true } },
+              emailVerified: true,
+            },
           });
           token.role = fresh?.role?.name ?? UserRole.USER;
           token.sessionId = passedSessionId ?? "";
+          // For OAuth users, Auth.js's adapter may have created
+          // the user with `emailVerified: null` (handle-login.js
+          // line 158 — when the user's email isn't already in the
+          // DB and they aren't signed in). The `events.signIn`
+          // handler that updates `emailVerified` runs AFTER the
+          // JWT callback, so we update the DB HERE (in the JWT
+          // callback, before reading) and use the freshly-set
+          // value. This ensures the JWT has the correct
+          // `emailVerified` claim on the very first sign-in,
+          // without the user having to sign out and back in.
+          if (fresh && !fresh.emailVerified) {
+            const verified = new Date();
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { emailVerified: verified, lastLoginAt: verified },
+            });
+            token.emailVerified = verified;
+          } else {
+            token.emailVerified = fresh?.emailVerified ?? null;
+            // Still bump `lastLoginAt` for OAuth sign-ins.
+            if (fresh) {
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { lastLoginAt: new Date() },
+              });
+            }
+          }
         }
         token.rememberMe = false;
         return token;
@@ -277,6 +334,25 @@ const config: NextAuthConfig = {
           return {} as typeof token;
         }
         if (fresh?.role) token.role = fresh.role.name;
+      }
+
+      // Backfill `emailVerified` for tokens minted before this
+      // claim was added to the JWT. Without this, users with
+      // pre-migration JWTs would be redirected to /verify-email on
+      // every request because the JWT claims are stale. The DB
+      // read happens at most once per token (the next call finds
+      // `token.emailVerified !== undefined` and skips the read).
+      if (token.id && (token as { emailVerified?: unknown }).emailVerified === undefined) {
+        const fresh = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { emailVerified: true, deletedAt: true, lockedUntil: true },
+        });
+        if (fresh?.deletedAt) return {} as typeof token;
+        if (fresh?.lockedUntil && fresh.lockedUntil > new Date()) {
+          return {} as typeof token;
+        }
+        (token as { emailVerified?: Date | null }).emailVerified =
+          fresh?.emailVerified ?? null;
       }
 
       // JWT refresh-token rotation. Auth.js exposes the iat/exp as
@@ -323,6 +399,11 @@ const config: NextAuthConfig = {
         if (token.role) session.user.role = token.role;
         if (typeof token.sessionId === "string")
           session.user.sessionId = token.sessionId;
+        // Mirror `emailVerified` from the JWT claims so the
+        // `requireVerified` guard can run on the JWT-only fast path
+        // without a DB read.
+        (session.user as { emailVerified?: Date | null }).emailVerified =
+          (token as { emailVerified?: Date | null }).emailVerified ?? null;
       }
       return session;
     },
@@ -345,13 +426,41 @@ const config: NextAuthConfig = {
     async signIn({ user, account }) {
       if (!user?.id) return;
 
+      // Extract UA and IP from the request so the /settings/sessions
+      // page can render "Chrome on macOS · this IP" instead of
+      // "Unknown browser on Unknown OS". The credentials provider
+      // already extracts these from the `request` param of
+      // `authorize`; OAuth goes through this event handler, which
+      // can read headers via `next/headers`.
+      let oAuthUA: string | null = null;
+      let oAuthIP: string | null = null;
+      try {
+        const h = await headers();
+        oAuthUA = h.get("user-agent");
+        const xff = h.get("x-forwarded-for");
+        oAuthIP = xff?.split(",")[0]?.trim() ?? null;
+      } catch {
+        // headers() throws if not in a request context (e.g. called
+        // from a script). Fall through with nulls.
+      }
+
       // Mark email as verified for OAuth users. Auth.js's adapter
       // doesn't auto-populate `emailVerified` even when the OAuth
       // provider returns a verified email, so we do it here.
+      //
+      // We also bump `lastLoginAt` for any non-credentials provider.
+      // The credentials `authorize` callback already updates
+      // `lastLoginAt` directly (via `recordLoginAttempt`), but OAuth
+      // sign-ins go through the adapter and never hit that path —
+      // so without this, OAuth users always show "Never" in the
+      // admin user list.
       if (account?.provider !== "credentials") {
         await prisma.user.update({
           where: { id: user.id },
-          data: { emailVerified: new Date() },
+          data: {
+            emailVerified: new Date(),
+            lastLoginAt: new Date(),
+          },
         });
       }
 
@@ -365,6 +474,8 @@ const config: NextAuthConfig = {
         const { sessionId } = await startUserSession({
           userId: user.id,
           rememberMe: false,
+          userAgent: oAuthUA,
+          ip: oAuthIP,
         });
         (user as { sessionId?: string }).sessionId = sessionId;
       }

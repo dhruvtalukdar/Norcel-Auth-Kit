@@ -27,6 +27,14 @@ import { IconContainer } from "@/components/ui/icon-container";
 /*  Marketing landing page — dark, Vercel/Geist-inspired.                */
 /* --------------------------------------------------------------------- */
 
+// Force-dynamic so the `<SiteHeader>` re-evaluates `auth()` on every
+// request. Without this, Next.js serves a static version cached at
+// build time. After sign-out, the user lands on `/` and the cached
+// version can show stale header state (UserMenu still visible) or
+// stale content. Forcing dynamic re-renders the header with the
+// correct logged-out / logged-in state.
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">

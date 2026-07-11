@@ -9,13 +9,22 @@ import { Alert } from "@/components/ui/alert";
 
 const initial: ActionState = { ok: false };
 
-export function ChangePasswordForm() {
+export function ChangePasswordForm({
+  hasPassword,
+}: {
+  /** True if the user already has a password (credentials sign-up).
+   *  False for OAuth-only users, who are SETTING their first
+   *  password. */
+  hasPassword: boolean;
+}) {
   const [state, formAction] = React.useActionState(changePasswordAction, initial);
 
   if (state.ok) {
     return (
-      <Alert intent="success" title="Password updated.">
-        Your new password is active on your next sign-in.
+      <Alert intent="success" title="Password set.">
+        {hasPassword
+          ? "Your new password is active on your next sign-in."
+          : "You can now sign in with email + password in addition to your OAuth provider."}
       </Alert>
     );
   }
@@ -25,24 +34,31 @@ export function ChangePasswordForm() {
       {state.message && !state.ok ? (
         <Alert intent="error">{state.message}</Alert>
       ) : null}
-      <Field
-        label="Current password"
-        htmlFor="currentPassword"
-        error={state.fieldErrors?.currentPassword}
-        required
-      >
-        <Input
-          id="currentPassword"
-          name="currentPassword"
-          type="password"
-          autoComplete="current-password"
+      {hasPassword ? (
+        <Field
+          label="Current password"
+          htmlFor="currentPassword"
+          error={state.fieldErrors?.currentPassword}
           required
-        />
-      </Field>
+        >
+          <Input
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            autoComplete="current-password"
+            required
+          />
+        </Field>
+      ) : null}
       <Field
-        label="New password"
+        label={hasPassword ? "New password" : "Choose a password"}
         htmlFor="newPassword"
         error={state.fieldErrors?.newPassword}
+        description={
+          hasPassword
+            ? undefined
+            : "Setting a password lets you sign in with email + password as a backup to your OAuth provider."
+        }
         required
       >
         <Input
@@ -54,7 +70,7 @@ export function ChangePasswordForm() {
         />
       </Field>
       <Field
-        label="Confirm new password"
+        label={hasPassword ? "Confirm new password" : "Confirm password"}
         htmlFor="confirmNewPassword"
         error={state.fieldErrors?.confirmNewPassword}
         required
@@ -68,7 +84,9 @@ export function ChangePasswordForm() {
         />
       </Field>
       <div>
-        <SubmitButton pendingLabel="Updating…">Update password</SubmitButton>
+        <SubmitButton pendingLabel="Saving…">
+          {hasPassword ? "Update password" : "Set password"}
+        </SubmitButton>
       </div>
     </form>
   );

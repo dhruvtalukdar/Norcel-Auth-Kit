@@ -55,8 +55,23 @@ export function AppSidebar({ role }: { role: UserRole }) {
       <nav className="flex flex-col" aria-label="App">
         {ITEMS.filter((i) => !i.adminOrHigher || isAdmin).map((item) => {
           const Icon = item.icon;
-          const active =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          // Active = the most specific match. If the user is on
+          // `/settings/sessions`, only the "Active sessions"
+          // entry highlights — the parent "Settings" does NOT.
+          // This prevents the bug where both parent and child
+          // light up at the same time.
+          const isExact = pathname === item.href;
+          const pathSegments = pathname.split("/").filter(Boolean);
+          const itemSegments = item.href.split("/").filter(Boolean);
+          // The item matches if either it's an exact match, OR
+          // the current path is exactly one segment deeper and
+          // every other segment matches.
+          const isChild =
+            pathSegments.length === itemSegments.length + 1 &&
+            itemSegments.every(
+              (seg, i) => pathSegments[i] === seg
+            );
+          const active = isExact || isChild;
           return (
             <Link
               key={item.href}

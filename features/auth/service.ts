@@ -338,7 +338,7 @@ export async function consumeMagicLink(
 
 export async function changePassword(input: {
   userId: string;
-  currentPassword: string;
+  currentPassword?: string;
   newPassword: string;
   /**
    * The sessionId of the session that initiated this password
@@ -355,36 +355,54 @@ export async function changePassword(input: {
     where: { id: input.userId },
     select: { passwordHash: true },
   });
-  if (!user?.passwordHash) {
-    return { ok: false, error: "No password is set on this account." };
+  if (!user) {
+    return { ok: false, error: "Account not found." };
   }
 
-  const matches = await verifyPassword(user.passwordHash, input.currentPassword);
-  if (!matches) {
-    return { ok: false, error: "Current password is incorrect." };
+  // Two paths:
+  //   (a) User already has a password (regular sign-up). They must
+  //       provide the current password.
+  //   (b) User has no password (OAuth-only). They are setting
+  //       their first password — no current password required.
+  const isSettingFirstPassword = !user.passwordHash;
+  if (!isSettingFirstPassword) {
+    // `user.passwordHash` is non-null in this branch; assert it for
+    // the type-checker (and to keep the runtime narrowing obvious).
+    const currentHash = user.passwordHash!;
+    if (!input.currentPassword) {
+      return { ok: false, error: "Current password is required." };
+    }
+    const matches = await verifyPassword(currentHash, input.currentPassword);
+    if (!matches) {
+      return { ok: false, error: "Current password is incorrect." };
+    }
   }
 
   const passwordHash = await hashPassword(input.newPassword);
 
   // Revoke every active session EXCEPT the one that initiated the
-  // change. Belt-and-braces: if no keepSessionId is provided
-  // (e.g. an admin action), we revoke everything. The user is
-  // expected to re-authenticate on their next request.
+  // change. For OAuth users setting their first password, we don't
+  // revoke their OAuth sessions — they're still signed in via
+  // Google and revoking would log them out.
   await prisma.$transaction([
     prisma.user.update({
       where: { id: input.userId },
       data: { passwordHash },
     }),
-    prisma.userSession.updateMany({
-      where: {
-        userId: input.userId,
-        revokedAt: null,
-        ...(input.keepSessionId
-          ? { sessionId: { not: input.keepSessionId } }
-          : {}),
-      },
-      data: { revokedAt: new Date() },
-    }),
+    ...(isSettingFirstPassword
+      ? []
+      : [
+          prisma.userSession.updateMany({
+            where: {
+              userId: input.userId,
+              revokedAt: null,
+              ...(input.keepSessionId
+                ? { sessionId: { not: input.keepSessionId } }
+                : {}),
+            },
+            data: { revokedAt: new Date() },
+          }),
+        ]),
   ]);
 
   return { ok: true };

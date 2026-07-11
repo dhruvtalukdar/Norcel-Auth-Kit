@@ -1,4 +1,4 @@
-import { requirePermission } from "@/lib/permissions";
+import { requirePermission, PERMISSIONS } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -43,32 +43,39 @@ export default async function SecurityLogPage({
 }: {
   searchParams: Promise<{ page?: string; type?: string }>;
 }) {
-  await requirePermission("SECURITY_LOG_READ" as never);
+  await requirePermission(PERMISSIONS.SECURITY_LOG_READ);
   const { page, type } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const skip = (currentPage - 1) * PAGE_SIZE;
 
+  // `type` is a string from the URL — narrow to the enum at the DB
+  // level. The SecurityEventType enum is too wide to type cleanly
+  // here, so we pass the value through Prisma's permissive input
+  // and rely on the Prisma runtime to reject unknown values.
   const where = type ? { type: type as never } : undefined;
 
-  const [events, total] = await Promise.all([
-    prisma.securityEvent.findMany({
-      where,
-      take: PAGE_SIZE,
-      skip,
-      orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        type: true,
-        email: true,
-        ip: true,
-        userAgent: true,
-        metadata: true,
-        createdAt: true,
-        user: { select: { name: true, email: true } },
-      },
-    }),
-    prisma.securityEvent.count({ where }),
-  ]);
+  // Run the two queries SEQUENTIALLY. With Supabase's
+  // transaction-mode pooler and `connection_limit=1`, parallel
+  // queries queue on a single connection and can hit the 10s
+  // pool-timeout. Sequential is slower in steady state but
+  // never deadlocks.
+  const events = await prisma.securityEvent.findMany({
+    where,
+    take: PAGE_SIZE,
+    skip,
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      type: true,
+      email: true,
+      ip: true,
+      userAgent: true,
+      metadata: true,
+      createdAt: true,
+      user: { select: { name: true, email: true } },
+    },
+  });
+  const total = await prisma.securityEvent.count({ where });
 
   return (
     <div className="flex flex-col gap-6">

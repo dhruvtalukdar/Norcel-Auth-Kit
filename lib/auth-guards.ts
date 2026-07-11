@@ -54,8 +54,11 @@ type AuthSession = {
 
 /**
  * Pure-JWT session read. Hot path. No Prisma. Returns the user claims
- * straight from the Auth.js session cookie. `emailVerified` is always
- * `null` here — pages that need it must call `requireVerified()`.
+ * straight from the Auth.js session cookie.
+ *
+ * `emailVerified` is mirrored into the JWT claims by the `jwt`
+ * callback in `lib/auth.ts` (with a one-time backfill for
+ * pre-migration tokens), so we can read it without a DB round-trip.
  */
 export const getSession = cache(async (): Promise<AuthSession> => {
   const session = await auth();
@@ -66,7 +69,9 @@ export const getSession = cache(async (): Promise<AuthSession> => {
       email: session.user.email ?? "",
       name: session.user.name ?? null,
       image: session.user.image ?? null,
-      emailVerified: null,
+      emailVerified:
+        (session.user as { emailVerified?: Date | null }).emailVerified ??
+        null,
       role: session.user.role ?? UserRole.USER,
       sessionId: session.user.sessionId,
     },
@@ -142,8 +147,11 @@ export async function requireAuth(): Promise<{ user: SessionUser }> {
 }
 
 export async function requireVerified(): Promise<{ user: SessionUser }> {
-  // Email-verification status isn't in the JWT — force a DB read.
-  const session = await getDbSession();
+  // Use the JWT-only path. `emailVerified` is now mirrored into the
+  // JWT claims by the `jwt` callback, so we can verify it without
+  // a DB round-trip on every page load. The old `getDbSession`
+  // path added ~700ms per page render on Supabase's pooler.
+  const session = await getSession();
   if (!session) redirect("/login");
   if (!session.user.emailVerified) {
     redirect("/verify-email?pending=1");

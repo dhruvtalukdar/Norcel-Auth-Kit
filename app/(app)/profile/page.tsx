@@ -45,12 +45,15 @@ export default async function ProfilePage({
       createdAt: true,
       image: true,
       pendingEmail: true,
+      passwordHash: true,
     },
   });
 
   if (!record) {
     return <p className="text-body-md text-zinc-400">Account not found.</p>;
   }
+
+  const hasPassword = Boolean(record.passwordHash);
 
   let banner: { intent: "success" | "error"; text: string } | null = null;
   if (sp.email_change === "success") {
@@ -124,14 +127,15 @@ export default async function ProfilePage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Change password.</CardTitle>
+          <CardTitle>{hasPassword ? "Change password." : "Set a password."}</CardTitle>
           <CardDescription>
-            Use a strong password — at least 8 characters with a mix of cases,
-            a number, and a symbol.
+            {hasPassword
+              ? "Use a strong password — at least 8 characters with a mix of cases, a number, and a symbol."
+              : "Add a password so you can sign in with email + password as a backup to your OAuth provider."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ChangePasswordForm />
+          <ChangePasswordForm hasPassword={hasPassword} />
         </CardContent>
       </Card>
 

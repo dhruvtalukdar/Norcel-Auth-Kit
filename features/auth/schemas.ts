@@ -102,18 +102,26 @@ export const updateProfileSchema = z.object({
 });
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
+/**
+ * Change-password form schema.
+ *
+ * `currentPassword` is optional. Required only when the user already
+ * has a password (regular sign-up). For OAuth users setting their
+ * first password, `currentPassword` is omitted and the service
+ * detects that case via the user's `passwordHash` being null.
+ */
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required."),
+    currentPassword: z
+      .string()
+      .min(1, "Current password is required.")
+      .optional()
+      .or(z.literal("")),
     newPassword: passwordSchema,
     confirmNewPassword: z.string(),
   })
   .refine((d) => d.newPassword === d.confirmNewPassword, {
     path: ["confirmNewPassword"],
     message: "Passwords do not match.",
-  })
-  .refine((d) => d.currentPassword !== d.newPassword, {
-    path: ["newPassword"],
-    message: "New password must be different from the current password.",
   });
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
