@@ -47,31 +47,29 @@ export function AppSidebar({ role }: { role: UserRole }) {
   const isAdmin =
     role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN;
 
+  // Find the longest sidebar item whose `href` is a prefix of the
+  // current pathname. The longest match wins — so on
+  // `/settings/sessions`, only "Active sessions" highlights, not
+  // "Settings". And on `/admin/users`, only "Users" highlights, not
+  // "Admin panel". This prevents the parent+child both-active bug.
+  const visibleItems = ITEMS.filter((i) => !i.adminOrHigher || isAdmin);
+  const activeHref = visibleItems
+    .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+    .reduce<string | null>(
+      (best, item) =>
+        best === null || item.href.length > best.length ? item.href : best,
+      null
+    );
+
   return (
     <aside className="sticky top-20 hidden h-fit w-56 shrink-0 md:block">
       <p className="mb-2 px-3 font-mono text-caption-mono uppercase tracking-[0.18em] text-mute">
         Navigation
       </p>
       <nav className="flex flex-col" aria-label="App">
-        {ITEMS.filter((i) => !i.adminOrHigher || isAdmin).map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
-          // Active = the most specific match. If the user is on
-          // `/settings/sessions`, only the "Active sessions"
-          // entry highlights — the parent "Settings" does NOT.
-          // This prevents the bug where both parent and child
-          // light up at the same time.
-          const isExact = pathname === item.href;
-          const pathSegments = pathname.split("/").filter(Boolean);
-          const itemSegments = item.href.split("/").filter(Boolean);
-          // The item matches if either it's an exact match, OR
-          // the current path is exactly one segment deeper and
-          // every other segment matches.
-          const isChild =
-            pathSegments.length === itemSegments.length + 1 &&
-            itemSegments.every(
-              (seg, i) => pathSegments[i] === seg
-            );
-          const active = isExact || isChild;
+          const active = item.href === activeHref;
           return (
             <Link
               key={item.href}
