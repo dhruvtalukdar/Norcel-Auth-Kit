@@ -8,10 +8,12 @@ A curated path through the ForgeStack docs. Pick the track that matches your goa
 
 ## I'm shipping a side project this weekend
 
-1. [`flows/sign-up.md`](./flows/sign-up.md) — read this to understand which providers you've enabled
-2. [`concepts/auth.md`](./concepts/auth.md) — skim the auth model (5 min)
-3. [`operations/env-vars.md`](./operations/env-vars.md) — the env vars you need to set
-4. [`operations/deployment.md`](./operations/deployment.md) — Vercel + Supabase path
+1. **[`/getting-started`](../../app/getting-started/page.tsx)** or [`getting-started.md`](./getting-started.md) — the **only** doc you need today. 5-min install, OAuth, project structure, going to production.
+2. [`flows/sign-up.md`](./flows/sign-up.md) — read this if you're customising the sign-up flow
+3. [`concepts/auth.md`](./concepts/auth.md) — skim the auth model (5 min)
+4. [`operations/env-vars.md`](./operations/env-vars.md) — every env var, defaults, gotchas
+5. [`operations/deployment.md`](./operations/deployment.md) — Vercel + Supabase path
+   · also: [`operations/domains.md`](./operations/domains.md) — domain strategy for landing page, demo, and UI kit
 
 **Skip**: security/, threat model, the full concepts section.
 
@@ -99,6 +101,7 @@ Docs are versioned with the kit. When upgrading ForgeStack, check the [`changelo
 | `security/data-handling.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/env-vars.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/deployment.md` | 2026-07-11 | Initial draft for v1.0 |
+| `operations/domains.md` | 2026-07-12 | Initial draft for v1.0 |
 | `operations/database.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/observability.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/troubleshooting.md` | 2026-07-11 | Initial draft for v1.0 |

@@ -8,7 +8,7 @@ const NAV_LINKS: Array<{ href: Route; label: string }> = [
   { href: "/#features", label: "Features" },
   { href: "/#security", label: "Security" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/#docs", label: "Docs" },
+  { href: "/getting-started", label: "Getting started" },
 ];
 
 /**
