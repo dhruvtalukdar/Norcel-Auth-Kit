@@ -42,48 +42,104 @@ export default function HomePage() {
 
       <main>
         {/* ── Hero ─────────────────────────────────────────────────────── */}
-        <section className="relative isolate overflow-hidden pb-24 pt-20 lg:pb-32 lg:pt-32">
-          {/* mesh gradient + grid noise, both aria-hidden */}
-          <div className="bg-mesh-gradient pointer-events-none absolute inset-x-0 top-0 -z-10 h-[640px] opacity-90" />
+        <section className="relative isolate overflow-hidden pb-24 pt-20 lg:pb-32 lg:pt-28">
+          {/* background layers: mesh + grid noise + soft vignette */}
+          <div className="bg-mesh-gradient pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] opacity-90" />
           <div className="grid-noise absolute inset-0 -z-10 opacity-40" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[680px] bg-gradient-to-b from-transparent via-transparent to-canvas" />
 
-          <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto grid max-w-[1200px] items-center gap-16 px-6 sm:px-8 lg:grid-cols-12">
+            {/* ── Left column: copy + CTAs ─────────────────────────────── */}
+            <div className="lg:col-span-7">
               <span className="badge-eyebrow reveal">
                 <span className="relative grid h-1.5 w-1.5 place-items-center">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 </span>
-                New — Magic link sign-in
+                <span>v1.0 — Magic link sign-in is here</span>
               </span>
 
-              <h1 className="reveal delay-1 mt-8 text-balance text-5xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-6xl lg:text-[64px]">
-                <span className="text-gradient">
-                  Build and deploy on the developer cloud.
-                </span>
+              <h1 className="reveal delay-1 mt-7 text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-[68px]">
+                <span className="text-gradient">Build and deploy</span>
+                <br />
+                <span className="text-gradient">on the developer cloud.</span>
               </h1>
 
-              <p className="reveal delay-2 mx-auto mt-6 max-w-2xl text-body-lg text-zinc-400">
-                ForgeStack is a production-grade SaaS starter kit with
+              <p className="reveal delay-2 mt-7 max-w-xl text-body-lg leading-relaxed text-zinc-400">
+                ForgeStack is a <span className="text-zinc-100">production-grade SaaS starter kit</span> with
                 authentication, role-based access control, and a polished
-                design system. Ship your next product in days, not months.
+                design system. Ship your next product in{" "}
+                <span className="text-zinc-100">days, not months</span>.
               </p>
 
-              <div className="reveal delay-3 mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <div className="reveal delay-3 mt-9 flex flex-wrap items-center gap-3">
                 <Button asChild size="xl">
                   <Link href="/register">
-                    Start Deploying
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    Start deploying
+                    <ArrowRight className="ml-1.5 h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild variant="secondary" size="xl">
-                  <Link href="/login">View Demo</Link>
+                  <Link href="/login">View demo</Link>
                 </Button>
+                <Link
+                  href="https://github.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-1 inline-flex items-center gap-2 px-2 py-1 font-mono text-caption-mono text-zinc-500 transition-colors hover:text-zinc-200"
+                >
+                  <Github className="h-3.5 w-3.5" />
+                  star on GitHub
+                </Link>
               </div>
 
-              <p className="reveal delay-4 mt-8 font-mono text-caption-mono text-mute">
-                $ git clone forgestack && cd forgestack && pnpm dev
-              </p>
+              {/* Live status row — social proof without making claims */}
+              <div className="reveal delay-4 mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-caption text-mute">
+                <span className="inline-flex items-center gap-2">
+                  <span className="relative grid h-1.5 w-1.5 place-items-center">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  </span>
+                  <span className="font-mono">v1.0 · stable</span>
+                </span>
+                <span className="hidden h-3 w-px bg-white/10 sm:block" />
+                <span className="font-mono">Next.js 15 · React 19</span>
+                <span className="hidden h-3 w-px bg-white/10 sm:block" />
+                <span className="font-mono">Supabase · Prisma · Auth.js v5</span>
+              </div>
+            </div>
+
+            {/* ── Right column: terminal preview ────────────────────────── */}
+            <div className="reveal delay-2 lg:col-span-5">
+              <CodeWindow filename="forgestack / install" language="bash">
+                <span className="tk-comment"># clone, install, migrate, seed, run</span>
+                {"\n"}$ git clone forgestack &&{" "}
+                <span className="tk-fg">cd</span> forgestack
+                {"\n"}$ pnpm install
+                {"\n"}$ pnpm prisma:migrate
+                {"\n"}$ pnpm prisma:seed
+                {"\n"}$ pnpm dev
+                {"\n"}
+                {"\n"}
+                <span className="tk-comment"># ForgeStack is now running</span>
+                {"\n"}
+                <span className="tk-punct">✓</span> Ready on <span className="tk-str">http://localhost:3000</span>
+                {"\n"}
+                <span className="tk-punct">✓</span> Database connected
+                {"\n"}
+                <span className="tk-punct">✓</span> Auth.js configured
+                {"\n"}
+                <span className="tk-punct">✓</span> Email provider: <span className="tk-fg">resend</span>
+              </CodeWindow>
+
+              {/* tiny trust strip under the terminal */}
+              <div className="reveal delay-3 mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                <span>one command</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>~2 min setup</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>no vendor lock</span>
+              </div>
             </div>
           </div>
         </section>
