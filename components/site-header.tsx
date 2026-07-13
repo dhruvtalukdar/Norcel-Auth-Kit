@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
+import { ArrowUpRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { UserMenu } from "@/components/user-menu";
 import { Logo } from "@/components/logo";
@@ -43,6 +44,23 @@ export async function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* "Get ForgeStack" pill — link to the Gumroad checkout.
+           *  This is what the demo's owner uses to monetize. Buyers
+           *  who ship their own SaaS on top of ForgeStack should
+           *  REMOVE this block — see docs/getting-started.md §9. */}
+
+          <Link
+            href="https://yourname.gumroad.com/l/forgestack"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden h-7 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/[0.06] px-3 text-body-sm-strong text-amber-200 transition-colors hover:bg-amber-300/[0.12] hover:text-amber-100 sm:inline-flex"
+            aria-label="Get the ForgeStack source code"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
+            Get ForgeStack
+            <ArrowUpRight className="h-3 w-3 opacity-70" />
+          </Link>
+
           {isAuthed ? (
             <UserMenu
               name={session?.user?.name ?? session?.user?.email ?? "Account"}

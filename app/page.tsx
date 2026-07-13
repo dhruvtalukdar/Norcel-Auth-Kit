@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
+  ArrowUpRight,
   Github,
   Lock,
   ShieldCheck,
@@ -13,6 +14,7 @@ import {
   Layers,
   Webhook,
   CreditCard,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 
@@ -566,7 +568,153 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── Pricing (with polarity-flipped middle card) ──────────────── */}
+        {/* ── Buy this template (top of pricing area) ─────────────────── */}
+        <section
+          id="buy"
+          className="relative border-t border-white/[0.06] py-20 sm:py-24"
+        >
+          <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
+            <div className="grid items-stretch gap-4 lg:grid-cols-12">
+              {/* Left: copy */}
+              <div className="reveal lg:col-span-7">
+                <p className="badge-mono">/ buy this template</p>
+                <h2 className="mt-5 text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                  <span className="text-gradient">Get the code.</span>{" "}
+                  <span className="text-zinc-400">Ship your SaaS this weekend.</span>
+                </h2>
+                <p className="mt-5 max-w-xl text-body-md leading-relaxed text-zinc-400">
+                  You just spent five minutes poking around the live demo.{" "}
+                  <span className="text-zinc-200">This is the same code.</span>{" "}
+                  One payment, lifetime updates, build as many projects as you
+                  want.
+                </p>
+
+                {/* What's in the kit */}
+                <ul className="mt-7 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+                  {[
+                    ["Full source code", "Next.js 15 + Auth.js v5"],
+                    ["Prisma schema + migrations", "documented, versioned"],
+                    ["Tailwind v4 design system", "tokens + primitives"],
+                    ["Email templates", "React Email, themed"],
+                    ["In-app docs", "rendered from /docs"],
+                    ["1 year of updates", "then buy updates separately"],
+                  ].map(([label, hint]) => (
+                    <li
+                      key={label}
+                      className="flex items-start justify-between gap-3 border-t border-white/[0.04] pt-2.5 first:border-t-0 first:pt-0"
+                    >
+                      <span className="flex items-start gap-2.5 text-body-sm text-zinc-200">
+                        <Check
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400"
+                          strokeWidth={2.5}
+                        />
+                        {label}
+                      </span>
+                      <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mute sm:inline">
+                        {hint}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Button asChild size="xl">
+                    {/* TODO: replace with your real Gumroad URL */}
+                    <a
+                      href="https://yourname.gumroad.com/l/forgestack"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Buy on Gumroad — $150
+                      <ArrowUpRight className="ml-1.5 h-4 w-4" />
+                    </a>
+                  </Button>
+                  <Button asChild size="xl" variant="secondary">
+                    <Link href="/getting-started">
+                      Read the docs first
+                    </Link>
+                  </Button>
+                </div>
+
+                <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                  14-day refund · instant access · commercial license
+                </p>
+              </div>
+
+              {/* Right: license card */}
+              <aside className="reveal delay-1 lg:col-span-5">
+                <div className="card-feature h-full p-6 lg:p-7">
+                  <div className="flex items-center gap-3">
+                    <IconContainer>
+                      <FileText className="h-4 w-4" />
+                    </IconContainer>
+                    <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                      Commercial license
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-body-sm leading-relaxed text-zinc-400">
+                    One payment, no subscription. Use in unlimited personal
+                    and commercial projects.
+                  </p>
+                  <ul className="mt-5 space-y-2.5">
+                    {[
+                      ["✓ Use in unlimited projects", "personal + commercial"],
+                      ["✓ Modify, rebrand, white-label", "your code, your brand"],
+                      ["✓ No attribution required", "in the running UI"],
+                      ["✗ Don't resell the source", "as a starter kit"],
+                    ].map(([k, v]) => {
+                      const allowed = k.startsWith("✓");
+                      return (
+                        <li
+                          key={k}
+                          className="flex items-start justify-between gap-3 border-t border-white/[0.04] pt-2.5 first:border-t-0 first:pt-0"
+                        >
+                          <span
+                            className={`flex items-start gap-2.5 text-body-sm ${
+                              allowed ? "text-zinc-200" : "text-zinc-500"
+                            }`}
+                          >
+                            {k}
+                          </span>
+                          <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mute sm:inline">
+                            {v}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  {/* small FAQ */}
+                  <div className="mt-6 space-y-3 border-t border-white/[0.06] pt-5">
+                    {[
+                      {
+                        q: "Refunds?",
+                        a: "14 days, no questions.",
+                      },
+                      {
+                        q: "Support?",
+                        a: "Community Discord + GitHub issues. No SLA.",
+                      },
+                      {
+                        q: "Updates?",
+                        a: "1 year of free updates. After that, buy a new license at 50% off.",
+                      },
+                    ].map((row) => (
+                      <div key={row.q} className="flex items-start gap-4">
+                        <span className="w-20 shrink-0 font-mono text-[11px] uppercase tracking-[0.18em] text-mute">
+                          {row.q}
+                        </span>
+                        <span className="text-body-sm text-zinc-300">{row.a}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        {/* ── What your SaaS would cost (the demo's pricing tiers) ──── */}
         <section
           id="pricing"
           className="relative border-t border-white/[0.06] py-24 sm:py-32"
@@ -580,8 +728,12 @@ export default function HomePage() {
                   <span className="text-zinc-400">all features.</span>
                 </h2>
                 <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
-                  Pay once. Use forever.{" "}
-                  <span className="text-zinc-200">No per-seat, no metered surprises.</span>
+                  This is what <span className="text-zinc-200">your customers</span>{" "}
+                  would pay when they sign up for the SaaS you build on top
+                  of ForgeStack.{" "}
+                  <span className="text-mute">
+                    (For the template itself, see <a href="#buy" className="text-zinc-200 underline decoration-zinc-700 underline-offset-4 hover:decoration-zinc-500">/ buy</a> above.)
+                  </span>
                 </p>
               </div>
               <div className="reveal delay-1 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">

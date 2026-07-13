@@ -367,6 +367,43 @@ And the server-side session mirroring in `features/auth/sessions.ts`:
 const REMEMBER_ME_SESSION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 ```
 
+### Remove the "Get ForgeStack" buy link (only if you're shipping your own SaaS)
+
+> **Skip this section if you're using ForgeStack as a starter for your own product.** The buy link is what you, the template's owner, use to monetize the template itself. If you're a customer of ForgeStack using it to build your own SaaS, you'll want to remove this — it would be weird for your users to see a link to buy the kit on top of *your* product.
+
+There are two places to remove the link:
+
+**1. The persistent pill in the top-right of every page** ([components/site-header.tsx](components/site-header.tsx))
+
+Delete this entire block:
+
+```tsx
+{/* "Get ForgeStack" pill — link to the Gumroad checkout.
+ *  This is what the demo's owner uses to monetize. Buyers
+ *  who ship their own SaaS on top of ForgeStack should
+ *  REMOVE this block — see docs/getting-started.md §9. */}
+
+<Link
+  href="https://yourname.gumroad.com/l/forgestack"
+  target="_blank"
+  rel="noreferrer"
+  className="hidden h-7 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/[0.06] px-3 text-body-sm-strong text-amber-200 transition-colors hover:bg-amber-300/[0.12] hover:text-amber-100 sm:inline-flex"
+  aria-label="Get the ForgeStack source code"
+>
+  <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
+  Get ForgeStack
+  <ArrowUpRight className="h-3 w-3 opacity-70" />
+</Link>
+```
+
+Also remove the `import { ArrowUpRight } from "lucide-react"` line if it's no longer used anywhere else in the file.
+
+**2. The "Get this template" section on the marketing landing page** ([app/page.tsx](app/page.tsx))
+
+Search for `id="buy"` and delete the entire `<section>` block (from `id="buy"` through the closing `</section>`). The `/pricing` section that follows (the SaaS pricing tiers) stays — that's what *your* customers would pay for *your* product.
+
+**Why the amber color?** The buy link is amber/yellow to make it visually distinct from the rest of the UI. When you remove it, you might want to keep the amber accent for your own CTAs (upgrade prompts, announcements, etc.). Or remove the amber class entirely.
+
 ---
 
 ## 10. Going to production
