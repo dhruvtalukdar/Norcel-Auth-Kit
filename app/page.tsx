@@ -150,78 +150,228 @@ export default function HomePage() {
           className="relative border-t border-white/[0.06] py-24 sm:py-32"
         >
           <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="badge-mono reveal">/ features</p>
-              <h2 className="reveal delay-1 mt-4 text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl lg:text-5xl">
-                <span className="text-gradient">Everything you need to launch.</span>
-              </h2>
-              <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
-                Authentication, authorization, and a design system — wired up
-                and production-ready.
-              </p>
+            {/* Section heading: left-aligned with a live status pill on the right */}
+            <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+              <div className="max-w-2xl">
+                <p className="badge-mono reveal">/ features</p>
+                <h2 className="reveal delay-1 mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                  <span className="text-gradient">Everything you need</span>
+                  <br className="hidden sm:block" />{" "}
+                  <span className="text-zinc-400">to launch.</span>
+                </h2>
+                <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
+                  Authentication, authorization, and a design system —
+                  wired up and production-ready.{" "}
+                  <span className="text-zinc-200">No glue code.</span>
+                </p>
+              </div>
+              <div className="reveal delay-1 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                <span className="relative grid h-1.5 w-1.5 place-items-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                </span>
+                7 modules · all wired
+              </div>
             </div>
 
-            <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Feature
-                icon={<Lock className="h-4 w-4" />}
-                title="Authentication"
-                body="Email + password, Google, GitHub, and magic links. Argon2id hashing, secure cookies, CSRF protection."
-                items={["Email + password", "OAuth providers", "Magic links", "Argon2id hashing"]}
-                revealDelay={0}
-              />
-              <Feature
-                icon={<ShieldCheck className="h-4 w-4" />}
-                title="Authorization"
-                body="Role-based access control with USER and ADMIN out of the box. Composable guards for any route."
-                items={["USER + ADMIN roles", "Composable guards", "Server + middleware", "Session management"]}
-                revealDelay={1}
-              />
-              <Feature
-                icon={<Zap className="h-4 w-4" />}
-                title="Vercel-style design"
-                body="Tailwind v4 tokens, Geist typography, stacked-shadow elevation, and the brand mesh gradient."
-                items={["Tailwind v4 tokens", "Geist typography", "Mesh gradient", "Stacked shadows"]}
-                revealDelay={2}
-              />
+            {/* Asymmetric grid: 1 big card + 4 small cards */}
+            <div className="mt-14 grid gap-4 lg:grid-cols-3">
+              {/* Hero card — spans 2 columns, has rich content */}
+              <article className="card-feature reveal lg:col-span-2 lg:p-8">
+                <div className="flex items-center gap-3">
+                  <IconContainer><Lock className="h-4 w-4" /></IconContainer>
+                  <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                    Authentication &amp; sessions
+                  </h3>
+                  <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-[0.18em] text-mute sm:inline">
+                    core
+                  </span>
+                </div>
+
+                <p className="mt-4 text-body-md leading-relaxed text-zinc-400">
+                  Every sign-in path your users expect, plus a server-side
+                  session mirror so you can revoke from anywhere. Argon2id
+                  passwords, hashed reset tokens, CSRF on every form.
+                </p>
+
+                {/* 2-column item list inside the hero card */}
+                <ul className="mt-7 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+                  {[
+                    ["Email + password", "argon2id, 19 MB / 2 iter"],
+                    ["Google OAuth", "openid-connect, OIDC"],
+                    ["GitHub OAuth", "OAuth 2.0, granular scopes"],
+                    ["Magic link", "10-min TTL, single-use"],
+                    ["Email verification", "24-hr token, auto-marked"],
+                    ["Password reset", "1-hr token, hashed at rest"],
+                    ["Per-device sessions", "UA, IP, last seen"],
+                    ["Session revocation", "server-side mirror"],
+                  ].map(([label, hint]) => (
+                    <li
+                      key={label}
+                      className="flex items-start justify-between gap-3 border-t border-white/[0.04] pt-2.5 first:border-t-0 first:pt-0"
+                    >
+                      <span className="flex items-start gap-2.5 text-body-sm text-zinc-200">
+                        <Check
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400"
+                          strokeWidth={2.5}
+                        />
+                        {label}
+                      </span>
+                      <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mute sm:inline">
+                        {hint}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* footer stat row */}
+                <div className="mt-7 flex items-center gap-6 border-t border-white/[0.06] pt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                  <span>
+                    <span className="text-zinc-200">4</span> providers
+                  </span>
+                  <span className="h-2.5 w-px bg-white/10" />
+                  <span>
+                    <span className="text-zinc-200">OWASP top 10</span> covered
+                  </span>
+                  <span className="h-2.5 w-px bg-white/10" />
+                  <span>
+                    <span className="text-zinc-200">CSRF</span> on every form
+                  </span>
+                </div>
+              </article>
+
+              {/* Smaller cards — vertical stack on the right */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                <article className="card-feature reveal">
+                  <div className="flex items-center gap-3">
+                    <IconContainer><ShieldCheck className="h-4 w-4" /></IconContainer>
+                    <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                      Authorization
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-body-sm leading-relaxed text-zinc-400">
+                    Three roles out of the box. Composable guards for
+                    routes, actions, and APIs.
+                  </p>
+                  <ul className="mt-5 space-y-2">
+                    {["USER", "ADMIN", "SUPER_ADMIN"].map((r, i) => (
+                      <li
+                        key={r}
+                        className="flex items-center justify-between border-t border-white/[0.04] pt-2 first:border-t-0 first:pt-0"
+                      >
+                        <span className="font-mono text-caption text-zinc-200">
+                          {r}
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                          {["seeded", "seeded", "super-admin only"][i]}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+
+                <article className="card-feature reveal">
+                  <div className="flex items-center gap-3">
+                    <IconContainer><Zap className="h-4 w-4" /></IconContainer>
+                    <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                      Design system
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-body-sm leading-relaxed text-zinc-400">
+                    Tailwind v4 tokens, mesh gradient, stacked shadows.
+                    Drop in your brand.
+                  </p>
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {["tokens", "typography", "mesh", "shadows", "dark mode"].map(
+                      (t) => (
+                        <span
+                          key={t}
+                          className="rounded-md border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300"
+                        >
+                          {t}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            {/* Tertiary row — three small "comes with" chips */}
+            <div className="reveal delay-3 mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/[0.04] pt-6 text-caption text-mute">
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em]">
+                also ships with
+              </span>
+              {["Audit log", "Rate limiting", "CSRF tokens", "Security headers", "GDPR soft-delete"].map(
+                (t) => (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-1.5 font-mono text-[11px]"
+                  >
+                    <span className="h-1 w-1 rounded-full bg-white/30" />
+                    {t}
+                  </span>
+                )
+              )}
             </div>
           </div>
         </section>
 
         {/* ── Code-window "Deploy" band ───────────────────────────────── */}
-        <section id="security" className="relative border-t border-white/[0.06] py-24 sm:py-32">
-          <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-6 sm:px-8 lg:grid-cols-2">
-            <div className="reveal">
+        <section
+          id="security"
+          className="relative border-t border-white/[0.06] py-24 sm:py-32"
+        >
+          {/* subtle background — grid */}
+          <div className="grid-noise pointer-events-none absolute inset-0 -z-10 opacity-25" />
+
+          <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-6 sm:px-8 lg:grid-cols-12">
+            {/* Left: copy + checklist */}
+            <div className="reveal lg:col-span-5">
               <p className="badge-mono">/ deploy</p>
-              <h2 className="mt-4 text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl lg:text-5xl">
-                <span className="text-gradient">A compute model for all workloads.</span>
+              <h2 className="reveal delay-1 mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                <span className="text-gradient">A compute model</span>
+                <br />
+                <span className="text-zinc-400">for all workloads.</span>
               </h2>
-              <p className="mt-5 max-w-prose text-body-md text-zinc-400">
-                ForgeStack runs on Supabase Postgres and ships with migrations,
-                a seed script, and a documented schema. No more arguing about
-                which auth library to use.
+              <p className="reveal delay-2 mt-5 max-w-prose text-body-md leading-relaxed text-zinc-400">
+                ForgeStack runs on Supabase Postgres and ships with{" "}
+                <span className="text-zinc-200">migrations, a seed script,</span>{" "}
+                and a documented schema. No more arguing about which auth
+                library to use.
               </p>
-              <ul className="mt-8 space-y-3">
+
+              <ul className="reveal delay-3 mt-8 space-y-2.5">
                 {[
-                  "Migrations + seed scripts out of the box",
-                  "Documented Prisma schema",
-                  "Production-ready email templates",
-                  "Security audit log built in",
-                ].map((item) => (
+                  ["Migrations + seed scripts", "out of the box"],
+                  ["Documented Prisma schema", "every field, every index"],
+                  ["Production-ready email templates", "React Email, themed"],
+                  ["Security audit log", "append-only, searchable"],
+                ].map(([label, hint]) => (
                   <li
-                    key={item}
-                    className="flex items-start gap-2.5 text-body-sm text-zinc-300"
+                    key={label}
+                    className="flex items-start justify-between gap-3 border-t border-white/[0.04] pt-2.5 first:border-t-0 first:pt-0"
                   >
-                    <Check
-                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500"
-                      strokeWidth={2}
-                    />
-                    <span>{item}</span>
+                    <span className="flex items-start gap-2.5 text-body-sm text-zinc-200">
+                      <Check
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400"
+                        strokeWidth={2.5}
+                      />
+                      {label}
+                    </span>
+                    <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mute sm:inline">
+                      {hint}
+                    </span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button asChild size="lg" variant="secondary">
-                  <Link href="/register">Get started</Link>
+
+              <div className="reveal delay-4 mt-9 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg">
+                  <Link href="/register">
+                    Get started
+                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                  </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
                   <Link
@@ -235,10 +385,13 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-            <div className="reveal delay-1">
+
+            {/* Right: terminal with header bar + checkmarks */}
+            <div className="reveal delay-1 lg:col-span-7">
               <CodeWindow filename="forgestack / install" language="bash">
                 <span className="tk-comment"># clone, install, migrate, seed, run</span>
-                {"\n"}$ git clone forgestack && cd forgestack
+                {"\n"}$ git clone forgestack &&{" "}
+                <span className="tk-fg">cd</span> forgestack
                 {"\n"}$ pnpm install
                 {"\n"}$ pnpm prisma:migrate
                 {"\n"}$ pnpm prisma:seed
@@ -247,14 +400,25 @@ export default function HomePage() {
                 {"\n"}
                 <span className="tk-comment"># ForgeStack is now running</span>
                 {"\n"}
-                <span className="tk-punct">✓</span> Ready on <span className="tk-str">http://localhost:3000</span>
+                <span className="tk-punct">✓</span> Ready on{" "}
+                <span className="tk-str">http://localhost:3000</span>
                 {"\n"}
                 <span className="tk-punct">✓</span> Database connected
                 {"\n"}
                 <span className="tk-punct">✓</span> Auth.js configured
                 {"\n"}
-                <span className="tk-punct">✓</span> Email provider: console
+                <span className="tk-punct">✓</span> Email provider:{" "}
+                <span className="tk-fg">resend</span>
               </CodeWindow>
+              <div className="reveal delay-2 mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                <span>~2 min setup</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>zero config</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>single port (3000)</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>SQLite → Postgres in prod</span>
+              </div>
             </div>
           </div>
         </section>
@@ -262,42 +426,171 @@ export default function HomePage() {
         {/* ── What's included / 6-up grid ──────────────────────────────── */}
         <section className="relative border-t border-white/[0.06] py-24 sm:py-32">
           <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="badge-mono reveal">/ what you get</p>
-              <h2 className="reveal delay-1 mt-4 text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl lg:text-5xl">
-                <span className="text-gradient">Production-grade by default.</span>
-              </h2>
-              <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
-                Everything you need to ship a real product, wired up on day one.
-              </p>
+            <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+              <div className="max-w-2xl">
+                <p className="badge-mono reveal">/ what you get</p>
+                <h2 className="reveal delay-1 mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                  <span className="text-gradient">Production-grade</span>
+                  <br className="hidden sm:block" />{" "}
+                  <span className="text-zinc-400">by default.</span>
+                </h2>
+                <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
+                  Everything you need to ship a real product,{" "}
+                  <span className="text-zinc-200">wired up on day one.</span>
+                </p>
+              </div>
+              <div className="reveal delay-1 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                6 modules · all wired
+              </div>
             </div>
-            <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {INCLUDED.map((item, i) => (
-                <Included
+
+            {/* Asymmetric: 1 hero card spans 2, 4 cards in 2x2 */}
+            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <article className="card-feature reveal lg:col-span-2 lg:p-8">
+                <div className="flex items-center gap-3">
+                  <IconContainer><Sparkles className="h-4 w-4" /></IconContainer>
+                  <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                    Everything wired up
+                  </h3>
+                  <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-[0.18em] text-mute sm:inline">
+                    full stack
+                  </span>
+                </div>
+                <p className="mt-4 text-body-md leading-relaxed text-zinc-400">
+                  ForgeStack ships as one cohesive codebase. Auth, sessions,
+                  audit log, design system, billing-shaped data model — all
+                  hooked up to the same Postgres database. No more wiring
+                  your own auth to a separate service.
+                </p>
+                <ul className="mt-7 grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+                  {[
+                    ["Auth (4 providers)", "credentials · OAuth · magic link"],
+                    ["Postgres + Prisma", "documented schema + migrations"],
+                    ["Auth.js v5", "JWT + server-side session mirror"],
+                    ["React Email", "verified, reset, magic-link templates"],
+                    ["shadcn/ui primitives", "button, input, dialog, ...all"],
+                    ["Tailwind v4 tokens", "drop in your brand"],
+                  ].map(([label, hint]) => (
+                    <li
+                      key={label}
+                      className="flex items-start justify-between gap-3 border-t border-white/[0.04] pt-2.5 first:border-t-0 first:pt-0"
+                    >
+                      <span className="flex items-start gap-2.5 text-body-sm text-zinc-200">
+                        <Check
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400"
+                          strokeWidth={2.5}
+                        />
+                        {label}
+                      </span>
+                      <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mute sm:inline">
+                        {hint}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+
+              {/* Right column: 2 smaller cards stacked */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                <article className="card-feature reveal">
+                  <div className="flex items-center gap-3">
+                    <IconContainer><KeyRound className="h-4 w-4" /></IconContainer>
+                    <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                      Sessions
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-body-sm leading-relaxed text-zinc-400">
+                    Server-side session mirror with UA, IP, and revoke.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {["per-device", "revoke", "UA + IP", "last seen"].map((t) => (
+                      <span
+                        key={t}
+                        className="rounded-md border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-300"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+
+                <article className="card-feature reveal">
+                  <div className="flex items-center gap-3">
+                    <IconContainer><ShieldCheck className="h-4 w-4" /></IconContainer>
+                    <h3 className="text-[15px] font-semibold tracking-tight text-white">
+                      RBAC
+                    </h3>
+                  </div>
+                  <p className="mt-4 text-body-sm leading-relaxed text-zinc-400">
+                    Three roles out of the box. Composable guards.
+                  </p>
+                  <ul className="mt-4 space-y-1.5">
+                    {["USER", "ADMIN", "SUPER_ADMIN"].map((r) => (
+                      <li
+                        key={r}
+                        className="flex items-center justify-between border-t border-white/[0.04] pt-1.5 first:border-t-0 first:pt-0"
+                      >
+                        <span className="font-mono text-caption text-zinc-200">
+                          {r}
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                          seeded
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </div>
+            </div>
+
+            {/* Bottom row: 4 small "also comes with" chips */}
+            <div className="reveal delay-3 mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {INCLUDED.slice(0, 4).map((item) => (
+                <article
                   key={item.title}
-                  icon={item.icon}
-                  title={item.title}
-                  body={item.body}
-                  revealDelay={i % 3}
-                />
+                  className="card-feature flex items-start gap-3 p-4"
+                >
+                  <IconContainer>{item.icon}</IconContainer>
+                  <div className="min-w-0">
+                    <h3 className="text-body-sm-strong text-white">
+                      {item.title}
+                    </h3>
+                    <p className="mt-0.5 text-caption text-mute line-clamp-2">
+                      {item.body}
+                    </p>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
         {/* ── Pricing (with polarity-flipped middle card) ──────────────── */}
-        <section id="pricing" className="relative border-t border-white/[0.06] py-24 sm:py-32">
+        <section
+          id="pricing"
+          className="relative border-t border-white/[0.06] py-24 sm:py-32"
+        >
           <div className="mx-auto max-w-[1200px] px-6 sm:px-8">
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="badge-mono reveal">/ pricing</p>
-              <h2 className="reveal delay-1 mt-4 text-balance text-3xl font-semibold leading-tight tracking-[-0.04em] sm:text-4xl lg:text-5xl">
-                <span className="text-gradient">One price, all features.</span>
-              </h2>
-              <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
-                Pay once. Use forever. No per-seat, no metered surprises.
-              </p>
+            <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+              <div className="max-w-2xl">
+                <p className="badge-mono reveal">/ pricing</p>
+                <h2 className="reveal delay-1 mt-5 text-balance text-3xl font-semibold leading-[1.1] tracking-[-0.04em] sm:text-4xl lg:text-5xl">
+                  <span className="text-gradient">One price,</span>{" "}
+                  <span className="text-zinc-400">all features.</span>
+                </h2>
+                <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
+                  Pay once. Use forever.{" "}
+                  <span className="text-zinc-200">No per-seat, no metered surprises.</span>
+                </p>
+              </div>
+              <div className="reveal delay-1 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-mute">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                lifetime license
+              </div>
             </div>
-            <div className="mt-16 grid gap-4 lg:grid-cols-3">
+
+            <div className="mt-14 grid gap-4 lg:grid-cols-3">
               <PriceTier
                 name="Hobby"
                 price="$0"
@@ -338,36 +631,101 @@ export default function HomePage() {
                 revealDelay={2}
               />
             </div>
+
+            {/* Pricing footer — comparison strip */}
+            <div className="reveal delay-3 mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-xl border border-white/[0.04] bg-white/[0.015] px-5 py-3 font-mono text-[11px] text-mute">
+              <span>all plans include:</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3 w-3 text-emerald-400" strokeWidth={2.5} /> commercial license
+              </span>
+              <span className="h-2.5 w-px bg-white/10" />
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3 w-3 text-emerald-400" strokeWidth={2.5} /> lifetime updates
+              </span>
+              <span className="h-2.5 w-px bg-white/10" />
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3 w-3 text-emerald-400" strokeWidth={2.5} /> source included
+              </span>
+              <span className="h-2.5 w-px bg-white/10" />
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="h-3 w-3 text-emerald-400" strokeWidth={2.5} /> no telemetry
+              </span>
+            </div>
           </div>
         </section>
 
         {/* ── Final CTA ────────────────────────────────────────────────── */}
         <section className="relative isolate overflow-hidden border-t border-white/[0.06] py-28 sm:py-36">
           <div className="bg-mesh-gradient pointer-events-none absolute inset-0 -z-10 opacity-80" />
-          <div className="grid-noise absolute inset-0 -z-10 opacity-30" />
+          <div className="grid-noise pointer-events-none absolute inset-0 -z-10 opacity-30" />
 
-          <div className="mx-auto max-w-2xl px-6 text-center sm:px-8">
-            <p className="badge-mono reveal">/ ship it</p>
-            <h2 className="reveal delay-1 mt-4 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
-              <span className="text-gradient">Ship your next product faster.</span>
-            </h2>
-            <p className="reveal delay-2 mx-auto mt-6 max-w-xl text-body-md text-zinc-400 sm:text-lg">
-              Stop rebuilding the same auth flow. Clone ForgeStack and go.
-            </p>
-            <div className="reveal delay-3 mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button asChild size="xl">
-                <Link href="/register">
-                  Create your account
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild variant="secondary" size="xl">
-                <Link href="/login">Sign in</Link>
-              </Button>
+          <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-6 sm:px-8 lg:grid-cols-2">
+            {/* Left: copy + CTAs */}
+            <div>
+              <p className="badge-mono reveal">/ ship it</p>
+              <h2 className="reveal delay-1 mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl">
+                <span className="text-gradient">Ship your next</span>
+                <br />
+                <span className="text-zinc-400">product faster.</span>
+              </h2>
+              <p className="reveal delay-2 mt-5 max-w-md text-body-md text-zinc-400 sm:text-lg">
+                Stop rebuilding the same auth flow. Clone ForgeStack and go.
+              </p>
+              <div className="reveal delay-3 mt-8 flex flex-wrap items-center gap-3">
+                <Button asChild size="xl">
+                  <Link href="/register">
+                    Create your account
+                    <ArrowRight className="ml-1.5 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild size="xl" variant="secondary">
+                  <Link href="/login">Sign in</Link>
+                </Button>
+              </div>
+              <p className="reveal delay-4 mt-7 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.2em] text-mute">
+                <span>Instant access</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>Lifetime updates</span>
+                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span>Commercial license</span>
+              </p>
             </div>
-            <p className="reveal delay-4 mt-8 font-mono text-caption-mono uppercase tracking-[0.2em] text-mute">
-              Instant access · Lifetime updates · Commercial license
-            </p>
+
+            {/* Right: terminal preview card */}
+            <div className="reveal delay-2">
+              <CodeWindow filename="forge.sh" language="bash">
+                <span className="tk-comment"># the only command you need</span>
+                {"\n"}$ npx create-forgestack my-app
+                {"\n"}
+                {"\n"}
+                <span className="tk-comment"># shipping checklist ✓</span>
+                {"\n"}
+                <span className="tk-punct">✓</span> auth{" "}
+                <span className="tk-fg">credentials</span> +{" "}
+                <span className="tk-fg">google</span> +{" "}
+                <span className="tk-fg">github</span> +{" "}
+                <span className="tk-fg">magic</span>
+                {"\n"}
+                <span className="tk-punct">✓</span> postgres + prisma{" "}
+                <span className="tk-fg">schema</span>
+                {"\n"}
+                <span className="tk-punct">✓</span> sessions{" "}
+                <span className="tk-fg">per device</span>, revoke
+                {"\n"}
+                <span className="tk-punct">✓</span> rbac{" "}
+                <span className="tk-fg">3 roles</span>, composable guards
+                {"\n"}
+                <span className="tk-punct">✓</span> design{" "}
+                <span className="tk-fg">tailwind v4</span>, dark mode
+                {"\n"}
+                <span className="tk-punct">✓</span> docs{" "}
+                <span className="tk-fg">12 guides</span>, runnable
+                {"\n"}
+                {"\n"}
+                <span className="tk-fg">$</span> cd my-app && pnpm dev
+                {"\n"}$ <span className="tk-punct">▍</span>
+              </CodeWindow>
+            </div>
           </div>
         </section>
       </main>
@@ -378,78 +736,8 @@ export default function HomePage() {
 }
 
 /* --------------------------------------------------------------------- */
-/*  Feature card — `card-feature` recipe from the design system           */
+/*  "What you get" data — referenced by the asymmetric section above   */
 /* --------------------------------------------------------------------- */
-
-function Feature({
-  icon,
-  title,
-  body,
-  items,
-  revealDelay,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-  items: string[];
-  revealDelay: number;
-}) {
-  return (
-    <article
-      className="card-feature reveal"
-      style={{ transitionDelay: `${revealDelay * 80}ms` }}
-    >
-      <div className="flex items-center gap-3">
-        <IconContainer>{icon}</IconContainer>
-        <h3 className="text-[15px] font-semibold tracking-tight text-white">
-          {title}
-        </h3>
-      </div>
-      <p className="mt-4 text-body-md text-zinc-400">{body}</p>
-      <ul className="mt-5 space-y-2.5">
-        {items.map((item) => (
-          <li
-            key={item}
-            className="flex items-start gap-2.5 text-body-sm text-zinc-300"
-          >
-            <Check
-              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-zinc-500"
-              strokeWidth={2}
-            />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </article>
-  );
-}
-
-function Included({
-  icon,
-  title,
-  body,
-  revealDelay,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-  revealDelay: number;
-}) {
-  return (
-    <article
-      className="card-feature reveal"
-      style={{ transitionDelay: `${revealDelay * 80}ms` }}
-    >
-      <div className="flex items-center gap-3">
-        <IconContainer>{icon}</IconContainer>
-        <h3 className="text-[15px] font-semibold tracking-tight text-white">
-          {title}
-        </h3>
-      </div>
-      <p className="mt-3 text-body-sm leading-relaxed text-zinc-400">{body}</p>
-    </article>
-  );
-}
 
 const INCLUDED: Array<{ icon: React.ReactNode; title: string; body: string }> = [
   {
