@@ -12,8 +12,6 @@ import {
   Gift,
   KeyRound,
   Layers,
-  Webhook,
-  CreditCard,
   FileText,
   type LucideIcon,
 } from "lucide-react";
@@ -903,14 +901,14 @@ const INCLUDED: Array<{ icon: React.ReactNode; title: string; body: string }> = 
     body: "Role-based access control with composable guards for routes, actions, and APIs.",
   },
   {
-    icon: <Webhook className="h-4 w-4" />,
-    title: "Webhooks",
-    body: "Signed webhook delivery with retry and idempotency built into the core.",
+    icon: <KeyRound className="h-4 w-4" />,
+    title: "Server-side sessions",
+    body: "JWTs mirrored in Postgres with UA, IP, and last-seen — revoke from anywhere.",
   },
   {
-    icon: <CreditCard className="h-4 w-4" />,
-    title: "Billing-ready",
-    body: "Stripe-shaped data model so subscriptions, invoices, and customers drop in cleanly.",
+    icon: <ShieldCheck className="h-4 w-4" />,
+    title: "Audit log",
+    body: "Every sign-in, role change, and password reset recorded for compliance.",
   },
   {
     icon: <Sparkles className="h-4 w-4" />,
