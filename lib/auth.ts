@@ -504,4 +504,22 @@ const config: NextAuthConfig = {
   },
 };
 
-export const { handlers, auth, signIn, signOut } = NextAuth(config);
+// Log to stderr so the error shows up in Vercel's function logs.
+// Auth.js's default `logger.error` is silent in production, which
+// makes the "Configuration" error in particular a nightmare to
+// debug (the page just says "server misconfigured"). We override
+// it to make sure the underlying error is always visible.
+const stderrLogger = {
+  error: (...args: unknown[]) => {
+    console.error("[auth][error]", ...args);
+  },
+  warn: (...args: unknown[]) => {
+    console.warn("[auth][warn]", ...args);
+  },
+  debug: () => {},
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...config,
+  logger: stderrLogger,
+});
