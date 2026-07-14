@@ -100,7 +100,8 @@ Docs are versioned with the kit. When upgrading ForgeStack, check the [`changelo
 | `security/oauth.md` | 2026-07-11 | Initial draft for v1.0 |
 | `security/data-handling.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/env-vars.md` | 2026-07-11 | Initial draft for v1.0 |
-| `operations/deployment.md` | 2026-07-11 | Initial draft for v1.0 |
+| `operations/deployment.md` | 2026-07-14 | Initial draft for v1.0 |
+| `operations/domains.md` | 2026-07-12 | Initial draft for v1.0 |
 | `operations/domains.md` | 2026-07-12 | Initial draft for v1.0 |
 | `operations/database.md` | 2026-07-11 | Initial draft for v1.0 |
 | `operations/observability.md` | 2026-07-11 | Initial draft for v1.0 |
