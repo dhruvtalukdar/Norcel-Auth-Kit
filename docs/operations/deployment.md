@@ -358,6 +358,21 @@ The Supabase free-tier pooler is rotating IPs. See the [Supabase pooler gotcha](
 AUTH_URL=https://yourdomain.com
 ```
 
+**No trailing slash.** This is the most common deployment bug — the env var in your local `.env` is `http://localhost:3000` for dev, but it must be updated in Vercel for prod.
+
+> ForgeStack v1.0 includes a **fail-fast guard**: if `NODE_ENV=production` and `AUTH_URL` starts with `http://localhost`, the app refuses to boot with a clear error message. So the next person who deploys will see the problem at startup, not at first sign-in.
+
+### "Google sign-in redirects to localhost:3000"
+
+Same root cause as the email case: `AUTH_URL` is still set to `http://localhost:3000`. The OAuth callback URL is constructed from `AUTH_URL`, so the Google redirect goes to a URL that doesn't exist in production.
+
+**Fix**:
+1. Set `AUTH_URL` in Vercel to `https://forge-stack-alpha.vercel.app` (no trailing slash)
+2. Add `https://forge-stack-alpha.vercel.app/api/auth/callback/google` to your Google OAuth app's authorized redirect URIs
+3. Redeploy — env var changes don't take effect on the current deployment
+
+Same applies to GitHub: the redirect URI must be `https://forge-stack-alpha.vercel.app/api/auth/callback/github`.
+
 ---
 
 ## Cost summary

@@ -16,7 +16,21 @@ const serverSchema = z.object({
 
   // Auth.js
   AUTH_SECRET: z.string().min(16, "AUTH_SECRET must be at least 16 characters."),
-  AUTH_URL: z.string().url().optional(),
+  // AUTH_URL must be a real URL in production. The localhost default
+  // works in dev but breaks OAuth callbacks, email links, and
+  // session cookies the moment you deploy. We refuse to boot with
+  // the dev value in a production build.
+  AUTH_URL: z
+    .string()
+    .url()
+    .optional()
+    .refine(
+      (v) => process.env.NODE_ENV !== "production" || !v?.startsWith("http://localhost"),
+      {
+        message:
+          "AUTH_URL must be your production URL (e.g. https://yourdomain.com), not http://localhost:3000. Update it in Vercel → Settings → Environment Variables and redeploy.",
+      }
+    ),
   AUTH_TRUST_HOST: z.string().optional(),
 
   // OAuth
