@@ -53,7 +53,7 @@ const serverSchema = z.object({
   EMAIL_PROVIDER: z
     .enum(["console", "resend", "smtp", "memory"])
     .default("console"),
-  EMAIL_FROM: z.string().default("Norcel <no-reply@norcel.dev>"),
+  EMAIL_FROM: z.string().default("Norcel <contact@norcel.dev>"),
   RESEND_API_KEY: z.string().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.string().optional(),
