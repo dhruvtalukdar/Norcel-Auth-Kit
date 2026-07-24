@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const p = new PrismaClient();
 
 const user = await p.user.findUnique({
-  where: { email: "user@forgestack.dev" },
+  where: { email: "user@norcel.dev" },
   select: { id: true, email: true, deletedAt: true, lockedUntil: true },
 });
 if (!user) { console.log("user not found"); process.exit(1); }

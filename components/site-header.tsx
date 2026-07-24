@@ -27,7 +27,7 @@ export async function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.06] bg-[#0a0a0a]/70 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0a0a0a]/60">
       <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-6 px-4 sm:px-6">
         <div className="flex items-center gap-8">
-          <Link href="/" aria-label="ForgeStack home">
+          <Link href="/" aria-label="Norcel home">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
@@ -44,20 +44,20 @@ export async function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* "Get ForgeStack" pill — link to the Gumroad checkout.
+          {/* "Get Norcel" pill — link to the Gumroad checkout.
            *  This is what the demo's owner uses to monetize. Buyers
-           *  who ship their own SaaS on top of ForgeStack should
+           *  who ship their own SaaS on top of Norcel should
            *  REMOVE this block — see docs/getting-started.md §9. */}
 
           <Link
-            href="https://yourname.gumroad.com/l/forgestack"
+            href="https://yourname.gumroad.com/l/norcel"
             target="_blank"
             rel="noreferrer"
             className="hidden h-7 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/[0.06] px-3 text-body-sm-strong text-amber-200 transition-colors hover:bg-amber-300/[0.12] hover:text-amber-100 sm:inline-flex"
-            aria-label="Get the ForgeStack source code"
+            aria-label="Get the Norcel source code"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
-            Get ForgeStack
+            Get Norcel
             <ArrowUpRight className="h-3 w-3 opacity-70" />
           </Link>
 

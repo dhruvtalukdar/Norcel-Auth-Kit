@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Email service.
+ * Norcel — Email service.
  *
  * Four providers, chosen at runtime via EMAIL_PROVIDER:
  *   - "console" — log the rendered email to stdout (default in dev)

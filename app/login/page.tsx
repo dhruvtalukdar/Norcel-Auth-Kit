@@ -32,7 +32,7 @@ export default async function LoginPage({
   return (
     <AuthShell
       title="Sign in."
-      description="Welcome back. Sign in to your ForgeStack account."
+      description="Welcome back. Sign in to your Norcel account."
       footer={
         <>
           Don't have an account?{" "}

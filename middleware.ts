@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Edge middleware.
+ * Norcel — Edge middleware.
  *
  * Runs in the Next.js edge runtime (no Node APIs, no Prisma). It uses
  * Auth.js's edge-safe `NextAuth()` wrapper — initialised with the

@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Edge-safe Auth.js config.
+ * Norcel — Edge-safe Auth.js config.
  *
  * This file is imported by `middleware.ts`, which runs in Next.js's edge
  * runtime. It MUST NOT pull in anything Node-only (Prisma, argon2, the

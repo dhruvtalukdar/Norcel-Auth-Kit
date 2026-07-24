@@ -1,5 +1,5 @@
 /**
- * ForgeStack — API route authorization guards.
+ * Norcel — API route authorization guards.
  *
  * Use these in Next.js route handlers (`app/api/.../route.ts`) to gate
  * access:

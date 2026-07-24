@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Password service.
+ * Norcel — Password service.
  *
  * Hash + verify with argon2id (memory-hard, OWASP-recommended).
  * Tuned for ~50–80ms per hash on a modern x86 server; raise `memoryCost`

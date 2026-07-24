@@ -1,8 +1,8 @@
-# ForgeStack — multi-stage Dockerfile.
+# Norcel — multi-stage Dockerfile.
 #
 # Usage:
-#   docker build -t forgestack .
-#   docker run --env-file .env -p 3000:3000 forgestack
+#   docker build -t norcel .
+#   docker run --env-file .env -p 3000:3000 norcel
 #
 # The image runs as a non-root user, listens on port 3000, and
 # expects DATABASE_URL / DIRECT_URL / AUTH_SECRET etc. via env.

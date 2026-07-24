@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Singleton Prisma client.
+ * Norcel — Singleton Prisma client.
  *
  * In dev, Next.js HMR re-evaluates modules and would otherwise instantiate
  * a new PrismaClient on every reload — exhausting the connection pool.

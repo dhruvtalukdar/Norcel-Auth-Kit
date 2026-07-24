@@ -52,12 +52,12 @@
       "Bash(echo \"TYPECHECK=$?\")",
       "Bash(kill -9 21718)",
       "Bash(python3 \"/Users/apple/VS Code Projects/NextJS Template/.agents/skills/tailwind-4-docs/scripts/sync_tailwind_docs.py\" --accept-docs-license)",
-      "Bash(mkdir -p \"/Users/apple/VS Code Projects/forgestack-ui/src/components/ui\" \"/Users/apple/VS Code Projects/forgestack-ui/src/components/marketing\" \"/Users/apple/VS Code Projects/forgestack-ui/src/components/auth\" \"/Users/apple/VS Code Projects/forgestack-ui/src/lib\" \"/Users/apple/VS Code Projects/forgestack-ui/src/styles\" \"/Users/apple/VS Code Projects/forgestack-ui/registry\" \"/Users/apple/VS Code Projects/forgestack-ui/app/api/inventory\" \"/Users/apple/VS Code Projects/forgestack-ui/app/components\" \"/Users/apple/VS Code Projects/forgestack-ui/app/docs\" \"/Users/apple/VS Code Projects/forgestack-ui/public\" \"/Users/apple/VS Code Projects/forgestack-ui/scripts\" && find \"/Users/apple/VS Code Projects/forgestack-ui\" -type d | sort)",
+      "Bash(mkdir -p \"/Users/apple/VS Code Projects/norcel-ui/src/components/ui\" \"/Users/apple/VS Code Projects/norcel-ui/src/components/marketing\" \"/Users/apple/VS Code Projects/norcel-ui/src/components/auth\" \"/Users/apple/VS Code Projects/norcel-ui/src/lib\" \"/Users/apple/VS Code Projects/norcel-ui/src/styles\" \"/Users/apple/VS Code Projects/norcel-ui/registry\" \"/Users/apple/VS Code Projects/norcel-ui/app/api/inventory\" \"/Users/apple/VS Code Projects/norcel-ui/app/components\" \"/Users/apple/VS Code Projects/norcel-ui/app/docs\" \"/Users/apple/VS Code Projects/norcel-ui/public\" \"/Users/apple/VS Code Projects/norcel-ui/scripts\" && find \"/Users/apple/VS Code Projects/norcel-ui\" -type d | sort)",
       "Bash(node scripts/build-registry.mjs)"
     ],
     "additionalDirectories": [
       "/tmp",
-      "/Users/apple/VS Code Projects/forgestack-ui/src/components"
+      "/Users/apple/VS Code Projects/norcel-ui/src/components"
     ]
   }
 }

@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Permission / RBAC layer.
+ * Norcel — Permission / RBAC layer.
  *
  * Roles live in the `Role` table. The seed creates three:
  *

@@ -1,4 +1,4 @@
-# ForgeStack — Code Showcase
+# Norcel — Code Showcase
 
 Small, curated snippets from the codebase. Each one highlights a specific
 design decision that's worth a closer look.

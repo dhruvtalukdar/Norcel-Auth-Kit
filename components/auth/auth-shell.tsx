@@ -23,7 +23,7 @@ export function AuthShell({
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="px-6 py-6">
-        <Link href="/" aria-label="ForgeStack home">
+        <Link href="/" aria-label="Norcel home">
           <Logo />
         </Link>
       </header>

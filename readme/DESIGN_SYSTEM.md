@@ -1,6 +1,6 @@
-# ForgeStack Design System
+# Norcel Design System
 
-A reusable, copy-paste-ready design system extracted from the ForgeStack landing page.
+A reusable, copy-paste-ready design system extracted from the Norcel landing page.
 Dark-mode first, Vercel-inspired, Tailwind v4 + Astro. Drop this into any new project and
 you get a coherent visual language immediately.
 
@@ -319,7 +319,7 @@ sections, and anywhere you want a technical feel.
 <div class="code-window">
   <div class="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
     <div class="code-dots"><span></span><span></span><span></span></div>
-    <div class="font-mono text-[11px] text-zinc-500">forgestack / auth.ts</div>
+    <div class="font-mono text-[11px] text-zinc-500">norcel / auth.ts</div>
     <div class="font-mono text-[11px] text-zinc-600">TypeScript</div>
   </div>
   <pre class="overflow-x-auto p-6 text-[13px] leading-[1.7]"><code>...</code></pre>
@@ -711,6 +711,6 @@ to meet the 44 × 44 floor.
 
 ---
 
-*Last updated 2026-06-28. Maintained alongside the ForgeStack landing page. When you
+*Last updated 2026-06-28. Maintained alongside the Norcel landing page. When you
 change a token, change it here first; treat this file as the canonical reference for
 any new project that reuses the system.*

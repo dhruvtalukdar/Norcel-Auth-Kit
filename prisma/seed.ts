@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Database seed.
+ * Norcel — Database seed.
  *
  * Creates the default RBAC roles (USER, ADMIN, SUPER_ADMIN) and three
  * demo accounts (admin, super admin, regular user). Run with:
@@ -61,7 +61,7 @@ async function main() {
 
   // 2. Super-admin (highest privilege — also signs in to admin pages)
   const superAdminEmail =
-    process.env.SEED_SUPER_ADMIN_EMAIL ?? "superadmin@forgestack.dev";
+    process.env.SEED_SUPER_ADMIN_EMAIL ?? "superadmin@norcel.dev";
   const superAdminPassword =
     process.env.SEED_SUPER_ADMIN_PASSWORD ?? "SuperAdmin123!";
   const superAdmin = await prisma.user.upsert({
@@ -73,7 +73,7 @@ async function main() {
     },
     create: {
       email: superAdminEmail,
-      name: "ForgeStack Super-Admin",
+      name: "Norcel Super-Admin",
       passwordHash: await hashPassword(superAdminPassword),
       emailVerified: new Date(),
       roleId: superAdminRole.id,
@@ -82,7 +82,7 @@ async function main() {
   console.log(`  ✓ Super-Admin: ${superAdmin.email}`);
 
   // 3. Admin
-  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@forgestack.dev";
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@norcel.dev";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "ChangeMe123!";
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
@@ -93,7 +93,7 @@ async function main() {
     },
     create: {
       email: adminEmail,
-      name: "ForgeStack Admin",
+      name: "Norcel Admin",
       passwordHash: await hashPassword(adminPassword),
       emailVerified: new Date(),
       roleId: adminRole.id,
@@ -102,7 +102,7 @@ async function main() {
   console.log(`  ✓ Admin: ${admin.email}`);
 
   // 4. Demo USER
-  const userEmail = process.env.SEED_USER_EMAIL ?? "user@forgestack.dev";
+  const userEmail = process.env.SEED_USER_EMAIL ?? "user@norcel.dev";
   const userPassword = process.env.SEED_USER_PASSWORD ?? "UserDemo123!";
   const demoUser = await prisma.user.upsert({
     where: { email: userEmail },

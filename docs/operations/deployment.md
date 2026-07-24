@@ -1,8 +1,8 @@
 # Deployment
 
-> **Last updated:** 2026-07-14 · ForgeStack v1.0
+> **Last updated:** 2026-07-14 · Norcel v1.0
 
-How to deploy ForgeStack to Vercel, step by step. Assumes you have:
+How to deploy Norcel to Vercel, step by step. Assumes you have:
 - A Vercel account (free tier is fine)
 - A GitHub account
 - A Supabase project (or any hosted Postgres)
@@ -31,7 +31,7 @@ Three Vercel projects, one Supabase database, one Resend account, one custom dom
 
 If your code is already in a GitHub repo, skip this. Otherwise:
 
-1. Create a new GitHub repo (e.g. `yourname/forge` or `yourname/forgestack-site`)
+1. Create a new GitHub repo (e.g. `yourname/forge` or `yourname/norcel-site`)
 2. Push your code:
    ```bash
    git init
@@ -252,7 +252,7 @@ Run through this checklist. It should take ~10 minutes.
 - [ ] Click "Get started" → goes to `/register`
 - [ ] Click "Sign in" → goes to `/login`
 - [ ] Click "Docs" in nav → goes to `/getting-started`
-- [ ] The "Get ForgeStack — $150" button in the buy section → opens Gumroad in a new tab
+- [ ] The "Get Norcel — $150" button in the buy section → opens Gumroad in a new tab
 - [ ] Open browser dev tools → Network tab → reload the page → no console errors, no 404s, no missing assets
 
 ### Sign-up & sign-in
@@ -270,7 +270,7 @@ Run through this checklist. It should take ~10 minutes.
 - [ ] Visit `/profile` — shows your name, email, the "change password" form (or "set a password" if you signed up via Google)
 - [ ] Visit `/settings` — shows the settings hub with live counts
 - [ ] Visit `/settings/sessions` — shows your active session with browser + OS info
-- [ ] Click the **amber "Get ForgeStack" pill** in the top-right → opens Gumroad in a new tab
+- [ ] Click the **amber "Get Norcel" pill** in the top-right → opens Gumroad in a new tab
 
 ### Security headers
 
@@ -360,7 +360,7 @@ AUTH_URL=https://yourdomain.com
 
 **No trailing slash.** This is the most common deployment bug — the env var in your local `.env` is `http://localhost:3000` for dev, but it must be updated in Vercel for prod.
 
-> ForgeStack v1.0 includes a **fail-fast guard**: if `NODE_ENV=production` and `AUTH_URL` starts with `http://localhost`, the app refuses to boot with a clear error message. So the next person who deploys will see the problem at startup, not at first sign-in.
+> Norcel v1.0 includes a **fail-fast guard**: if `NODE_ENV=production` and `AUTH_URL` starts with `http://localhost`, the app refuses to boot with a clear error message. So the next person who deploys will see the problem at startup, not at first sign-in.
 
 ### "Google sign-in redirects to localhost:3000"
 

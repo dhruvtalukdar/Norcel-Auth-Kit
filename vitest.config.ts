@@ -11,7 +11,7 @@ import { resolve } from "node:path";
  *     rate-limit, soft-delete) against a real Postgres test database.
  *
  * The integration tests require a live database. We point them at a
- * separate Supabase schema (`forgestack_test`) and run migrations
+ * separate Supabase schema (`norcel_test`) and run migrations
  * against it. The `prisma:test:migrate` and `prisma:test:reset` scripts
  * in package.json manage this.
  */

@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Workspace statistics.
+ * Norcel — Workspace statistics.
  *
  * Used by `/dashboard` (admin variant) and `/admin` to render
  * high-level metrics. Consolidates three separate `count()` calls

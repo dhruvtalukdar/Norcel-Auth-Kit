@@ -1,5 +1,5 @@
 /**
- * ForgeStack — `cn` utility (shadcn convention).
+ * Norcel — `cn` utility (shadcn convention).
  *
  * Merges Tailwind class strings with conditional classnames.
  * Uses `clsx` for the conditional part and `tailwind-merge` to deduplicate

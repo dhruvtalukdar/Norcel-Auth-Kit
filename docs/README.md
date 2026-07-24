@@ -1,8 +1,8 @@
-# ForgeStack — Documentation
+# Norcel — Documentation
 
-Welcome to the ForgeStack documentation. This folder contains everything you need to understand, extend, and operate a ForgeStack-based application.
+Welcome to the Norcel documentation. This folder contains everything you need to understand, extend, and operate a Norcel-based application.
 
-ForgeStack is a production-grade SaaS starter kit. Its documentation is split by **purpose** so you only ever read what you need.
+Norcel is a production-grade SaaS starter kit. Its documentation is split by **purpose** so you only ever read what you need.
 
 ---
 
@@ -52,7 +52,7 @@ docs/
 
 ## How to read this
 
-**If you're new to ForgeStack**: read [`INDEX.md`](./INDEX.md) for a curated path through the docs based on your goal (ship a side project, build a B2B SaaS, audit security).
+**If you're new to Norcel**: read [`INDEX.md`](./INDEX.md) for a curated path through the docs based on your goal (ship a side project, build a B2B SaaS, audit security).
 
 **If you're extending an auth flow**: jump to [`flows/`](./flows/) and find the journey you're changing.
 

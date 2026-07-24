@@ -19,16 +19,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ForgeStack — Build and deploy on the developer cloud.",
-    template: "%s — ForgeStack",
+    default: "Norcel — Build and deploy on the developer cloud.",
+    template: "%s — Norcel",
   },
   description:
-    "ForgeStack is a production-grade SaaS starter kit with authentication, RBAC, and a Vercel-inspired dark design system.",
+    "Norcel is a production-grade SaaS starter kit with authentication, RBAC, and a Vercel-inspired dark design system.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   ),
   openGraph: {
-    title: "ForgeStack",
+    title: "Norcel",
     description:
       "Production-grade SaaS starter kit with auth, RBAC, and a polished design system.",
     type: "website",

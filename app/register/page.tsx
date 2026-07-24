@@ -21,7 +21,7 @@ export default async function RegisterPage({
   return (
     <AuthShell
       title="Create your account."
-      description="Start building with ForgeStack in under a minute."
+      description="Start building with Norcel in under a minute."
       footer={
         <>
           Already have an account?{" "}

@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Server-side session management.
+ * Norcel — Server-side session management.
  *
  * Auth.js's JWT strategy stores everything in the cookie. We add a
  * parallel `UserSession` table so the user can see and revoke their

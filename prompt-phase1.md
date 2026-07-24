@@ -1,7 +1,7 @@
 Use tailwind-4-docs skill, 
 and web-design-guidelines skill. Also use @DESIGN.md. Keep the website design like Vercel.
 
-Name: ForgeStack
+Name: Norcel
 
 
 # PHASE 1 — Authentication Module (Production-Grade SaaS Starter Kit)

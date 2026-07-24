@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Security primitives.
+ * Norcel — Security primitives.
  *
  * - Rate-limit failed logins by email and by IP.
  * - Lock a user account after too many failures (15-minute lockout by

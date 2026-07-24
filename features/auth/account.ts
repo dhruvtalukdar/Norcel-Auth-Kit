@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Account deletion / restoration.
+ * Norcel — Account deletion / restoration.
  *
  * Deletes are *soft*: we set `User.deletedAt` rather than removing the
  * row. This preserves the audit log (so the SecurityEvent records keep
@@ -48,7 +48,7 @@ export async function softDeleteAccount(input: {
 
   // Build an anonymised, unique email so the address can be re-registered
   // after a grace period (or never — your call).
-  const anonEmail = `${ANON_EMAIL_PREFIX}${generateToken(12)}@deleted.forgestack.dev`;
+  const anonEmail = `${ANON_EMAIL_PREFIX}${generateToken(12)}@deleted.norcel.dev`;
 
   await prisma.$transaction([
     // Revoke every active session.

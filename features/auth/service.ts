@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Auth service.
+ * Norcel — Auth service.
  *
  * The "domain" layer. UI components and route handlers should never touch
  * Prisma directly for auth flows — they call these functions instead.

@@ -1,8 +1,8 @@
 {
-  "name": "forgestack",
+  "name": "norcel",
   "version": "0.1.0",
   "private": true,
-  "description": "ForgeStack — Production-grade SaaS starter kit with authentication, authorization, and a Vercel-inspired design system.",
+  "description": "Norcel — Production-grade SaaS starter kit with authentication, authorization, and a Vercel-inspired design system.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

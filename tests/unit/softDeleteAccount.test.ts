@@ -108,7 +108,7 @@ describe("softDeleteAccount — Account-row unlinking", () => {
     await softDeleteAccount({ userId, confirmationEmail: userEmail });
     const u = await p().user.findUnique({ where: { id: userId } });
     expect(u!.email.startsWith("deleted+")).toBe(true);
-    expect(u!.email.endsWith("@deleted.forgestack.dev")).toBe(true);
+    expect(u!.email.endsWith("@deleted.norcel.dev")).toBe(true);
     expect(u!.deletedAt).not.toBeNull();
   });
 

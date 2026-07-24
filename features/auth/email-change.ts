@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Email change flow.
+ * Norcel — Email change flow.
  *
  * Two-step verification: the user submits a new email, we send a
  * verification link to that *new* address, and only after the user

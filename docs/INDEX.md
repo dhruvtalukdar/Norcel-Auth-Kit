@@ -1,8 +1,8 @@
 # Index
 
-A curated path through the ForgeStack docs. Pick the track that matches your goal.
+A curated path through the Norcel docs. Pick the track that matches your goal.
 
-> **Last updated:** 2026-07-11 — covers ForgeStack v1.0.
+> **Last updated:** 2026-07-11 — covers Norcel v1.0.
 
 ---
 
@@ -57,7 +57,7 @@ A curated path through the ForgeStack docs. Pick the track that matches your goa
 
 1. [`self-hosting/docker.md`](./self-hosting/docker.md)
 2. [`self-hosting/caddy-nginx.md`](./self-hosting/caddy-nginx.md) — reverse proxy, TLS
-3. [`self-hosting/upgrade-guide.md`](./self-hosting/upgrade-guide.md) — how to upgrade ForgeStack without losing data
+3. [`self-hosting/upgrade-guide.md`](./self-hosting/upgrade-guide.md) — how to upgrade Norcel without losing data
 
 ---
 
@@ -79,7 +79,7 @@ A curated path through the ForgeStack docs. Pick the track that matches your goa
 
 ## Versioning
 
-Docs are versioned with the kit. When upgrading ForgeStack, check the [`changelog`](../CHANGELOG.md) for what changed in the docs.
+Docs are versioned with the kit. When upgrading Norcel, check the [`changelog`](../CHANGELOG.md) for what changed in the docs.
 
 | Doc | Last reviewed | Notes |
 |---|---|---|

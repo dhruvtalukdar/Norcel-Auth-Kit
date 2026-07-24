@@ -1,7 +1,7 @@
 # Component Design Catalog
 
 A visual + code reference for every card, button, badge, and supporting component used
-in the ForgeStack landing page. Copy any block into a new project to recreate the look
+in the Norcel landing page. Copy any block into a new project to recreate the look
 exactly.
 
 All values are dark-mode native. Tokens are referenced as Tailwind v4 utilities
@@ -94,7 +94,7 @@ in nav, hero, final CTA, and pricing.
 
 ```html
 <a class="btn-primary h-11 px-6">
-  Get ForgeStack
+  Get Norcel
   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
        stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -275,7 +275,7 @@ Same DNA. Adds a top quote glyph and a footer row with avatar + name.
     <path d="M7.17 6A5.17 5.17 0 0 0 2 11.17V18h6.34v-6.83H5.17A3 3 0 0 1 7.17 9V6Zm9.66 0a5.17 5.17 0 0 0-5.17 5.17V18H18v-6.83h-3.17A3 3 0 0 1 16.83 9V6Z"/>
   </svg>
   <blockquote class="mt-5 flex-1 text-[15px] leading-relaxed text-zinc-200">
-    "ForgeStack saved us about three weeks…"
+    "Norcel saved us about three weeks…"
   </blockquote>
   <figcaption class="mt-6 flex items-center gap-3 border-t border-white/[0.06] pt-5">
     <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full
@@ -424,7 +424,7 @@ The "Forge vs Scratch vs OSS" table. Desktop = grid table, mobile = stacked card
     </div>
     <div class="flex items-center justify-center border-l border-white/[0.06] px-4 py-5
                 text-center bg-white/[0.04]">
-      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-white">ForgeStack</span>
+      <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-white">Norcel</span>
       <span class="ml-2 rounded-full bg-emerald-500/10 px-1.5 py-0.5
                    font-mono text-[9px] uppercase tracking-[0.16em] text-emerald-300
                    ring-1 ring-inset ring-emerald-500/30">best</span>
@@ -518,7 +518,7 @@ Gift detail card (sits inside the gift block):
       <div class="font-mono text-[11px] text-zinc-500">for the first 50 customers</div>
     </div>
   </div>
-  <h3 class="mt-5 text-xl font-semibold tracking-tight text-white">ForgeStack UI Kit</h3>
+  <h3 class="mt-5 text-xl font-semibold tracking-tight text-white">Norcel UI Kit</h3>
   <p class="mt-1 text-sm text-zinc-400">A premium component library…</p>
   <ul class="mt-5 space-y-2.5">
     <li class="flex items-start gap-2.5 text-sm text-zinc-200">
@@ -701,7 +701,7 @@ Variant (amber accent):
     <a href="/" class="flex items-center gap-2 text-white">
       <span class="grid h-7 w-7 place-items-center rounded-md bg-white text-black
                    font-mono text-[12px] font-semibold">F</span>
-      <span class="text-[15px] font-semibold tracking-tight">ForgeStack</span>
+      <span class="text-[15px] font-semibold tracking-tight">Norcel</span>
     </a>
     <!-- centered links -->
     <nav class="hidden md:block">
@@ -713,7 +713,7 @@ Variant (amber accent):
     <!-- right cluster -->
     <div class="hidden items-center gap-2 md:flex">
       <a class="btn-ghost" href="#">Sign In</a>
-      <a class="btn-primary" href="#">Get ForgeStack</a>
+      <a class="btn-primary" href="#">Get Norcel</a>
     </div>
     <!-- mobile hamburger -->
     <button class="grid h-9 w-9 place-items-center rounded-md text-zinc-300
@@ -746,7 +746,7 @@ Variant (amber accent):
       <li><a class="block rounded-md px-3 py-2 text-sm text-zinc-300
                     hover:bg-white/[0.04] hover:text-white" href="#">Features</a></li>
       <li class="mt-2 flex flex-col gap-2 border-t border-white/[0.06] pt-3">
-        <a class="btn-primary w-full" href="#">Get ForgeStack</a>
+        <a class="btn-primary w-full" href="#">Get Norcel</a>
       </li>
     </ul>
   </div>
@@ -906,7 +906,7 @@ Two sections in the page use it: **Hero** and **Final CTA**.
     <div class="code-dots">
       <span></span><span></span><span></span>
     </div>
-    <div class="font-mono text-[11px] text-zinc-500">forgestack / data / auth.ts</div>
+    <div class="font-mono text-[11px] text-zinc-500">norcel / data / auth.ts</div>
     <div class="font-mono text-[11px] text-zinc-600">TypeScript</div>
   </div>
   <pre class="overflow-x-auto p-5 text-[12.5px] leading-[1.7] sm:p-6 sm:text-[13px]"><code>

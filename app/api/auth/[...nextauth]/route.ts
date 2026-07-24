@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Auth.js route handlers.
+ * Norcel — Auth.js route handlers.
  * Exposes /api/auth/* (sign-in, callback, session, csrf, etc.).
  */
 import { handlers } from "@/lib/auth";

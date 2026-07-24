@@ -1,4 +1,4 @@
-# ForgeStack Phase 1 — Pre-Commercial Audit Report
+# Norcel Phase 1 — Pre-Commercial Audit Report
 
 **Date:** 2026-06-10
 **Scope:** Phase 1 (Authentication & User Management)
@@ -110,7 +110,7 @@
 2. Backup codes (for 2FA).
 3. Webhook support.
 4. Public REST or tRPC API.
-5. CLI to scaffold new projects (`npx create-forgestack my-app`).
+5. CLI to scaffold new projects (`npx create-norcel my-app`).
 6. Docs site (`/docs`).
 7. Pricing page.
 8. Example integrations (Stripe, S3, etc.).

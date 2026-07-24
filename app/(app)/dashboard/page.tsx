@@ -100,7 +100,7 @@ export default async function DashboardPage({
           </h1>
           <p className="mt-2 text-body-md text-zinc-400">
             {isAdmin
-              ? "Here's what's happening across your ForgeStack workspace."
+              ? "Here's what's happening across your Norcel workspace."
               : "Here's a quick look at your account."}
           </p>
         </div>

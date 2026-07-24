@@ -35,7 +35,7 @@ export default async function AdminDashboardPage() {
         </p>
         <h1 className="text-display-lg text-ink">Admin overview.</h1>
         <p className="text-body-md text-zinc-400">
-          High-level metrics for the ForgeStack workspace.
+          High-level metrics for the Norcel workspace.
         </p>
       </div>
 
@@ -56,7 +56,7 @@ export default async function AdminDashboardPage() {
           <div>
             <CardTitle>Recent sign-ups.</CardTitle>
             <p className="text-body-sm text-zinc-400">
-              Latest 5 users who joined ForgeStack.
+              Latest 5 users who joined Norcel.
             </p>
           </div>
           <Link

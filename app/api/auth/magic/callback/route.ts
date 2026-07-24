@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Magic-link callback.
+ * Norcel — Magic-link callback.
  *
  * Bridges the email-template-generated magic link to an Auth.js session.
  * Flow:

@@ -1,8 +1,8 @@
 /**
- * ForgeStack — Email templates.
+ * Norcel — Email templates.
  *
  * Pure functions returning `{ subject, html, text }`. No I/O, no network.
- * UI is a minimal, single-column HTML email that mirrors the Vercel / ForgeStack
+ * UI is a minimal, single-column HTML email that mirrors the Vercel / Norcel
  * brand: ink primary CTA, hairline borders, Geist font stack.
  *
  * Each template uses an absolute URL parameter so the same code works for

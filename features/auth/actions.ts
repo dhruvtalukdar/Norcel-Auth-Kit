@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Server actions for auth flows.
+ * Norcel — Server actions for auth flows.
  *
  * Each exported function is invoked by a client component via
  * `useActionState` / `<form action={...}>`. The shape returned from every

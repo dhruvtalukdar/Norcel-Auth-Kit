@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Server-side authorization guards.
+ * Norcel — Server-side authorization guards.
  *
  * Use these helpers in RSC / route handlers / server actions to gate access:
  *

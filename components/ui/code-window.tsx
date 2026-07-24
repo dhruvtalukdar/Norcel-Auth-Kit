@@ -24,7 +24,7 @@ export function CodeWindow({
           <span /><span /><span />
         </div>
         <div className="font-mono text-[11px] text-zinc-500">
-          {filename ?? "forgestack / code"}
+          {filename ?? "norcel / code"}
         </div>
         <div className="font-mono text-[11px] text-zinc-600">{language}</div>
       </div>

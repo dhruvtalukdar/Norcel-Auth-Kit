@@ -3,11 +3,11 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata = {
   title: "License",
-  description: "ForgeStack commercial license terms.",
+  description: "Norcel commercial license terms.",
 };
 
 /**
- * /license — commercial license terms for the ForgeStack starter kit.
+ * /license — commercial license terms for the Norcel starter kit.
  *
  * This page is a public marketing/legal page. The actual binding
  * license is a separate EULA document customers sign at purchase;
@@ -20,7 +20,7 @@ export default function LicensePage() {
         <p className="font-mono text-caption-mono uppercase text-mute">Legal</p>
         <h1 className="text-display-lg text-ink">License.</h1>
         <p className="text-body-md text-body">
-          ForgeStack is commercial software. The full text of the
+          Norcel is commercial software. The full text of the
           End-User License Agreement (EULA) is delivered with every
           purchase. The summary below is informational, not legal
           advice.
@@ -94,10 +94,10 @@ export default function LicensePage() {
         <CardContent className="text-body-md text-body">
           Email{" "}
           <a
-            href="mailto:licensing@forgestack.dev"
+            href="mailto:licensing@norcel.dev"
             className="text-link underline-offset-4 hover:underline"
           >
-            licensing@forgestack.dev
+            licensing@norcel.dev
           </a>
           .
         </CardContent>

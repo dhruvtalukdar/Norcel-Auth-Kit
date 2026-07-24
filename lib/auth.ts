@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Auth.js (NextAuth v5) configuration.
+ * Norcel — Auth.js (NextAuth v5) configuration.
  *
  * Providers:
  *   - Credentials (email + password, hashed with argon2id)

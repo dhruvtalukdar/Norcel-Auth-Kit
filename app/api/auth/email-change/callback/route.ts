@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Email-change callback.
+ * Norcel — Email-change callback.
  *
  * Receives `?token=...` from the email-change email, consumes the
  * token, and redirects the user to /profile with a status flag.

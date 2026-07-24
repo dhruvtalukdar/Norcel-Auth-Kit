@@ -1,6 +1,6 @@
 # Role changes don't propagate to active sessions
 
-> **Last updated:** 2026-07-11 · ForgeStack v1.0
+> **Last updated:** 2026-07-11 · Norcel v1.0
 
 This page answers one specific question:
 
@@ -12,11 +12,11 @@ The short answer: **this is the standard behaviour of every JWT-based auth syste
 
 ## TL;DR
 
-ForgeStack uses **JWT-based sessions**. The user's role is captured in the JWT at sign-in time and is the source of truth for every page request — the database is not re-read on each request. This is true of NextAuth, Clerk, Auth0, WorkOS, and every other JWT-based auth library.
+Norcel uses **JWT-based sessions**. The user's role is captured in the JWT at sign-in time and is the source of truth for every page request — the database is not re-read on each request. This is true of NextAuth, Clerk, Auth0, WorkOS, and every other JWT-based auth library.
 
 When you change a role in the database, **active JWTs are not updated**. The user keeps their old role until the JWT expires (30 days) or they sign out and back in.
 
-**The right way to change a role in production is to also revoke the user's active sessions.** That forces the next request to re-authenticate and pick up the new role. ForgeStack v1.0 does not ship an admin UI for this; v1.1 will.
+**The right way to change a role in production is to also revoke the user's active sessions.** That forces the next request to re-authenticate and pick up the new role. Norcel v1.0 does not ship an admin UI for this; v1.1 will.
 
 ---
 
@@ -33,7 +33,7 @@ The trade-off:
 | Refresh role every 60s | 1 DB call per minute per session | Up to 60s | ⚠️ Custom, used by some |
 | Refresh only on `/admin/*` requests | 1 DB call when navigating to admin | Up to 1 navigation | ❌ Hard to implement cleanly |
 
-ForgeStack ships the JWT-only approach. This is the right default for a SaaS starter kit targeting solo founders and small teams. Customers building enterprise apps with stricter requirements can implement a 60-second refresh in their own `jwt` callback (see "Customising this behaviour" below).
+Norcel ships the JWT-only approach. This is the right default for a SaaS starter kit targeting solo founders and small teams. Customers building enterprise apps with stricter requirements can implement a 60-second refresh in their own `jwt` callback (see "Customising this behaviour" below).
 
 ---
 
@@ -123,7 +123,7 @@ await p.userSession.updateMany({
 
 ### "I need role changes to be immediate (sub-second)"
 
-JWTs can't do this. To get sub-second propagation, you need **server-side sessions** (database-backed, not JWT-backed). ForgeStack v1.0 uses JWTs. v1.1 may add an option to switch to server-side sessions for customers who need this. Until then, the 60-second window is the fastest you can get without a custom solution.
+JWTs can't do this. To get sub-second propagation, you need **server-side sessions** (database-backed, not JWT-backed). Norcel v1.0 uses JWTs. v1.1 may add an option to switch to server-side sessions for customers who need this. Until then, the 60-second window is the fastest you can get without a custom solution.
 
 ### "I need to rotate role assignments frequently (e.g. feature flags, A/B test bucketing)"
 

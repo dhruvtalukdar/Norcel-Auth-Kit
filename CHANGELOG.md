@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to ForgeStack are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes to Norcel are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.0] — 2026-06-10
 
@@ -38,4 +38,4 @@ All notable changes to ForgeStack are documented here. The format follows [Keep 
 - `trustHost: true` no longer hard-coded; env-driven
 - OAuth `access_token` / `refresh_token` / `id_token` are encrypted at rest (AES-256-GCM)
 
-[1.0.0]: https://github.com/forgestack/forgestack/releases/tag/v1.0.0
+[1.0.0]: https://github.com/norcel/norcel/releases/tag/v1.0.0

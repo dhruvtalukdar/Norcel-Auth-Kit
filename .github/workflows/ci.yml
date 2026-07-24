@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Spin up a Postgres service for the integration tests. We use
-    # the public schema (no separate `forgestack_test`) because the
+    # the public schema (no separate `norcel_test`) because the
     # GitHub Actions runner doesn't have access to a Supabase
     # project. For production CI, switch to a dedicated test schema
     # on your CI's Postgres or a hosted Supabase.
@@ -27,7 +27,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: forgestack_test
+          POSTGRES_DB: norcel_test
         ports:
           - 5432:5432
         options: >-
@@ -37,12 +37,12 @@ jobs:
           --health-retries 10
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/forgestack_test
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/forgestack_test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/norcel_test
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/norcel_test
       AUTH_SECRET: test-secret-do-not-use-in-prod-32bytes-zzzzzzzzzzzz
       AUTH_TRUST_HOST: "true"
       EMAIL_PROVIDER: memory
-      NEXT_PUBLIC_APP_NAME: ForgeStack
+      NEXT_PUBLIC_APP_NAME: Norcel
       NEXT_PUBLIC_APP_URL: http://localhost:3000
       HSTS_ENABLED: "false"
 

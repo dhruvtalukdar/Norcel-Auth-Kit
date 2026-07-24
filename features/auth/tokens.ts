@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Token services.
+ * Norcel — Token services.
  *
  * Three token flavours:
  *   1. Email verification  — single-use, 24h

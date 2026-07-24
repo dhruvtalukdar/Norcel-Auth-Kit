@@ -1,8 +1,8 @@
-# ForgeStack
+# Norcel
 
 > **Production-grade SaaS starter kit with authentication, RBAC, and a Vercel-inspired design system.**
 
-ForgeStack ships a complete authentication and authorization module out of the
+Norcel ships a complete authentication and authorization module out of the
 box — email + password, Google OAuth, GitHub OAuth, magic-link, email
 verification, password reset, and role-based access control — together with a
 polished, opinionated design system you can sell to your customers as-is.
@@ -226,7 +226,7 @@ This is the **Phase 1 authentication module**. Subsequent phases will add:
 
 ## Production-ready out of the box
 
-ForgeStack ships with the security and operational primitives a real
+Norcel ships with the security and operational primitives a real
 SaaS needs from day one:
 
 - **Security headers** — CSP, HSTS (opt-in), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.

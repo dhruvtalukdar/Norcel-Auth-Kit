@@ -16,7 +16,7 @@ if (!process.env.DATABASE_URL_TEST) {
   console.warn(
     "[vitest] DATABASE_URL_TEST is not set. Falling back to DATABASE_URL. " +
       "This will run tests against your dev database. " +
-      "Set DATABASE_URL_TEST=postgresql://...forgestack_test for isolation."
+      "Set DATABASE_URL_TEST=postgresql://...norcel_test for isolation."
   );
   process.env.DATABASE_URL_TEST = process.env.DATABASE_URL ?? "";
 }

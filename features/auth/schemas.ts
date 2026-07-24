@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Auth Zod schemas.
+ * Norcel — Auth Zod schemas.
  *
  * Single source of truth for input validation across:
  *   - server actions (`features/auth/actions.ts`)

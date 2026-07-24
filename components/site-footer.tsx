@@ -75,7 +75,7 @@ export function SiteFooter() {
           ))}
         </div>
         <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-white/[0.06] pt-8 text-caption text-mute md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} ForgeStack. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Norcel. All rights reserved.</p>
           <p className="font-mono">v0.1.0</p>
         </div>
       </div>

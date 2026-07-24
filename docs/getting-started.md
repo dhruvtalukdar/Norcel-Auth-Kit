@@ -1,10 +1,10 @@
-# Getting started with ForgeStack
+# Getting started with Norcel
 
-> **Last updated:** 2026-07-12 · ForgeStack v1.0
+> **Last updated:** 2026-07-12 · Norcel v1.0
 >
 > This is the single source of truth for "how do I get this running". The same content is rendered at `/getting-started` in the running app. If something is wrong here, it's wrong there too.
 
-Get ForgeStack running locally in **~5 minutes**. Then read on for OAuth setup, project structure, and going to production.
+Get Norcel running locally in **~5 minutes**. Then read on for OAuth setup, project structure, and going to production.
 
 ---
 
@@ -24,8 +24,8 @@ You do **not** need a verified domain or paid services to run the dev server. Th
 ## 2. Install
 
 ```bash
-git clone <your-fork-or-clone-url> forgestack
-cd forgestack
+git clone <your-fork-or-clone-url> norcel
+cd norcel
 pnpm install
 ```
 
@@ -35,7 +35,7 @@ The first install takes about 1–2 minutes. If you see peer-dependency warnings
 
 ## 3. Set up the database
 
-ForgeStack needs a Postgres database. The free Supabase tier works.
+Norcel needs a Postgres database. The free Supabase tier works.
 
 1. Create a project at [supabase.com](https://supabase.com).
 2. In the Supabase dashboard, go to **Project Settings → Database**.
@@ -45,7 +45,7 @@ ForgeStack needs a Postgres database. The free Supabase tier works.
 
 ```bash
 DATABASE_URL="postgresql://postgres.PROJECTREF:PASSWORD@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&connect_timeout=15"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/forgestack"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/norcel"
 ```
 
 > **Note on the `DIRECT_URL`**: Supabase's free tier pauses the direct connection (port 5432). For local dev, point `DIRECT_URL` at a local Postgres (the example above uses `localhost:5432`). For production, point it at your paid Supabase direct endpoint or a local Postgres in your self-hosted setup.
@@ -55,12 +55,12 @@ If you'd rather use **local Postgres** (no Supabase):
 ```bash
 docker run -d -p 5432:5432 \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=forgestack \
-  --name forgestack-test-pg \
+  -e POSTGRES_DB=norcel \
+  --name norcel-test-pg \
   postgres:16
 ```
 
-Then both URLs become `postgresql://postgres:postgres@localhost:5432/forgestack`.
+Then both URLs become `postgresql://postgres:postgres@localhost:5432/norcel`.
 
 ---
 
@@ -78,9 +78,9 @@ The seed creates these accounts (the **password is `UserDemo123!`** for all thre
 
 | Email | Role |
 |---|---|
-| `user@forgestack.dev` | `USER` |
-| `admin@forgestack.dev` | `ADMIN` |
-| `superadmin@forgestack.dev` | `SUPER_ADMIN` |
+| `user@norcel.dev` | `USER` |
+| `admin@norcel.dev` | `ADMIN` |
+| `superadmin@norcel.dev` | `SUPER_ADMIN` |
 
 ---
 
@@ -92,7 +92,7 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000). You should see the marketing landing page.
 
-Sign in with `user@forgestack.dev` / `UserDemo123!` to see the regular user dashboard, or `admin@forgestack.dev` / `UserDemo123!` for the admin view.
+Sign in with `user@norcel.dev` / `UserDemo123!` to see the regular user dashboard, or `admin@norcel.dev` / `UserDemo123!` for the admin view.
 
 ---
 
@@ -122,7 +122,7 @@ Now every email will be **logged to your terminal** instead of being sent. Look 
 
 ```
 ────────────────────────────────────────────────────────────────
-📧 [email/console] → user@forgestack.dev
+📧 [email/console] → user@norcel.dev
    subject: Your sign-in link
 ────────────────────────────────────────────────────────────────
 Click this link to sign in: http://localhost:3000/api/auth/magic/callback?token=...
@@ -153,7 +153,7 @@ For production, you need a verified custom domain. Add it in the Resend dashboar
 
 ### The "magic link silently fails for non-existent users" gotcha
 
-ForgeStack's magic-link service uses **anti-enumeration**: it returns the same success message whether the user exists or not. If you sign in with `nonexistent@example.com`, you get the "Check your inbox" message but **no email is sent** (because no user matches).
+Norcel's magic-link service uses **anti-enumeration**: it returns the same success message whether the user exists or not. If you sign in with `nonexistent@example.com`, you get the "Check your inbox" message but **no email is sent** (because no user matches).
 
 This is correct security behavior, not a bug. If you want to test magic links, use an email that **exists in your database** (one of the seeded users, or sign up first).
 
@@ -204,7 +204,7 @@ If you find a user stuck on `/verify-email` after a fresh OAuth sign-in, that's 
 ## 8. Project structure (5 min skim)
 
 ```
-forgestack/
+norcel/
 ├── app/                          # Next.js App Router
 │   ├── (app)/                   # Protected routes (require auth)
 │   │   ├── dashboard/
@@ -367,9 +367,9 @@ And the server-side session mirroring in `features/auth/sessions.ts`:
 const REMEMBER_ME_SESSION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 ```
 
-### Remove the "Get ForgeStack" buy link (only if you're shipping your own SaaS)
+### Remove the "Get Norcel" buy link (only if you're shipping your own SaaS)
 
-> **Skip this section if you're using ForgeStack as a starter for your own product.** The buy link is what you, the template's owner, use to monetize the template itself. If you're a customer of ForgeStack using it to build your own SaaS, you'll want to remove this — it would be weird for your users to see a link to buy the kit on top of *your* product.
+> **Skip this section if you're using Norcel as a starter for your own product.** The buy link is what you, the template's owner, use to monetize the template itself. If you're a customer of Norcel using it to build your own SaaS, you'll want to remove this — it would be weird for your users to see a link to buy the kit on top of *your* product.
 
 There are two places to remove the link:
 
@@ -378,20 +378,20 @@ There are two places to remove the link:
 Delete this entire block:
 
 ```tsx
-{/* "Get ForgeStack" pill — link to the Gumroad checkout.
+{/* "Get Norcel" pill — link to the Gumroad checkout.
  *  This is what the demo's owner uses to monetize. Buyers
- *  who ship their own SaaS on top of ForgeStack should
+ *  who ship their own SaaS on top of Norcel should
  *  REMOVE this block — see docs/getting-started.md §9. */}
 
 <Link
-  href="https://yourname.gumroad.com/l/forgestack"
+  href="https://yourname.gumroad.com/l/norcel"
   target="_blank"
   rel="noreferrer"
   className="hidden h-7 items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/[0.06] px-3 text-body-sm-strong text-amber-200 transition-colors hover:bg-amber-300/[0.12] hover:text-amber-100 sm:inline-flex"
-  aria-label="Get the ForgeStack source code"
+  aria-label="Get the Norcel source code"
 >
   <span className="h-1.5 w-1.5 rounded-full bg-amber-300" />
-  Get ForgeStack
+  Get Norcel
   <ArrowUpRight className="h-3 w-3 opacity-70" />
 </Link>
 ```

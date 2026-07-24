@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Typed environment variable parser.
+ * Norcel — Typed environment variable parser.
  *
  * Centralised so every module reads env via a single, validated object.
  * Throws on boot when required values are missing — fail-fast beats
@@ -53,7 +53,7 @@ const serverSchema = z.object({
   EMAIL_PROVIDER: z
     .enum(["console", "resend", "smtp", "memory"])
     .default("console"),
-  EMAIL_FROM: z.string().default("ForgeStack <no-reply@forgestack.dev>"),
+  EMAIL_FROM: z.string().default("Norcel <no-reply@norcel.dev>"),
   RESEND_API_KEY: z.string().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.string().optional(),
@@ -63,7 +63,7 @@ const serverSchema = z.object({
 });
 
 const clientSchema = z.object({
-  NEXT_PUBLIC_APP_NAME: z.string().default("ForgeStack"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("Norcel"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 });
 

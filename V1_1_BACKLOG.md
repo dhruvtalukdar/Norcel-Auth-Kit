@@ -1,4 +1,4 @@
-# ForgeStack — v1.1 Backlog
+# Norcel — v1.1 Backlog
 
 Items deferred from v1.0 because they didn't pass the "$150 product
 for solo founders" bar. Each item has a brief description, a rough
@@ -135,7 +135,7 @@ per weekend.
 - **Effort:** 2 days
 - **What:** v1.0 tests run against the dev database with a
   per-test cleanup pattern. v1.1 should spin up a dedicated
-  `forgestack_test` schema in CI (and `docker compose up -d postgres`
+  `norcel_test` schema in CI (and `docker compose up -d postgres`
   locally) and run migrations + tests in a true isolated env.
 
 ---
@@ -150,7 +150,7 @@ per weekend.
 - After N failed logins, show a CAPTCHA. Off by default.
 
 ### 20. Email templates customization
-- Buyers will want to swap "ForgeStack" → their own brand in
+- Buyers will want to swap "Norcel" → their own brand in
   emails. Currently the templates are hardcoded.
 
 ### 21. Per-tenant feature flags
@@ -166,7 +166,7 @@ per weekend.
   Some buyers will want a typed API.
 
 ### 24. CLI to scaffold new projects
-- `npx create-forgestack my-app`. Helps sales.
+- `npx create-norcel my-app`. Helps sales.
 
 ### 25. Docs site (`/docs`)
 - A separate page (or Mintlify / Docusaurus / Nextra). Today

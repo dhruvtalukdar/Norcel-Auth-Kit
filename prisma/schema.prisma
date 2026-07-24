@@ -1,10 +1,10 @@
-// ForgeStack — Prisma schema
+// Norcel — Prisma schema
 // Database: Supabase Postgres
 // ORM: Prisma 5
 //
 // Models: User, Role, Session, VerificationToken, PasswordResetToken, Account
 // Auth.js (NextAuth v5) requires the Account / Session / VerificationToken shapes.
-// ForgeStack also extends User with passwordHash + roleId for credentials login + RBAC,
+// Norcel also extends User with passwordHash + roleId for credentials login + RBAC,
 // plus pre-Phase-2 hardening: SUPER_ADMIN role, LoginAttempt rate-limit, SecurityEvent
 // audit log, UserSession server-side session list, soft-delete on User.
 
@@ -94,7 +94,7 @@ model User {
   // Auth.js relations
   accounts Account[]
 
-  // ForgeStack relations
+  // Norcel relations
   passwordResetTokens      PasswordResetToken[]
   emailVerificationTokens  EmailVerificationToken[]
   magicLinkTokens          MagicLinkToken[]
@@ -152,7 +152,7 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ─── ForgeStack — Password reset, email change, server-side sessions ──────
+// ─── Norcel — Password reset, email change, server-side sessions ──────
 
 model PasswordResetToken {
   id        String    @id @default(cuid())

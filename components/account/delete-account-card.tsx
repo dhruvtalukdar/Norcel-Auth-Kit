@@ -28,7 +28,7 @@ export function DeleteAccountCard({ email }: { email: string }) {
           <div>
             <p className="text-display-sm text-ink">Delete account.</p>
             <p className="mt-1 text-body-sm text-zinc-300">
-              Permanently delete your ForgeStack account. This is a soft
+              Permanently delete your Norcel account. This is a soft
               delete — your data is recoverable for a grace period, but
               you'll lose access immediately.
             </p>

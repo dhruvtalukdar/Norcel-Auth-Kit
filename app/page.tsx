@@ -66,7 +66,7 @@ export default function HomePage() {
               </h1>
 
               <p className="reveal delay-2 mt-7 max-w-xl text-body-lg leading-relaxed text-zinc-400">
-                ForgeStack is a <span className="text-zinc-100">production-grade SaaS starter kit</span> with
+                Norcel is a <span className="text-zinc-100">production-grade SaaS starter kit</span> with
                 authentication, role-based access control, and a polished
                 design system. Ship your next product in{" "}
                 <span className="text-zinc-100">days, not months</span>.
@@ -111,17 +111,17 @@ export default function HomePage() {
 
             {/* ── Right column: terminal preview ────────────────────────── */}
             <div className="reveal delay-2 lg:col-span-5">
-              <CodeWindow filename="forgestack / install" language="bash">
+              <CodeWindow filename="norcel / install" language="bash">
                 <span className="tk-comment"># clone, install, migrate, seed, run</span>
-                {"\n"}$ git clone forgestack &&{" "}
-                <span className="tk-fg">cd</span> forgestack
+                {"\n"}$ git clone norcel &&{" "}
+                <span className="tk-fg">cd</span> norcel
                 {"\n"}$ pnpm install
                 {"\n"}$ pnpm prisma:migrate
                 {"\n"}$ pnpm prisma:seed
                 {"\n"}$ pnpm dev
                 {"\n"}
                 {"\n"}
-                <span className="tk-comment"># ForgeStack is now running</span>
+                <span className="tk-comment"># Norcel is now running</span>
                 {"\n"}
                 <span className="tk-punct">✓</span> Ready on <span className="tk-str">http://localhost:3000</span>
                 {"\n"}
@@ -335,7 +335,7 @@ export default function HomePage() {
                 <span className="text-zinc-400">for all workloads.</span>
               </h2>
               <p className="reveal delay-2 mt-5 max-w-prose text-body-md leading-relaxed text-zinc-400">
-                ForgeStack runs on Supabase Postgres and ships with{" "}
+                Norcel runs on Supabase Postgres and ships with{" "}
                 <span className="text-zinc-200">migrations, a seed script,</span>{" "}
                 and a documented schema. No more arguing about which auth
                 library to use.
@@ -388,17 +388,17 @@ export default function HomePage() {
 
             {/* Right: terminal with header bar + checkmarks */}
             <div className="reveal delay-1 lg:col-span-7">
-              <CodeWindow filename="forgestack / install" language="bash">
+              <CodeWindow filename="norcel / install" language="bash">
                 <span className="tk-comment"># clone, install, migrate, seed, run</span>
-                {"\n"}$ git clone forgestack &&{" "}
-                <span className="tk-fg">cd</span> forgestack
+                {"\n"}$ git clone norcel &&{" "}
+                <span className="tk-fg">cd</span> norcel
                 {"\n"}$ pnpm install
                 {"\n"}$ pnpm prisma:migrate
                 {"\n"}$ pnpm prisma:seed
                 {"\n"}$ pnpm dev
                 {"\n"}
                 {"\n"}
-                <span className="tk-comment"># ForgeStack is now running</span>
+                <span className="tk-comment"># Norcel is now running</span>
                 {"\n"}
                 <span className="tk-punct">✓</span> Ready on{" "}
                 <span className="tk-str">http://localhost:3000</span>
@@ -458,7 +458,7 @@ export default function HomePage() {
                   </span>
                 </div>
                 <p className="mt-4 text-body-md leading-relaxed text-zinc-400">
-                  ForgeStack ships as one cohesive codebase. Auth, sessions,
+                  Norcel ships as one cohesive codebase. Auth, sessions,
                   audit log, design system, billing-shaped data model — all
                   hooked up to the same Postgres database. No more wiring
                   your own auth to a separate service.
@@ -619,7 +619,7 @@ export default function HomePage() {
                   <Button asChild size="xl">
                     {/* TODO: replace with your real Gumroad URL */}
                     <a
-                      href="https://yourname.gumroad.com/l/forgestack"
+                      href="https://yourname.gumroad.com/l/norcel"
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -728,7 +728,7 @@ export default function HomePage() {
                 <p className="reveal delay-2 mt-5 text-body-md text-zinc-400">
                   This is what <span className="text-zinc-200">your customers</span>{" "}
                   would pay when they sign up for the SaaS you build on top
-                  of ForgeStack.{" "}
+                  of Norcel.{" "}
                   <span className="text-mute">
                     (For the template itself, see <a href="#buy" className="text-zinc-200 underline decoration-zinc-700 underline-offset-4 hover:decoration-zinc-500">/ buy</a> above.)
                   </span>
@@ -819,7 +819,7 @@ export default function HomePage() {
                 <span className="text-zinc-400">product faster.</span>
               </h2>
               <p className="reveal delay-2 mt-5 max-w-md text-body-md text-zinc-400 sm:text-lg">
-                Stop rebuilding the same auth flow. Clone ForgeStack and go.
+                Stop rebuilding the same auth flow. Clone Norcel and go.
               </p>
               <div className="reveal delay-3 mt-8 flex flex-wrap items-center gap-3">
                 <Button asChild size="xl">
@@ -845,7 +845,7 @@ export default function HomePage() {
             <div className="reveal delay-2">
               <CodeWindow filename="forge.sh" language="bash">
                 <span className="tk-comment"># the only command you need</span>
-                {"\n"}$ npx create-forgestack my-app
+                {"\n"}$ npx create-norcel my-app
                 {"\n"}
                 {"\n"}
                 <span className="tk-comment"># shipping checklist ✓</span>

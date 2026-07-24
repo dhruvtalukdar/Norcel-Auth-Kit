@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Server-action authorization guards.
+ * Norcel — Server-action authorization guards.
  *
  * Use at the top of a server action to fail closed if the caller isn't
  * authorised. Returns an `ActionState` you can `return` directly:

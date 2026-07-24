@@ -1,6 +1,6 @@
 # Domain strategy
 
-> **Last updated:** 2026-07-12 · ForgeStack v1.0
+> **Last updated:** 2026-07-12 · Norcel v1.0
 
 How the three surfaces (landing page, template demo, UI kit) are mapped to domains. Update this when the strategy changes.
 
@@ -56,7 +56,7 @@ Domains to look at:
 - Customers who read your docs share the URL
 - The domain itself is a trust signal (you "own" the product)
 
-### Template demo → `forgestack-demo.vercel.app` (Vercel free)
+### Template demo → `norcel-demo.vercel.app` (Vercel free)
 
 Free Vercel subdomain. Live, works, has HTTPS. **Don't buy a custom domain for it in v1.**
 
@@ -97,7 +97,7 @@ The point of doing this on day 1, even though `demo.yourbrand.dev` doesn't exist
 Buy the demo a custom domain when **any** of these is true:
 
 1. **You're running paid ads** that point to the demo. Ad networks flag `vercel.app` URLs as low-quality.
-2. **Customers are asking for the demo URL by name** — they want to bookmark it. `demo.yourbrand.dev` is more memorable than `forgestack-abc123.vercel.app`.
+2. **Customers are asking for the demo URL by name** — they want to bookmark it. `demo.yourbrand.dev` is more memorable than `norcel-abc123.vercel.app`.
 3. **You're selling the demo as a separate product tier** (some kit vendors do this).
 4. **You have a "Pro" tier** that includes a hosted demo for customers. That deserves a real domain.
 5. **Your domain authority matters for SEO** — if you write blog posts about your template, they should live on `yourbrand.dev/blog`, not `yourbrand.vercel.app/blog`.
@@ -111,7 +111,7 @@ If you decide to buy a custom domain for the demo later:
 1. Buy `demo.yourbrand.dev` (or whatever name).
 2. Add the DNS record (`CNAME cname.vercel-dns.com`).
 3. In Vercel project settings, add the custom domain.
-4. Update links from `forgestack-demo.vercel.app` to `demo.yourbrand.dev` in your landing page and docs.
+4. Update links from `norcel-demo.vercel.app` to `demo.yourbrand.dev` in your landing page and docs.
 
 **Total time**: 10 minutes. **No code changes** other than updating the link in the landing page.
 
@@ -119,7 +119,7 @@ If you decide to buy a custom domain for the demo later:
 
 ## The white-label / agency exception
 
-If you ever **white-label the template for a client** (e.g. you sell them a custom-branded version of ForgeStack with their logo, their copy, their colors), the demo needs a custom domain — `demo.theircompany.com`, not `forgestack-demo.vercel.app`. The client will pay for the domain.
+If you ever **white-label the template for a client** (e.g. you sell them a custom-branded version of Norcel with their logo, their copy, their colors), the demo needs a custom domain — `demo.theircompany.com`, not `norcel-demo.vercel.app`. The client will pay for the domain.
 
 At that point, **yes, buy a domain for the demo**. But that's a future-you problem, not a v1 problem.
 

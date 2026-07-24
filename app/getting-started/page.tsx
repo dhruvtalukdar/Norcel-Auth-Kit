@@ -1,5 +1,5 @@
 /**
- * ForgeStack — Getting Started page.
+ * Norcel — Getting Started page.
  *
  * Renders `docs/getting-started.md` with a sticky sidebar nav.
  * The markdown is the single source of truth; the page is the
@@ -110,11 +110,11 @@ export default async function GettingStartedPage() {
 
             <h1 className="reveal delay-1 mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-[56px]">
               <span className="text-gradient">Getting started</span>{" "}
-              <span className="text-zinc-400">with ForgeStack.</span>
+              <span className="text-zinc-400">with Norcel.</span>
             </h1>
 
             <p className="reveal delay-2 mt-5 max-w-2xl text-body-md text-zinc-400 sm:text-lg">
-              Get ForgeStack running locally in ~5 minutes. Then read on
+              Get Norcel running locally in ~5 minutes. Then read on
               for OAuth, project structure, and going to production.
             </p>
 
