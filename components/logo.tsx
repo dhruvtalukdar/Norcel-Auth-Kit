@@ -13,7 +13,7 @@ export function Logo({ className }: { className?: string }) {
         aria-hidden
         className="grid h-6 w-6 place-items-center rounded-md bg-white font-mono text-caption-mono font-semibold text-black"
       >
-        F
+        N
       </span>
       <span className="font-mono text-body-sm-strong tracking-tight text-ink">
         Norcel

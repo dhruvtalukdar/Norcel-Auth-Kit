@@ -55,21 +55,20 @@ The same database serves the template demo. You can also use Neon, RDS, or any h
 1. Go to [supabase.com](https://supabase.com) and create a new project.
 2. Save the database password somewhere safe (you'll need it for the connection string).
 3. Wait for the project to provision (~2 minutes).
-4. In **Project Settings → Database**, copy two connection strings:
-   - **Transaction mode** (port 6543) — for `DATABASE_URL`
-   - **Direct connection** (port 5432) — for `DIRECT_URL`
-5. The strings look like:
-   ```
-   # Transaction mode (runtime queries)
-   postgresql://postgres.PROJECTREF:PASSWORD@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&connect_timeout=15
+4. In **Project Settings → Database**, copy the **Transaction-mode** connection string. Use the same string for **both** `DATABASE_URL` and `DIRECT_URL`.
 
-   # Direct connection (migrations)
-   postgresql://postgres.PROJECTREF:PASSWORD@db.PROJECTREF.supabase.co:5432/postgres
-   ```
+```
+postgresql://postgres.PROJECTREF:PASSWORD@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&connect_timeout=15
+```
 
-> **Why the split?** Supabase's transaction pooler (port 6543) is fast but can't do DDL (schema migrations, `prisma migrate deploy`). The direct connection (port 5432) is slower but supports DDL.
-
-> **Free-tier caveat**: Supabase pauses the **direct** endpoint on the free tier. If `prisma migrate deploy` fails with a connection error, you can use the **transaction mode** URL for both `DATABASE_URL` and `DIRECT_URL` during the migration step, then switch `DIRECT_URL` to the local Postgres in your dev environment.
+> **Why the same URL for both?** The Transaction pooler (port 6543) supports DDL (migrations, `prisma migrate deploy`) as long as you add `?pgbouncer=true` and `connection_limit=1`. The two-URL pattern (Transaction for runtime, Direct for migrations) is a holdover from older Supabase behavior. On the free tier today, the Direct connection is paused, so the same Transaction URL is the only one that works for both.
+>
+> **For local dev with Docker Postgres**: if you prefer a local Postgres for migrations (faster), use a different `DIRECT_URL` for local dev:
+> ```
+> # Local dev .env
+> DIRECT_URL="postgresql://postgres:postgres@localhost:5432/norcel"   # local Docker
+> ```
+> Then for production, use the Transaction pooler URL for `DIRECT_URL` in Vercel.
 
 ---
 

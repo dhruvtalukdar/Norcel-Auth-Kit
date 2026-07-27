@@ -39,16 +39,20 @@ Norcel needs a Postgres database. The free Supabase tier works.
 
 1. Create a project at [supabase.com](https://supabase.com).
 2. In the Supabase dashboard, go to **Project Settings → Database**.
-3. Copy the **Transaction-mode** connection string into `DATABASE_URL`.
-4. Copy the **Direct** connection string into `DIRECT_URL`.
-5. Add these to your `.env` (use the format below — Supabase requires `?pgbouncer=true` for the transaction pooler):
+3. Copy the **Transaction-mode** connection string (port 6543) into **both** `DATABASE_URL` and `DIRECT_URL`. Use the exact same string for both.
+4. Add to your `.env` (use the format below — Supabase requires `?pgbouncer=true` for the transaction pooler):
 
 ```bash
 DATABASE_URL="postgresql://postgres.PROJECTREF:PASSWORD@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&connect_timeout=15"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/norcel"
+DIRECT_URL="postgresql://postgres.PROJECTREF:PASSWORD@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1&connect_timeout=15"
 ```
 
-> **Note on the `DIRECT_URL`**: Supabase's free tier pauses the direct connection (port 5432). For local dev, point `DIRECT_URL` at a local Postgres (the example above uses `localhost:5432`). For production, point it at your paid Supabase direct endpoint or a local Postgres in your self-hosted setup.
+> **Why the same string for both?** Supabase's free tier pauses the direct connection (port 5432) after 7 days of inactivity. The Transaction pooler (port 6543) supports DDL (migrations) as long as you add `?pgbouncer=true` and `connection_limit=1`. For Vercel deploys, the same URL works for both runtime and migrations.
+>
+> **For local dev with Docker Postgres**: if you prefer a local Postgres for migrations (faster), uncomment the alternative `DIRECT_URL` below in your `.env`:
+> ```bash
+> # DIRECT_URL="postgresql://postgres:postgres@localhost:5432/norcel"   # local Docker
+> ```
 
 If you'd rather use **local Postgres** (no Supabase):
 
