@@ -616,6 +616,19 @@ export default function HomePage() {
                 </ul>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <div className="flex flex-col">
+                    <span className="font-mono text-caption uppercase tracking-[0.18em] text-emerald-400">
+                      launch sale — first 100 buyers
+                    </span>
+                    <span className="mt-1 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                      $49
+                    </span>
+                    <span className="mt-1 text-caption text-mute">
+                      one-time · lifetime updates · commercial license
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Button asChild size="xl">
                     {/* TODO: replace with your real Gumroad URL */}
                     <a
@@ -623,7 +636,7 @@ export default function HomePage() {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      Buy on Gumroad — $150
+                      Buy on Gumroad — $49
                       <ArrowUpRight className="ml-1.5 h-4 w-4" />
                     </a>
                   </Button>

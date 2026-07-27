@@ -158,7 +158,7 @@ export default async function GettingStartedPage() {
             </aside>
 
             {/* Content */}
-            <article className="reveal delay-1 lg:col-span-9">
+            <article className="lg:col-span-9">
               <div className="prose-forge">
                 <ReactMarkdown
                   components={mdComponents(h2Index)}
