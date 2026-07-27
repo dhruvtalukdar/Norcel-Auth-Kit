@@ -106,6 +106,9 @@ async function sendViaResend(payload: EmailPayload) {
     subject: payload.subject,
     html: payload.html,
     text: payload.text,
+    // Replies go to a monitored inbox so users can reply to
+    // transactional emails and we get the thread.
+    replyTo: "support@norcel.dev",
   });
   if (error) {
     throw new Error(`Resend send failed: ${error.message}`);
@@ -172,6 +175,23 @@ export async function sendMagicLinkEmail(opts: {
   url: string;
 }) {
   const tpl = renderEmail("magic-link", { name: opts.name, url: opts.url });
+  await sendEmail({
+    to: opts.to,
+    subject: tpl.subject,
+    html: tpl.html,
+    text: tpl.text,
+  });
+}
+
+export async function sendWelcomeEmail(opts: {
+  to: string;
+  name: string | null;
+  dashboardUrl: string;
+}) {
+  const tpl = renderEmail("welcome", {
+    name: opts.name,
+    dashboardUrl: opts.dashboardUrl,
+  });
   await sendEmail({
     to: opts.to,
     subject: tpl.subject,

@@ -199,6 +199,46 @@ function renderMagicLink({ name, url }: RenderInput) {
   return { subject, html, text };
 }
 
+// ─── Welcome ───────────────────────────────────────────────────────────────
+
+function renderWelcome({ name, dashboardUrl }: { name: string | null; dashboardUrl: string }) {
+  const subject = `Welcome to ${BRAND}`;
+  const html = shell(
+    subject,
+    `
+    ${greeting(name)}
+    <h1 style="margin:0 0 16px;font-size:24px;font-weight:600;line-height:32px;letter-spacing:-0.96px;color:${PRIMARY};">
+      You're in.
+    </h1>
+    <p style="margin:0 0 8px;font-size:16px;line-height:24px;color:${BODY};">
+      Your account is ready. Sign in any time with your email and password,
+      or use one of the providers you've connected.
+    </p>
+    <p style="margin:0 0 8px;font-size:16px;line-height:24px;color:${BODY};">
+      A few things you can do from your dashboard:
+    </p>
+    <ul style="margin:0 0 16px;padding-left:20px;font-size:16px;line-height:24px;color:${BODY};">
+      <li>Set up two-factor auth (coming soon)</li>
+      <li>Connect a Google or GitHub account for one-tap sign-in</li>
+      <li>Review the security log to see sign-in activity</li>
+    </ul>
+    ${cta("Go to your dashboard", dashboardUrl)}
+    ${fallbackLink(dashboardUrl)}
+    ${signature()}
+  `
+  );
+  const text = [
+    `Hi ${name ?? "there"},`,
+    ``,
+    `Welcome to ${BRAND}. Your account is ready.`,
+    ``,
+    `Sign in any time at ${dashboardUrl}`,
+    ``,
+    `— The ${BRAND} team`,
+  ].join("\n");
+  return { subject, html, text };
+}
+
 // ─── Email change ─────────────────────────────────────────────────────────
 
 function renderEmailChange({ name, url }: RenderInput) {
@@ -240,6 +280,7 @@ function renderEmailChange({ name, url }: RenderInput) {
 // ─── Public entry point ────────────────────────────────────────────────────
 
 export type EmailTemplate =
+  | "welcome"
   | "verification"
   | "password-reset"
   | "magic-link"
@@ -247,16 +288,18 @@ export type EmailTemplate =
 
 export function renderEmail(
   template: EmailTemplate,
-  input: RenderInput
+  input: RenderInput | { name: string | null; dashboardUrl: string }
 ): { subject: string; html: string; text: string } {
   switch (template) {
+    case "welcome":
+      return renderWelcome(input as { name: string | null; dashboardUrl: string });
     case "verification":
-      return renderVerification(input);
+      return renderVerification(input as RenderInput);
     case "password-reset":
-      return renderPasswordReset(input);
+      return renderPasswordReset(input as RenderInput);
     case "magic-link":
-      return renderMagicLink(input);
+      return renderMagicLink(input as RenderInput);
     case "email-change":
-      return renderEmailChange(input);
+      return renderEmailChange(input as RenderInput);
   }
 }

@@ -30,6 +30,7 @@ import {
   sendMagicLinkEmail,
   sendPasswordResetEmail,
   sendVerificationEmail,
+  sendWelcomeEmail,
 } from "@/lib/email";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -63,6 +64,11 @@ async function buildMagicLinkUrl(rawToken: string): Promise<string> {
   const url = new URL("/api/auth/magic/callback", clientEnv.NEXT_PUBLIC_APP_URL);
   url.searchParams.set("token", rawToken);
   return url.toString();
+}
+
+async function buildDashboardUrl(): Promise<string> {
+  const { clientEnv } = await import("@/lib/env");
+  return new URL("/dashboard", clientEnv.NEXT_PUBLIC_APP_URL).toString();
 }
 
 // ─── Sign up ───────────────────────────────────────────────────────────────
@@ -125,6 +131,18 @@ export async function signUpWithPassword(input: {
     to: user.email,
     name: user.name,
     url,
+  });
+
+  // Send the welcome email. We don't await it — if the welcome fails
+  // the verification email is still queued and the user can sign in.
+  // Best-effort, fire-and-forget.
+  const dashboardUrl = await buildDashboardUrl();
+  void sendWelcomeEmail({
+    to: user.email,
+    name: user.name,
+    dashboardUrl,
+  }).catch(() => {
+    // Swallow — already logged in sendEmail()
   });
 
   return { ok: true, user };

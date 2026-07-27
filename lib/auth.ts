@@ -478,6 +478,23 @@ const config: NextAuthConfig = {
           ip: oAuthIP,
         });
         (user as { sessionId?: string }).sessionId = sessionId;
+
+        // Send the welcome email for new OAuth users. Fire-and-forget;
+        // we don't block the auth flow on this.
+        const { sendWelcomeEmail } = await import("@/lib/email");
+        const { clientEnv } = await import("@/lib/env");
+        if (user.email) {
+          void sendWelcomeEmail({
+            to: user.email,
+            name: user.name ?? null,
+            dashboardUrl: new URL(
+              "/dashboard",
+              clientEnv.NEXT_PUBLIC_APP_URL
+            ).toString(),
+          }).catch(() => {
+            // Swallow — already logged inside sendEmail().
+          });
+        }
       }
     },
 
